@@ -340,6 +340,7 @@ button {
     margin-bottom: 2vh;
     font-family: 'Inter';
     font-size: 18px;
+}
 /* FAQ */
 
 .faq {
@@ -576,6 +577,7 @@ background: linear-gradient(
 
   color: #fafafa;
 }
+
 .help_desk img {
   max-width: 100px;
   height: auto;
