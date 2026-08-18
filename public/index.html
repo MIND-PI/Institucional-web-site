@@ -121,5 +121,198 @@
       </div>
     </div>
   </div>
+<!-- SEÇÃO HELP DESK - MARIA CLARA -->
+  <div class="faq">
+    <div class="container">
+        <div class="faq_content">
+
+            <div class="faq_text">
+                <h1>FAQ</h1>
+            </div>
+
+            <div class="faq_pergunta_content">
+                <button class="botao-expandir">
+                    O que é um CLP e por que ele precisa ser monitorado?
+                </button>
+
+                <p class="texto-escondido">
+                   O CLP (Controlador Lógico Programável) é o "cérebro" da automação.
+                    Embora seja extremamente robusto, ele depende de CPU, memória,
+                    ciclos de varredura (scan time) e redes de comunicação.
+
+                    Sobrecargas de processamento ou falhas de comunicação podem causar
+                    travamentos e lentidão na linha. Monitorar o CLP permite enxergar
+                    a degradação da máquina antes que ela falhe completamente.
+                </p>
+            </div>
+
+            <div class="faq_pergunta_content">
+                <button class="botao-expandir">
+                    O que são "Microparadas" e como elas afetam minha fábrica?
+                </button>
+
+                <p class="texto-escondido">
+                    Microparadas são interrupções curtas (inferiores a 5 minutos)
+                    causadas por falhas de sensores, travamentos milimétricos ou
+                    pequenos ajustes. Sozinhas, elas podem representar de 10% a 20%
+                    da produção perdida.
+
+                    Registros manuais em papel falham em capturar esses eventos.
+                    Nosso sistema detecta e registra essas microparadas em tempo real
+                    de forma 100% automatizada.
+                </p>
+            </div>
+
+            <div class="faq_pergunta_content">
+                <button class="botao-expandir">
+                    Qual é o custo real de uma linha de produção parada?
+                </button>
+
+                <p class="texto-escondido">
+                    Perda Média Global: A inatividade não planejada custa cerca de 11%
+                    dos ganhos totais de grandes indústrias.
+
+                    Setor Automotivo / Tier 1: Cada minuto de linha parada pode custar
+                    entre US$ 900 e US$ 2.100, ultrapassando US$ 2 milhões por hora
+                    em grandes plantas.
+
+                    Economia: A adoção do monitoramento preditivo pode reduzir o
+                    tempo de inatividade não planejado em até 50% e os custos de
+                    manutenção em até 40%.
+                </p>
+            </div>
+
+            <div class="faq_pergunta_content">
+                <button class="botao-expandir">
+                    Como funciona a Calculadora de Perdas da Home?
+                </button>
+
+                <p class="texto-escondido">
+                    A calculadora utiliza dados do setor industrial e o custo médio
+                    de downtime (tempo de inatividade) para projetar seu prejuízo.
+
+                    Informando dados básicos como o custo médio da sua hora parada
+                    e o tempo estimado de indisponibilidade mensal, a calculadora
+                    mostra o valor financeiro desperdiçado e o quanto nossa plataforma
+                    pode economizar reduzindo o MTTR (Tempo Médio de Reparo).
+                </p>
+            </div>
+
+            <div class="faq_pergunta_content">
+                <button class="botao-expandir">
+                    O sistema funciona com quais marcas e tipos de equipamentos?
+                </button>
+
+                <p class="texto-escondido">
+                    Nossa solução foi desenvolvida para se integrar a ambientes
+                    heterogêneos de manufatura. Coletamos dados por meio de uma
+                    aplicação client e protocolos padrão de mercado, como Modbus
+                    TCP/IP e MQTT, permitindo monitorar computadores industriais
+                    e CLPs de diferentes fornecedores sem a necessidade de trocar
+                    seus equipamentos atuais.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+    
+<div class="help_desk">
+  <div class="container">
+    <div class="help_desk_content">
+
+      <div class="help_desk_text">
+
+        <img src="./assets/imgs/help-desk.png" alt="Help Desk">
+
+        <div class="help_desk_text_content">
+          <h2>Precisa de ajuda?</h2>
+          <p>
+            Encontre suporte para dúvidas ou problemas relacionados ao nosso sistema.
+          </p>
+        </div>
+
+      </div>
+
+      <a 
+        href="https://mind-monitoramento-industrial.atlassian.net/servicedesk/customer/portal/1"
+        target="_blank"
+        class="help_desk_button">
+        Acessar Help-Desk
+      </a>
+
+    </div>
+  </div>
+</div>
+<footer class="footer">
+    <div class="footer-container">
+
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <img src="./assets/imgs/logo.png" alt="Logo" class="logo-icon">
+                
+            </div>
+
+            <p>
+                Monitoramento Industrial de Alta Performance.<br>
+                Protegendo a linha de produção contra interrupções.
+            </p>
+        </div>
+
+        <div class="footer-column">
+            <h3>Produto</h3>
+            <a href="#">Observabilidade de CLPs</a>
+            <a href="#">Alertas em Tempo Real</a>
+            <a href="#">Manutenção Preditiva</a>
+        </div>
+
+        <div class="footer-column">
+            <h3>Empresa</h3>
+            <a href="#">Sobre Nós</a>
+            <a href="#">Contato</a>
+            <a href="#">Carreiras</a>
+        </div>
+
+        <div class="footer-column">
+            <h3>Legal</h3>
+            <a href="#">Termos de Serviço</a>
+            <a href="#">Política de Privacidade</a>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <p> 2026 Mint Observabilidade Industrial. Todos os direitos reservados.</p>
+    </div>
+</footer>
+
+
 </body>
+ <script>
+    const botoes = document.querySelectorAll('.botao-expandir');
+
+    botoes.forEach(function(botao) {
+
+        botao.addEventListener('click', function() {
+
+            const pergunta = botao.parentElement;
+            const texto = pergunta.querySelector('.texto-escondido');
+
+            if (texto.style.maxHeight && texto.style.maxHeight !== '0px') {
+
+                texto.style.maxHeight = '0px';
+                texto.style.padding = '0 20px';
+
+            } else {
+
+                texto.style.maxHeight = texto.scrollHeight + 40 + 'px';
+                texto.style.padding = '0 20px 20px 20px';
+
+            }
+
+        });
+
+    });
+</script>
+
 </html>
