@@ -1,5 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
+:root {
+  --gunmetal: #3C3C3C;
+  --prussianblue: #04012C;
+  --brightsnow: #FAFAFA;
+  --onyx: #131515;
+  --deep: #11114E;
+  --white: #ffff
+  --font-default: "Roboto", sans-serif;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -176,4 +186,102 @@ p{
     margin-bottom: 50px;
     background-color: #afadad;
     height: 1.45px;
+}
+
+.calculatorContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px; 
+     background-color: var(--brightsnow);  
+     gap: 4rem;
+}
+
+.calculatorContainer .titleContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    gap: 40px;
+}
+
+.titleContainer #title1{
+    color: var(--prussianblue);
+    font-size: 3rem;
+    font-weight: bold;
+    font-family: var(--font-default);
+}
+
+.titleContainer #title2{
+    color: var(--gunmetal);
+    font-size: 1.6rem;
+    font-family: var(--font-default);
+}
+
+.calculatorContainer .bodyCalculatorContainer{
+    border: 2px solid #c4c4c4;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    box-shadow: 0 1px 0px rgba(0,0,0,0.15); /* sombra externa */
+    display: flex;
+    flex-direction: row;
+}
+
+.calculatorContainer .bodyCalculatorContainer .inputs{
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.calculatorContainer .bodyCalculatorContainer .inputs .rangeInput{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.calculatorContainer .bodyCalculatorContainer .inputs .rangeInput span{
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--deep);
+}
+
+.calculatorContainer .bodyCalculatorContainer .inputs .rangeInput input{
+    accent-color: var(--deep);
+    width: 45rem;
+}
+
+.calculatorContainer .bodyCalculatorContainer .resultsContainer{
+    background-color: #d4d4d4;
+    padding: 2rem;
+    border-radius: 1rem;
+}
+
+.calculatorContainer .bodyCalculatorContainer .resultsContainer .projecaoContainer{
+    display: flex;
+    flex-direction: row;
+
+}
+
+.calculatorContainer .bodyCalculatorContainer .resultsContainer .projecaoContainer .titleProjecaoContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.calculatorContainer .bodyCalculatorContainer .resultsContainer .projecaoContainer .titleProjecaoContainer .title1{
+    color: var(--deep);
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+
+.calculatorContainer .bodyCalculatorContainer .resultsContainer .projecaoContainer .titleProjecaoContainer .title2{
+    color: var(--gunmetal);
+    font-size: 1.3rem;
+    
+}
+
+.calculatorContainer .bodyCalculatorContainer .resultsContainer .economiaContainer{
+
 }
