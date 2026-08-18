@@ -4,6 +4,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
 
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
     margin: 0;
@@ -132,7 +133,7 @@ button {
     max-width: 900px;
     font-size: 80px;
     color: #04012C;
-    font-weight: 900;
+    font-weight: 700;
     letter-spacing: -4.6px;
     line-height: 1.1; 
 }
@@ -142,6 +143,7 @@ button {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    font-family: 'MuseoModerno';
 }
 
 .texto-banner> p{
@@ -340,6 +342,7 @@ button {
     margin-bottom: 2vh;
     font-family: 'Inter';
     font-size: 18px;
+}
 /* FAQ */
 
 .faq {
