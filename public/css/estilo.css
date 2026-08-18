@@ -283,6 +283,7 @@ button {
     background-color: #04012C;
     color: #fafafa;
     height: 100vh;
+    
 }
 
 .product_title{
@@ -295,5 +296,43 @@ button {
 }
 
 .product_title > h1{
-    font-size: 40px;
+    font-size: 50px;
+    font-family: 'Inter';    
+}
+
+.product_subtitle{
+    width: 50vw;
+    text-align: center;
+}
+.product_subtitle > h3{
+    margin-top: 2vh;
+    color: #afadad;
+    font-size: 16px;
+    font-family: 'Inter';    
+}
+
+.cardsContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product_card{
+    background-color: #110e37;
+    width: 30vw;
+    height: 46vh;
+    margin: 10vh 2vw;
+    border-radius: 20px;
+    padding: 3vw;
+    border: solid 1px #51A2FF;
+}
+
+.product_card > img{
+    margin-bottom: 2vh;
+}
+
+.product_card > h4{
+    margin-bottom: 2vh;
+    font-family: 'Inter';
+    font-size: 18px;
 }
