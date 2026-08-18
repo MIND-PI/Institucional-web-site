@@ -6,6 +6,11 @@
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
 }
+.container {
+  display: flex;
+  width: 80%;
+  margin: auto;
+}
 
 body{
     background-color: #FAFAFA;
@@ -176,4 +181,245 @@ p{
     margin-bottom: 50px;
     background-color: #afadad;
     height: 1.45px;
+}
+/* FAQ */
+
+.faq {
+    background-color: #fafafa;
+    padding: 50px 0;
+}
+
+.faq .container {
+    justify-content: center;
+}
+
+.faq_content {
+    width: 80%;
+}
+
+.faq_text h1 {
+    background: linear-gradient(135deg, #04012C 20%, #316cec 100%);
+        -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 70px;
+    margin-bottom: 30px;
+  
+}
+
+.faq_pergunta_content {
+    background-color: #fafafa;
+    border: 2px solid #131515;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.botao-expandir {
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    border: none;
+    border-radius: 0;
+    background-color: #fafafa;
+    color: #04012c;
+    font-family: "Barlow", sans-serif;
+    font-size: 19px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+}
+
+.botao-expandir:hover {
+        background: linear-gradient(135deg, #04012C 20%, #2563EB 100%);
+        color: #fafafa;
+}
+
+.texto-escondido {
+    max-height: 0;
+    margin: 0;
+    padding: 0 20px;
+    color: #333;
+    font-size: 17px;
+    line-height: 1.6;
+    
+}
+
+/* FOOTER */
+
+.footer {
+background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(37, 99, 235, 0.5) 35%,
+    #2563EB 60%,
+    #04012C 100%
+);
+    color: #ffffff;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 40px 32px;
+
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+}
+
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 18px;
+}
+
+.footer-logo img {
+    width: 85px;
+    height: 35px;
+    object-fit: contain;
+    display: block;
+}
+
+.footer-logo span {
+    line-height: 1;
+}
+
+.footer-brand p {
+    color: #fafafa;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+
+.footer-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-column h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    color: #ffffff;
+}
+
+.footer-column a {
+    color: #fafafa;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.footer-column a:hover {
+    color: #2c1972;
+}
+
+.footer-bottom {
+
+    text-align: center;
+    padding: 28px 20px;
+}
+
+.footer-bottom p {
+    color: #c2c2c2;
+    font-size: 13px;
+    margin: 0;
+}
+
+
+/* HELP DESK */
+
+
+.help_desk {
+  background-color: #fafafa;
+  padding: 40px 0;
+  display: flex;
+}
+
+.help_desk .container {
+  justify-content: center;
+  width: 80%;
+}
+
+.help_desk_content {
+  width: 100%;
+  min-height: 130px;
+  background-color: #fafafa;
+  border: 2px solid #131515;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 25px 40px;
+  box-sizing: border-box;
+}
+
+.help_desk_text {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.help_desk_text img {
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+  margin: 0;
+}
+
+.help_desk_text_content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.help_desk_text h2 {
+  color: #04012c;
+  margin: 0 0 8px 0;
+  font-size: 28px;
+}
+
+.help_desk_text p {
+  color: #333;
+  margin: 0;
+  font-size: 17px;
+}
+
+.help_desk_button {
+  background-color: #131515;
+  color: #fafafa;
+  text-decoration: none;
+  padding: 14px 25px;
+  border-radius: 5px;
+  font-size: 17px;
+  font-weight: 600;
+  transition: 0.3s;
+  white-space: nowrap;
+}
+
+.help_desk_button:hover {
+        background: linear-gradient(135deg, #04012C 20%, #2563EB 100%);
+
+  color: #fafafa;
+}
+.help_desk img {
+  max-width: 100px;
+  height: auto;
+  margin-left: 20px;
 }
