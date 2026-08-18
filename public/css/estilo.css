@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+
 * {
     margin: 0;
     padding: 0;
@@ -114,7 +119,7 @@ button {
     margin-top: 60px;
 }
 
-h1 {
+.texto-banner > h1 {
     display: block; 
     text-align: center;
     margin: 160px auto 0 auto; 
@@ -134,7 +139,7 @@ h1 {
     -webkit-text-fill-color: transparent;
 }
 
-p{
+.texto-banner> p{
     text-align: center;
     font-size: 21px;
     margin-top: 35px;
@@ -176,4 +181,119 @@ p{
     margin-bottom: 50px;
     background-color: #afadad;
     height: 1.45px;
+}
+
+/* SEÇÃO PRODUTO */
+.context_section{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.text_section{
+    display: flex;
+    flex-direction: column;
+    width: 35vw;
+    margin: 3vw;
+}
+
+.text_section > h2{
+    font-size: 30px;
+    font-family: 'Inter';
+    color: #04012C;
+    margin-bottom: 4vh;
+}
+
+.icon_text{
+    display: flex;
+    align-items: center;
+    margin-top: 4vh;
+}
+
+.icon_text > p {
+    margin-left: 1vw;
+}
+
+.context_card_section { 
+    background:
+        linear-gradient(to right, #04012C, #2563EB, #04012c) top / 100% 5px no-repeat,
+        #dcdce0;
+    width: 40vw; 
+    height: 40vh; 
+    border-radius: 15px; 
+    margin-right: 3vw; 
+    padding: 20px; 
+
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center;
+}
+.context_card_title > p{
+    font-family: 'JetBrains Mono';
+}
+
+.monitoring_line_text > p{
+    font-family: 'JetBrains Mono';
+}
+
+.context_card_title{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 2vh;   
+}
+
+#status_card{
+    color: #00a63e;
+}
+
+.monitoring_line{
+    display: flex;
+    flex-direction: column;
+    margin-top: 4vh;
+}
+
+.monitoring_line_text{
+    display: flex;
+    justify-content: space-between;
+    width: 35vw;
+    margin-left: 2vw;
+    margin-bottom: 1vh;
+}
+
+.progress_bar{
+    background-color: #4b4a4a;
+    width: 35vw;
+    height: 1.5vh;
+    margin-left: 2vw;
+    border-radius: 10px;
+}
+
+#progress_bar_cpu{
+    background-color: #04012C;
+    width: 10vw;
+}
+
+#progress_bar_memory{
+    background-color: #FB2C36;
+    width: 30vw;
+}
+
+/* Product Card */
+.product_section{
+    background-color: #04012C;
+    color: #fafafa;
+    height: 100vh;
+}
+
+.product_title{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-top: 15vh;
+}
+
+.product_title > h1{
+    font-size: 40px;
 }
