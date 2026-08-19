@@ -9,12 +9,22 @@
   --white: #ffff
   --font-default: "Roboto", sans-serif;
 }
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
+}
+.container {
+  display: flex;
+  width: 80%;
+  margin: auto;
 }
 
 body{
@@ -42,6 +52,7 @@ header {
 header .container {
     display: flex;
     align-items: center;
+    margin-right: 300px;
 }
 
 header .container img {
@@ -124,7 +135,7 @@ button {
     margin-top: 60px;
 }
 
-h1 {
+.texto-banner > h1 {
     display: block; 
     text-align: center;
     margin: 160px auto 0 auto; 
@@ -132,7 +143,7 @@ h1 {
     max-width: 900px;
     font-size: 80px;
     color: #04012C;
-    font-weight: 900;
+    font-weight: 700;
     letter-spacing: -4.6px;
     line-height: 1.1; 
 }
@@ -142,9 +153,10 @@ h1 {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    font-family: 'MuseoModerno';
 }
 
-p{
+.texto-banner> p{
     text-align: center;
     font-size: 21px;
     margin-top: 35px;
@@ -336,3 +348,536 @@ p{
 
 
 
+/* SEÇÃO PRODUTO */
+.context_section{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.text_section{
+    display: flex;
+    flex-direction: column;
+    width: 35vw;
+    margin: 3vw;
+}
+
+.text_section > h2{
+    font-size: 30px;
+    font-family: 'Inter';
+    color: #04012C;
+    margin-bottom: 4vh;
+}
+
+.icon_text{
+    display: flex;
+    align-items: center;
+    margin-top: 4vh;
+}
+
+.icon_text > p {
+    margin-left: 1vw;
+}
+
+.context_card_section { 
+    background:
+        linear-gradient(to right, #04012C, #2563EB, #04012c) top / 100% 5px no-repeat,
+        #dcdce0;
+    width: 40vw; 
+    height: 40vh; 
+    border-radius: 15px; 
+    margin-right: 3vw; 
+    padding: 20px; 
+
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center;
+}
+.context_card_title > p{
+    font-family: 'JetBrains Mono';
+}
+
+.monitoring_line_text > p{
+    font-family: 'JetBrains Mono';
+}
+
+.context_card_title{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 2vh;   
+}
+
+#status_card{
+    color: #00a63e;
+}
+
+.monitoring_line{
+    display: flex;
+    flex-direction: column;
+    margin-top: 4vh;
+}
+
+.monitoring_line_text{
+    display: flex;
+    justify-content: space-between;
+    width: 35vw;
+    margin-left: 2vw;
+    margin-bottom: 1vh;
+}
+
+.progress_bar{
+    background-color: #4b4a4a;
+    width: 35vw;
+    height: 1.5vh;
+    margin-left: 2vw;
+    border-radius: 10px;
+}
+
+#progress_bar_cpu{
+    background-color: #04012C;
+    width: 10vw;
+}
+
+#progress_bar_memory{
+    background-color: #FB2C36;
+    width: 30vw;
+}
+
+/* Product Card */
+.product_section{
+    background-color: #04012C;
+    color: #fafafa;
+    height: 100vh;
+    
+}
+
+.product_title{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-top: 15vh;
+}
+
+.product_title > h1{
+    font-size: 50px;
+    font-family: 'Inter';    
+}
+
+.product_subtitle{
+    width: 50vw;
+    text-align: center;
+}
+.product_subtitle > h3{
+    margin-top: 2vh;
+    color: #afadad;
+    font-size: 16px;
+    font-family: 'Inter';    
+}
+
+.cardsContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product_card{
+    background-color: #110e37;
+    width: 30vw;
+    height: 46vh;
+    margin: 10vh 2vw;
+    border-radius: 20px;
+    padding: 3vw;
+    border: solid 1px #51A2FF;
+}
+
+.product_card > img{
+    margin-bottom: 2vh;
+}
+
+.product_card > h4{
+    margin-bottom: 2vh;
+    font-family: 'Inter';
+    font-size: 18px;
+}
+
+
+/* Contato */
+
+.session_contact {
+    background-color: rgba(234, 234, 236, 0.5); 
+}
+
+.margin_contact {
+    margin: 0px 247px;
+    padding: 96px 16px;
+    display: flex;
+    gap: 64px;
+}
+
+.container_contact {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    
+}
+
+.container_contact h3 {
+    color: #04012C;
+    font-family: 'Inter';
+    font-weight: bold;
+    font-size: 30px;
+    line-height: 36px;
+    word-spacing: -0.75px;
+}
+
+.container_contact span {
+    color: #606065;
+    margin-top: 16px;
+    font-family: 'Inter';
+    font-size: 18px;
+    line-height: 28px;
+}
+
+.suport_contact, .email_contact {
+    display: flex;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.suport_info, .email_info {
+    display: flex;
+    flex-direction: column;
+}
+
+.suport_info span, .email_info span {
+    font-family: 'Inter';
+    font-weight: 600;
+    line-height: 24px;
+    font-size: 16px;
+    color: #131515;
+    margin: 0;
+}
+
+.secundary_info {
+    color: #606065;
+    font-weight: normal;
+}
+
+.forms_contact {
+    background-color: #ffffff;
+    padding: 32px;
+    border: #DCDCE0 1px solid;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+}
+
+.forms_contact p {
+    color: #131515;
+    font-family: 'Inter';
+    font-size: 14px;
+    font-weight: 500px;
+    line-height: 20px;
+}
+
+.forms_contact span {
+    color: #131515;
+    font-family: 'Inter';
+    font-size: 14px;
+    font-weight: 500px;
+    line-height: 20px;
+    margin-top: 16px;
+}
+
+.forms_contact input {
+    border: #DCDCE0 1px solid;
+    height: 40px;
+    border-radius: 6px;
+    transition: all ease 200ms;
+    padding: 8px;
+}
+
+.forms_contact input:hover, .forms_contact textarea:hover {
+    border: #5f5fe47c 1px solid;
+    box-shadow: 0 1px 5px #04012c6c;
+}
+
+.forms_contact input:focus, .forms_contact textarea:focus {
+    outline: none;
+}
+
+.forms_contact textarea {
+    border: #DCDCE0 1px solid;
+    height: 128px;
+    resize: none;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    padding: 8px;
+    transition: all ease 200ms;
+}
+
+.forms_contact button {
+    color: #FAFAFA;
+    background-color: #04012C;
+    font-weight: 500;
+    font-family: 'Inter';
+    line-height: 20px;
+    border-radius: 6px;
+    padding: 10px;
+    transition: all ease 500ms;
+}
+
+.forms_contact button:hover {
+    transform: scale(1.01);
+    box-shadow: 0 8px 20px #05015749;
+}
+
+/* FAQ */
+
+.faq {
+    background-color: #fafafa;
+    padding: 50px 0;
+}
+
+.faq .container {
+    justify-content: center;
+}
+
+.faq_content {
+    width: 80%;
+}
+
+.faq_text h1 {
+    background: linear-gradient(135deg, #04012C 20%, #316cec 100%);
+        -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 70px;
+    margin-bottom: 30px;
+  
+}
+
+.faq_pergunta_content {
+    background-color: #fafafa;
+    border: 2px solid #131515;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.botao-expandir {
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    border: none;
+    border-radius: 0;
+    background-color: #fafafa;
+    color: #04012c;
+    font-family: "Barlow", sans-serif;
+    font-size: 19px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+}
+
+.botao-expandir:hover {
+        background: linear-gradient(135deg, #04012C 20%, #2563EB 100%);
+        color: #fafafa;
+}
+
+.texto-escondido {
+    max-height: 0;
+    margin: 0;
+    padding: 0 20px;
+    color: #333;
+    font-size: 17px;
+    line-height: 1.6;
+    
+}
+
+/* FOOTER */
+
+.footer {
+background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(37, 99, 235, 0.5) 35%,
+    #2563EB 60%,
+    #04012C 100%
+);
+    color: #ffffff;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 40px 32px;
+
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+}
+
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 18px;
+}
+
+.footer-logo img {
+    width: 85px;
+    height: 35px;
+    object-fit: contain;
+    display: block;
+}
+
+.footer-logo span {
+    line-height: 1;
+}
+
+.footer-brand p {
+    color: #fafafa;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+
+.footer-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-column h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    color: #ffffff;
+}
+
+.footer-column a {
+    color: #fafafa;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.footer-column a:hover {
+    color: #2c1972;
+}
+
+.footer-bottom {
+
+    text-align: center;
+    padding: 28px 20px;
+}
+
+.footer-bottom p {
+    color: #c2c2c2;
+    font-size: 13px;
+    margin: 0;
+}
+
+
+/* HELP DESK */
+
+
+.help_desk {
+  background-color: #fafafa;
+  padding: 40px 0;
+  display: flex;
+}
+
+.help_desk .container {
+  justify-content: center;
+  width: 80%;
+}
+
+.help_desk_content {
+  width: 100%;
+  min-height: 130px;
+  background-color: #fafafa;
+  border: 2px solid #131515;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 25px 40px;
+  box-sizing: border-box;
+}
+
+.help_desk_text {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.help_desk_text img {
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+  margin: 0;
+}
+
+.help_desk_text_content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.help_desk_text h2 {
+  color: #04012c;
+  margin: 0 0 8px 0;
+  font-size: 28px;
+}
+
+.help_desk_text p {
+  color: #333;
+  margin: 0;
+  font-size: 17px;
+}
+
+.help_desk_button {
+  background-color: #131515;
+  color: #fafafa;
+  text-decoration: none;
+  padding: 14px 25px;
+  border-radius: 5px;
+  font-size: 17px;
+  font-weight: 600;
+  transition: 0.3s;
+  white-space: nowrap;
+}
+
+.help_desk_button:hover {
+        background: linear-gradient(135deg, #04012C 20%, #2563EB 100%);
+
+  color: #fafafa;
+}
+.help_desk img {
+  max-width: 100px;
+  height: auto;
+  margin-left: 20px;
+}
