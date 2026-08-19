@@ -201,7 +201,163 @@ button {
     height: 0.091rem;
 }
 
+@media (max-width: 1024px) {
 
+    header .container .menu ul {
+        margin-left: 12rem;
+    }
+
+    .botoes {
+        margin-left: 6rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .container {
+        width: 100%;
+    }
+
+    /*----------------------------------ARRUMAR--------------------------------------*/
+
+    header .container img {
+        margin-left: 1rem;
+    }
+
+    header .container .menu ul {
+        gap: 0.5rem;
+        margin-left: 2rem;
+    }
+
+    header .container .menu ul li {
+        margin-left: 0.313rem;
+        color: #4b4a4a;
+        font-weight: 500;
+        font-size: 0.969rem;
+    }
+
+    header .container .menu ul li:hover {
+        color: #000000;
+    }
+
+    .botoes {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+        margin-left: 15.625rem;
+    }
+
+    button {
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: 0.969rem;
+        font-weight: 500;
+    }
+
+    .entrar {
+        color: black;
+        width: 95px;
+        height: 40px;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .entrar:hover {
+        background-color: #ececec;
+        border: 1px solid #04012C;
+    }
+
+    .comecar {
+        background-color: #04012C;
+        color: #ffffff;
+        width: 5.938rem;
+        height: 2.5rem;
+        border-radius: 0.438rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .comecar:hover {
+        background-color: #181452;
+    }
+    /*----------------------------------ARRUMAR--------------------------------------*/
+
+    .texto-banner {
+        display: flex;
+        flex-direction: column;
+        margin-top: 1.5rem;
+    }
+
+    .texto-banner h1 {
+        display: block;
+        text-align: center;
+        margin: 10rem auto 0 auto;
+        width: 100%;
+        max-width: 56.25rem;
+        font-size: 80px;
+        color: #04012C;
+        font-weight: 700;
+        letter-spacing: -0.288rem;
+        line-height: 1.1;
+    }
+
+    .destaque {
+        background: linear-gradient(135deg, #04012C 10%, #2563EB 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-family: 'MuseoModerno';
+    }
+
+    .texto-banner p {
+        text-align: center;
+        font-size: 1.313rem;
+        margin-top: 2.188rem;
+        color: #4b4a4a;
+    }
+
+    .botoes-banner {
+        display: flex;
+        justify-content: center;
+        gap: 0.938rem;
+        margin-top: 3.125rem;
+    }
+
+    .agendar {
+        background-color: #04012C;
+        color: #ffffff;
+        padding: 1rem 1.875rem;
+        border-radius: 0.438rem;
+    }
+
+    .agendar:hover {
+        background-color: #181452;
+    }
+
+    .conhecer {
+        border: 1px solid #04012C;
+        padding: 1rem 1.875rem;
+        border-radius: 0.438rem;
+        font-size: 0.969rem;
+        color: #04012C;
+    }
+
+    .conhecer:hover {
+        background-color: #ececec;
+    }
+
+    .linha {
+        margin-top: 8.75rem;
+        margin-bottom: 3.125rem;
+        background-color: #afadad;
+        height: 0.091rem;
+    }
+
+
+}
 
 
 
