@@ -344,6 +344,145 @@ button {
     font-family: 'Inter';
     font-size: 18px;
 }
+
+
+/* Contato */
+
+.session_contact {
+    background-color: rgba(234, 234, 236, 0.5); 
+}
+
+.margin_contact {
+    margin: 0px 247px;
+    padding: 96px 16px;
+    display: flex;
+    gap: 64px;
+}
+
+.container_contact {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    
+}
+
+.container_contact h3 {
+    color: #04012C;
+    font-family: 'Inter';
+    font-weight: bold;
+    font-size: 30px;
+    line-height: 36px;
+    word-spacing: -0.75px;
+}
+
+.container_contact span {
+    color: #606065;
+    margin-top: 16px;
+    font-family: 'Inter';
+    font-size: 18px;
+    line-height: 28px;
+}
+
+.suport_contact, .email_contact {
+    display: flex;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.suport_info, .email_info {
+    display: flex;
+    flex-direction: column;
+}
+
+.suport_info span, .email_info span {
+    font-family: 'Inter';
+    font-weight: 600;
+    line-height: 24px;
+    font-size: 16px;
+    color: #131515;
+    margin: 0;
+}
+
+.secundary_info {
+    color: #606065;
+    font-weight: normal;
+}
+
+.forms_contact {
+    background-color: #ffffff;
+    padding: 32px;
+    border: #DCDCE0 1px solid;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+}
+
+.forms_contact p {
+    color: #131515;
+    font-family: 'Inter';
+    font-size: 14px;
+    font-weight: 500px;
+    line-height: 20px;
+}
+
+.forms_contact span {
+    color: #131515;
+    font-family: 'Inter';
+    font-size: 14px;
+    font-weight: 500px;
+    line-height: 20px;
+    margin-top: 16px;
+}
+
+.forms_contact input {
+    border: #DCDCE0 1px solid;
+    height: 40px;
+    border-radius: 6px;
+    transition: all ease 200ms;
+    padding: 8px;
+}
+
+.forms_contact input:hover, .forms_contact textarea:hover {
+    border: #5f5fe47c 1px solid;
+    box-shadow: 0 1px 5px #04012c6c;
+}
+
+.forms_contact input:focus, .forms_contact textarea:focus {
+    outline: none;
+}
+
+.forms_contact textarea {
+    border: #DCDCE0 1px solid;
+    height: 128px;
+    resize: none;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    padding: 8px;
+    transition: all ease 200ms;
+}
+
+.forms_contact button {
+    color: #FAFAFA;
+    background-color: #04012C;
+    font-weight: 500;
+    font-family: 'Inter';
+    line-height: 20px;
+    border-radius: 6px;
+    padding: 10px;
+    transition: all ease 500ms;
+}
+
+.forms_contact button:hover {
+    transform: scale(1.01);
+    box-shadow: 0 8px 20px #05015749;
+}
+
 /* FAQ */
 
 .faq {
