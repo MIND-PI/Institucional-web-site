@@ -204,15 +204,6 @@ button {
      gap: 4rem;
 }
 
-:root {
-  --gunmetal: #3C3C3C;
-  --prussianblue: #04012C;
-  --brightsnow: #FAFAFA;
-  --onyx: #131515;
-  --deep: #11114E;
-  --white: #ffff
-  --font-default: "Roboto", sans-serif;
-}
 
 .calculatorContainer .titleContainer{
     display: flex;
@@ -710,15 +701,15 @@ button {
 /* FOOTER */
 
 .footer {
-/* background: linear-gradient(
+background: linear-gradient(
     to bottom,
     transparent 0%,
     rgba(37, 99, 235, 0.5) 35%,
     #2563EB 60%,
     #04012C 100%
 
-); */
-    background-color: var(--prussianblue);
+);
+    /* background-color: var(--prussianblue); */
     color: #ffffff;
     width: 100%;
     margin-top: 10px;
