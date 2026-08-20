@@ -1,14 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
-:root {
-  --gunmetal: #3C3C3C;
-  --prussianblue: #04012C;
-  --brightsnow: #FAFAFA;
-  --onyx: #131515;
-  --deep: #11114E;
-  --white: #ffff
-  --font-default: "Roboto", sans-serif;
-}
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
@@ -200,14 +192,26 @@ button {
     height: 1.45px;
 }
 
+
+/* Sessão calculadora - João */
 .calculatorContainer{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 10px; 
-     background-color: var(--brightsnow);  
+     background-color: #ececec;  
      gap: 4rem;
+}
+
+:root {
+  --gunmetal: #3C3C3C;
+  --prussianblue: #04012C;
+  --brightsnow: #FAFAFA;
+  --onyx: #131515;
+  --deep: #11114E;
+  --white: #ffff
+  --font-default: "Roboto", sans-serif;
 }
 
 .calculatorContainer .titleContainer{
@@ -220,16 +224,16 @@ button {
 }
 
 .titleContainer #title1{
-    color: var(--prussianblue);
+    color: #04012C;
     font-size: 3rem;
     font-weight: bold;
-    font-family: var(--font-default);
+    font-family: "Inter";
 }
 
 .titleContainer #title2{
-    color: var(--gunmetal);
+    color: #3C3C3C;
     font-size: 1.6rem;
-    font-family: var(--font-default);
+    font-family: "Inter";
 }
 
 .calculatorContainer .bodyCalculatorContainer{
@@ -248,7 +252,7 @@ button {
     flex-direction: column;
     padding: 1rem;
     justify-content: center;
-    align-items: centerr;
+    align-items: center;
     width: 50%;
 }
 
@@ -261,11 +265,11 @@ button {
 .calculatorContainer .bodyCalculatorContainer .inputs .rangeInput span{
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--deep);
+    color: #11114E;
 }
 
 .calculatorContainer .bodyCalculatorContainer .inputs .rangeInput input{
-    accent-color: var(--deep);
+    accent-color: #11114E;
     width: 100%;
 }
 
@@ -287,7 +291,7 @@ button {
 }
 
 .calculatorContainer .bodyCalculatorContainer .resultsContainer .impactoContainer .projecaoImpacto{
-    color: var(--deep);
+    color: #11114E;
     font-weight: bold;
     font-size: 1.9rem;
 }
@@ -301,7 +305,7 @@ button {
 
 .calculatorContainer .bodyCalculatorContainer .resultsContainer .impactoContainer .custoInatividade .title1{
     font-size: 1.2rem;
-    color: var(--gunmetal);
+    color: #3C3C3C;
 }
 
 .calculatorContainer .bodyCalculatorContainer .resultsContainer .impactoContainer .custoInatividade .title2{
@@ -310,7 +314,7 @@ button {
 }
 
 .calculatorContainer .bodyCalculatorContainer .resultsContainer .linha1{
-    background-color: var(--brightsnow);
+    background-color: #FAFAFA;
     height: 0.01rem;
     border-radius: 1rem;
     width: 100%;
@@ -323,7 +327,7 @@ button {
 }
 
 .calculatorContainer .bodyCalculatorContainer .resultsContainer .economiaContainer .descEconomia{
-    color: var(--gunmetal);
+    color: #3C3C3C;
     font-size: 0.7rem;
 }
 
@@ -335,7 +339,7 @@ button {
 
 .calculatorContainer .bodyCalculatorContainer .resultsContainer .economiaContainer .economiaEstimada .title1{
     font-size: 1.2rem;
-    color: var(--gunmetal);
+    color: #3C3C3C;
 }
 
 .calculatorContainer .bodyCalculatorContainer .resultsContainer .economiaContainer .economiaEstimada .title2{
