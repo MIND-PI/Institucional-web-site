@@ -9,6 +9,7 @@
   <title>MIND | Página Inicial</title>
 
   <script src="./js/sessao.js"></script>
+  <script src="js/script.js" ></script>
 
   
 
@@ -21,7 +22,23 @@
   <header>
     <div class="container">
       <a href="#" class="logo"><img src="./assets/imgs/logo.png" alt=""></a>
+      <img src="./assets/icon/hamburger.png" class="hamburger" onclick="showSidebar()">
+      <img src="./assets/icon/x.png" class="fechar" onclick="hideSidebar()">
       <nav class="menu">
+        <ul>
+          <li>Sobre</li>
+          <li>Solução</li>
+          <li>Calculadora</li>
+          <li>Suporte</li>
+
+          <div class="botoes">
+            <button class="entrar">Entrar</button>
+            <button class="comecar">Começar</button>
+          </div>
+        </ul>
+      </nav>
+
+      <nav class="sidebar">
         <ul>
           <li>Sobre</li>
           <li>Solução</li>

@@ -1,19 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap');
+
 :root {
     --gunmetal: #3C3C3C;
     --prussianblue: #04012C;
     --brightsnow: #FAFAFA;
     --onyx: #131515;
     --deep: #11114E;
-    --white: #ffff --font-default: "Roboto", sans-serif;
+    --white: #ffff;
+    --font-default: "Roboto", sans-serif;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
-
-@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
     margin: 0;
@@ -83,6 +84,18 @@ header .container .menu ul li {
 
 header .container .menu ul li:hover {
     color: #000000;
+}
+
+header .container .hamburger{
+        display: none;
+    }
+
+header .container .fechar{
+        display: none;
+    }
+
+header .container .sidebar ul{
+    display: none;
 }
 
 .botoes {
@@ -201,6 +214,8 @@ button {
     height: 0.091rem;
 }
 
+
+
 @media (max-width: 1024px) {
 
     header .container .menu ul {
@@ -212,53 +227,128 @@ button {
     }
 }
 
-@media (max-width: 600px) {
-    .container {
-        width: 100%;
-    }
 
-    /*----------------------------------ARRUMAR--------------------------------------*/
+
+@media (max-width: 600px) {
+    header .container {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1rem;
+        margin-right: 0;
+    }
 
     header .container img {
         margin-left: 1rem;
+        display: flex;
+        justify-content: space-around;
     }
 
-    header .container .menu ul {
-        gap: 0.5rem;
-        margin-left: 2rem;
+    header .container .menu {
+        display: none;
     }
 
-    header .container .menu ul li {
+    header .container .menu ul{
+        display: none;
+    }
+
+    header .container .hamburger{
+        display: block;
+        height: 1.8rem;
+        z-index: 1002;
+        margin-left: auto;
+        cursor: pointer;
+        margin-right: 2rem;
+    }
+
+    header .container .fechar{
+        display: none;
+        height: 1.8rem;
+        z-index: 1002;
+        margin-left: auto;
+        cursor: pointer;
+        margin-right: 1rem;
+    }
+
+    header .container .logo {
+        margin-right: auto;
+    }
+
+    header .container .sidebar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: 250px;
+        z-index: 1001;
+        background-color: rgba(250, 250, 250, 0.95);
+        backdrop-filter: blur(0.625rem);
+        -webkit-backdrop-filter: blur(0.625rem);
+        box-shadow: -10px 0 10px rgba(0, 0, 0, 0.1);
+        display: none;
+        flex-direction: column;
+        padding-top: 5rem;
+    }
+
+    header .container.active .hamburger {
+        display: none;
+    }
+
+    header .container.active .fechar {
+        display: block;
+    }
+
+    header .container.active .sidebar {
+        display: flex;
+    }
+
+    header .container .sidebar ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.25rem;
+        cursor: pointer;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+
+    header .container .sidebar ul li {
+        width: 100%;
         margin-left: 0.313rem;
         color: #4b4a4a;
         font-weight: 500;
-        font-size: 0.969rem;
+        font-size: 1.2rem;
+        display: flex;
+        list-style: none;
     }
 
-    header .container .menu ul li:hover {
-        color: #000000;
+    header .container .sidebar ul li a {
+        width: 100%;
     }
 
     .botoes {
+        margin-top: 30px;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
+        align-self: center;
         gap: 0.5rem;
-        margin-left: 15.625rem;
     }
 
     button {
         border: none;
         background: none;
         cursor: pointer;
-        font-size: 0.969rem;
+        font-size: 1.1rem;
         font-weight: 500;
     }
 
     .entrar {
         color: black;
-        width: 95px;
-        height: 40px;
-        border-radius: 7px;
+        width: 6.5rem;
+        height: 2.5rem;
+        border-radius: 0.438rem;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -272,7 +362,7 @@ button {
     .comecar {
         background-color: #04012C;
         color: #ffffff;
-        width: 5.938rem;
+        width: 6.5rem;
         height: 2.5rem;
         border-radius: 0.438rem;
         display: flex;
@@ -283,7 +373,6 @@ button {
     .comecar:hover {
         background-color: #181452;
     }
-    /*----------------------------------ARRUMAR--------------------------------------*/
 
     .texto-banner {
         display: flex;
