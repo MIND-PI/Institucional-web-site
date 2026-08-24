@@ -13,7 +13,7 @@
     --onyx: #131515;
     --deep: #11114E;
     --white: #ffff;
-    --font-default: "Roboto", sans-serif;
+    --font-default: "Inter", sans-serif;
 }
 
 * {
@@ -24,9 +24,9 @@
 }
 
 .container {
-    display: flex;
-    width: 80%;
-    margin: auto;
+    width: 90%;
+    max-width: 75rem;
+    margin: 0 auto;
 }
 
 body {
@@ -115,9 +115,9 @@ button {
 
 .entrar {
     color: black;
-    width: 95px;
-    height: 40px;
-    border-radius: 7px;
+    width: 5.938rem;
+    height: 2.5rem;
+    border-radius: 0.438rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -125,7 +125,7 @@ button {
 
 .entrar:hover {
     background-color: #ececec;
-    border: 1px solid #04012C;
+    border: 0.063rem solid #04012C;
 }
 
 .comecar {
@@ -152,10 +152,10 @@ button {
 .texto-banner h1 {
     display: block;
     text-align: center;
-    margin: 10rem auto 0 auto;
+    margin: 5rem auto 0 auto;
     width: 100%;
     max-width: 56.25rem;
-    font-size: 80px;
+    font-size: 5rem;
     color: #04012C;
     font-weight: 700;
     letter-spacing: -0.288rem;
@@ -196,7 +196,7 @@ button {
 }
 
 .conhecer {
-    border: 1px solid #04012C;
+    border: 0.063rem solid #04012C;
     padding: 1rem 1.875rem;
     border-radius: 0.438rem;
     font-size: 0.969rem;
@@ -216,7 +216,7 @@ button {
 
 
 
-@media (max-width: 1024px) {
+@media (max-width: 64rem) {
 
     header .container .menu ul {
         margin-left: 12rem;
@@ -229,7 +229,8 @@ button {
 
 
 
-@media (max-width: 600px) {
+@media (max-width: 37.5rem) {
+
     header .container {
         width: 100%;
         display: flex;
@@ -264,15 +265,16 @@ button {
 
     header .container .fechar{
         display: none;
-        height: 1.8rem;
+        height: 1.3rem;
         z-index: 1002;
         margin-left: auto;
         cursor: pointer;
         margin-right: 1rem;
     }
 
-    header .container .logo {
+    header .container .logo img{
         margin-right: auto;
+        width: 13rem;
     }
 
     header .container .sidebar {
@@ -280,12 +282,12 @@ button {
         top: 0;
         right: 0;
         height: 100vh;
-        width: 250px;
+        width: 15.625rem;
         z-index: 1001;
         background-color: rgba(250, 250, 250, 0.95);
         backdrop-filter: blur(0.625rem);
         -webkit-backdrop-filter: blur(0.625rem);
-        box-shadow: -10px 0 10px rgba(0, 0, 0, 0.1);
+        box-shadow: -0.625rem 0 0.625rem rgba(0, 0, 0, 0.1);
         display: none;
         flex-direction: column;
         padding-top: 5rem;
@@ -308,7 +310,7 @@ button {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1.25rem;
+        gap: 1.4rem;
         cursor: pointer;
         align-items: flex-start;
         justify-content: flex-start;
@@ -316,10 +318,10 @@ button {
 
     header .container .sidebar ul li {
         width: 100%;
-        margin-left: 0.313rem;
+        margin-left: 1rem;
         color: #4b4a4a;
         font-weight: 500;
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         display: flex;
         list-style: none;
     }
@@ -329,7 +331,7 @@ button {
     }
 
     .botoes {
-        margin-top: 30px;
+        margin-top: 1.875rem;
         display: flex;
         flex-direction: column;
         align-self: center;
@@ -356,7 +358,7 @@ button {
 
     .entrar:hover {
         background-color: #ececec;
-        border: 1px solid #04012C;
+        border: 0.063rem solid #04012C;
     }
 
     .comecar {
@@ -377,21 +379,21 @@ button {
     .texto-banner {
         display: flex;
         flex-direction: column;
-        margin-top: 1.5rem;
+        margin: 0;
     }
 
     .texto-banner h1 {
-        display: block;
-        text-align: center;
-        margin: 10rem auto 0 auto;
         width: 100%;
-        max-width: 56.25rem;
-        font-size: 80px;
-        color: #04012C;
-        font-weight: 700;
-        letter-spacing: -0.288rem;
-        line-height: 1.1;
+        max-width: 90rem;
+        font-size: 4.375rem;
     }
+    
+    .margin_contact {
+    margin: 0;
+    padding: 2.5rem 1rem;
+    flex-direction: column;
+    gap: 2rem;
+}
 
     .destaque {
         background: linear-gradient(135deg, #04012C 10%, #2563EB 100%);
@@ -427,7 +429,7 @@ button {
     }
 
     .conhecer {
-        border: 1px solid #04012C;
+        border: 0.063rem solid #04012C;
         padding: 1rem 1.875rem;
         border-radius: 0.438rem;
         font-size: 0.969rem;
@@ -446,6 +448,25 @@ button {
     }
 
 
+    .help_desk_content {
+    display: flex;
+    flex-direction: column;
+}
+
+}
+
+@media (max-width: 28.125rem) {
+    body{
+    width: 140%;
+}
+
+    header .container {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1rem;
+    }
 }
 
 
@@ -465,7 +486,7 @@ button {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 10px;
+    padding: 0.625rem;
     background-color: var(--brightsnow);
     gap: 4rem;
 }
@@ -475,8 +496,8 @@ button {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 20px;
-    gap: 40px;
+    padding: 1.25rem;
+    gap: 2.5rem;
 }
 
 .titleContainer #title1 {
@@ -493,10 +514,10 @@ button {
 }
 
 .calculatorContainer .bodyCalculatorContainer {
-    border: 2px solid #c4c4c4;
+    border: 0.125rem solid #c4c4c4;
     border-radius: 0.5rem;
     padding: 2rem;
-    box-shadow: 0 1px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0.063rem 0rem rgba(0, 0, 0, 0.15);
     /* sombra externa */
     display: flex;
     flex-direction: row;
@@ -624,7 +645,7 @@ button {
 }
 
 .text_section>h2 {
-    font-size: 30px;
+    font-size: 1.875rem;
     font-family: 'Inter';
     color: #04012C;
     margin-bottom: 4vh;
@@ -642,13 +663,13 @@ button {
 
 .context_card_section {
     background:
-        linear-gradient(to right, #04012C, #2563EB, #04012c) top / 100% 5px no-repeat,
+        linear-gradient(to right, #04012C, #2563EB, #04012c) top / 100% 0.313rem no-repeat,
         #dcdce0;
     width: 40vw;
     height: 40vh;
-    border-radius: 15px;
+    border-radius: 0.938rem;
     margin-right: 3vw;
-    padding: 20px;
+    padding: 1.25rem;
 
     display: flex;
     flex-direction: column;
@@ -692,7 +713,7 @@ button {
     width: 35vw;
     height: 1.5vh;
     margin-left: 2vw;
-    border-radius: 10px;
+    border-radius: 0.625rem;
 }
 
 #progress_bar_cpu {
@@ -723,7 +744,7 @@ button {
 }
 
 .product_title>h1 {
-    font-size: 50px;
+    font-size: 3.125rem;
     font-family: 'Inter';
 }
 
@@ -735,7 +756,7 @@ button {
 .product_subtitle>h3 {
     margin-top: 2vh;
     color: #afadad;
-    font-size: 16px;
+    font-size: 1rem;
     font-family: 'Inter';
 }
 
@@ -750,9 +771,9 @@ button {
     width: 30vw;
     height: 46vh;
     margin: 10vh 2vw;
-    border-radius: 20px;
+    border-radius: 1.25rem;
     padding: 3vw;
-    border: solid 1px #51A2FF;
+    border: solid 0.063rem #51A2FF;
 }
 
 .product_card>img {
@@ -762,7 +783,7 @@ button {
 .product_card>h4 {
     margin-bottom: 2vh;
     font-family: 'Inter';
-    font-size: 18px;
+    font-size: 1.125rem;
 }
 
 
@@ -773,10 +794,10 @@ button {
 }
 
 .margin_contact {
-    margin: 0px 247px;
-    padding: 96px 16px;
+    margin: 0rem 15.438rem;
+    padding: 6rem 1rem;
     display: flex;
-    gap: 64px;
+    gap: 4rem;
 }
 
 .container_contact {
@@ -791,24 +812,24 @@ button {
     color: #04012C;
     font-family: 'Inter';
     font-weight: bold;
-    font-size: 30px;
-    line-height: 36px;
-    word-spacing: -0.75px;
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    word-spacing: -0.047rem;
 }
 
 .container_contact span {
     color: #606065;
-    margin-top: 16px;
+    margin-top: 1rem;
     font-family: 'Inter';
-    font-size: 18px;
-    line-height: 28px;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
 }
 
 .suport_contact,
 .email_contact {
     display: flex;
-    gap: 16px;
-    margin-top: 32px;
+    gap: 1rem;
+    margin-top: 2rem;
 }
 
 .suport_info,
@@ -821,8 +842,8 @@ button {
 .email_info span {
     font-family: 'Inter';
     font-weight: 600;
-    line-height: 24px;
-    font-size: 16px;
+    line-height: 1.5rem;
+    font-size: 1rem;
     color: #131515;
     margin: 0;
 }
@@ -834,11 +855,11 @@ button {
 
 .forms_contact {
     background-color: #ffffff;
-    padding: 32px;
-    border: #DCDCE0 1px solid;
-    border-radius: 16px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    box-shadow: 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    border: #DCDCE0 0.063rem solid;
+    border-radius: 1rem;
+    box-shadow: 0 0.063rem 0.188rem rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0.063rem 0.125rem -0.063rem rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -849,32 +870,32 @@ button {
 .forms_contact p {
     color: #131515;
     font-family: 'Inter';
-    font-size: 14px;
-    font-weight: 500px;
-    line-height: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
 }
 
 .forms_contact span {
     color: #131515;
     font-family: 'Inter';
-    font-size: 14px;
-    font-weight: 500px;
-    line-height: 20px;
-    margin-top: 16px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    margin-top: 1rem;
 }
 
 .forms_contact input {
-    border: #DCDCE0 1px solid;
-    height: 40px;
-    border-radius: 6px;
+    border: #DCDCE0 0.063rem solid;
+    height: 2.5rem;
+    border-radius: 0.375rem;
     transition: all ease 200ms;
-    padding: 8px;
+    padding: 0.5rem;
 }
 
 .forms_contact input:hover,
 .forms_contact textarea:hover {
-    border: #5f5fe47c 1px solid;
-    box-shadow: 0 1px 5px #04012c6c;
+    border: #5f5fe47c 0.063rem solid;
+    box-shadow: 0 0.063rem 0.313rem #04012c6c;
 }
 
 .forms_contact input:focus,
@@ -883,12 +904,12 @@ button {
 }
 
 .forms_contact textarea {
-    border: #DCDCE0 1px solid;
-    height: 128px;
+    border: #DCDCE0 0.063rem solid;
+    height: 8rem;
     resize: none;
-    margin-bottom: 16px;
-    border-radius: 6px;
-    padding: 8px;
+    margin-bottom: 1rem;
+    border-radius: 0.375rem;
+    padding: 0.5rem;
     transition: all ease 200ms;
 }
 
@@ -897,22 +918,22 @@ button {
     background-color: #04012C;
     font-weight: 500;
     font-family: 'Inter';
-    line-height: 20px;
-    border-radius: 6px;
-    padding: 10px;
+    line-height: 1.25rem;
+    border-radius: 0.375rem;
+    padding: 0.625rem;
     transition: all ease 500ms;
 }
 
 .forms_contact button:hover {
     transform: scale(1.01);
-    box-shadow: 0 8px 20px #05015749;
+    box-shadow: 0 0.5rem 1.25rem #05015749;
 }
 
 /* FAQ */
 
 .faq {
     background-color: #fafafa;
-    padding: 50px 0;
+    padding: 3.125rem 0;
 }
 
 .faq .container {
@@ -928,29 +949,29 @@ button {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-size: 70px;
-    margin-bottom: 30px;
+    font-size: 4.375rem;
+    margin-bottom: 1.875rem;
 
 }
 
 .faq_pergunta_content {
     background-color: #fafafa;
-    border: 2px solid #131515;
-    border-radius: 10px;
-    margin-bottom: 15px;
+    border: 0.125rem solid #131515;
+    border-radius: 0.625rem;
+    margin-bottom: 0.938rem;
     overflow: hidden;
 }
 
 .botao-expandir {
     width: 100%;
     margin: 0;
-    padding: 20px;
+    padding: 1.25rem;
     border: none;
     border-radius: 0;
     background-color: #fafafa;
     color: #04012c;
     font-family: "Barlow", sans-serif;
-    font-size: 19px;
+    font-size: 1.188rem;
     font-weight: 600;
     text-align: left;
     cursor: pointer;
@@ -964,9 +985,9 @@ button {
 .texto-escondido {
     max-height: 0;
     margin: 0;
-    padding: 0 20px;
+    padding: 0 1.25rem;
     color: #333;
-    font-size: 17px;
+    font-size: 1.063rem;
     line-height: 1.6;
 
 }
@@ -985,17 +1006,17 @@ button {
     background-color: var(--prussianblue);
     color: #ffffff;
     width: 100%;
-    margin-top: 10px;
+    margin-top: 0.625rem;
 }
 
 .footer-container {
-    max-width: 1200px;
+    max-width: 75rem;
     margin: 0 auto;
-    padding: 48px 40px 32px;
+    padding: 3rem 2.5rem 2rem;
 
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 60px;
+    gap: 3.75rem;
 }
 
 
@@ -1008,16 +1029,16 @@ button {
 .footer-logo {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 20px;
+    gap: 0.625rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: #ffffff;
-    margin-bottom: 18px;
+    margin-bottom: 1.125rem;
 }
 
 .footer-logo img {
-    width: 85px;
-    height: 35px;
+    width: 5.313rem;
+    height: 2.188rem;
     object-fit: contain;
     display: block;
 }
@@ -1028,7 +1049,7 @@ button {
 
 .footer-brand p {
     color: #fafafa;
-    font-size: 14px;
+    font-size: 0.875rem;
     line-height: 1.5;
     margin: 0;
 }
@@ -1037,20 +1058,20 @@ button {
 .footer-column {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 0.75rem;
 }
 
 .footer-column h3 {
-    font-size: 15px;
+    font-size: 0.938rem;
     font-weight: 700;
-    margin: 0 0 8px;
+    margin: 0 0 0.5rem;
     color: #ffffff;
 }
 
 .footer-column a {
     color: #fafafa;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 0.875rem;
     transition: 0.2s;
 }
 
@@ -1061,12 +1082,12 @@ button {
 .footer-bottom {
 
     text-align: center;
-    padding: 28px 20px;
+    padding: 1.75rem 1.25rem;
 }
 
 .footer-bottom p {
     color: #c2c2c2;
-    font-size: 13px;
+    font-size: 0.813rem;
     margin: 0;
 }
 
@@ -1076,7 +1097,7 @@ button {
 
 .help_desk {
     background-color: #fafafa;
-    padding: 40px 0;
+    padding: 2.5rem 0;
     display: flex;
 }
 
@@ -1087,26 +1108,26 @@ button {
 
 .help_desk_content {
     width: 100%;
-    min-height: 130px;
+    min-height: 8.125rem;
     background-color: #fafafa;
-    border: 2px solid #131515;
-    border-radius: 10px;
+    border: 0.125rem solid #131515;
+    border-radius: 0.625rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 25px 40px;
+    padding: 1.563rem 2.5rem;
     box-sizing: border-box;
 }
 
 .help_desk_text {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 1.25rem;
 }
 
 .help_desk_text img {
-    width: 110px;
-    height: 110px;
+    width: 6.875rem;
+    height: 6.875rem;
     object-fit: contain;
     margin: 0;
 }
@@ -1119,23 +1140,23 @@ button {
 
 .help_desk_text h2 {
     color: #04012c;
-    margin: 0 0 8px 0;
-    font-size: 28px;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.75rem;
 }
 
 .help_desk_text p {
     color: #333;
     margin: 0;
-    font-size: 17px;
+    font-size: 1.063rem;
 }
 
 .help_desk_button {
     background-color: #131515;
     color: #fafafa;
     text-decoration: none;
-    padding: 14px 25px;
-    border-radius: 5px;
-    font-size: 17px;
+    padding: 0.875rem 1.563rem;
+    border-radius: 0.313rem;
+    font-size: 1.063rem;
     font-weight: 600;
     transition: 0.3s;
     white-space: nowrap;
@@ -1148,7 +1169,7 @@ button {
 }
 
 .help_desk img {
-    max-width: 100px;
+    max-width: 6.25rem;
     height: auto;
-    margin-left: 20px;
+    margin-left: 1.25rem;
 }
