@@ -160,7 +160,7 @@ button {
     font-weight: 700;
     letter-spacing: -0.288rem;
     line-height: 1.1;
-    font-size: 5rem;
+    font-size: 4.6rem;
 }
 
 .destaque {
@@ -173,7 +173,7 @@ button {
 
 .texto-banner p {
     text-align: center;
-    font-size: 1.313rem;
+    font-size: 1.24rem;
     margin-top: 2.188rem;
     color: #4b4a4a;
 }
@@ -489,6 +489,8 @@ button {
     padding: 0.625rem;
     background-color: var(--brightsnow);
     gap: 4rem;
+    margin-left: 4rem;
+    margin-right: 4rem;
 }
 
 .calculatorContainer .titleContainer {
@@ -502,19 +504,19 @@ button {
 .titleContainer #title1 {
     color: var(--prussianblue);
     text-align: center;
-    gap: 20px;
+    /* gap: 1rem; */
 }
 
 .titleContainer #title1 {
     color: #04012C;
-    font-size: 3rem;
+    font-size: 2.2rem;
     font-weight: bold;
     font-family: var(--font-default);
 }
 
 .titleContainer #title2 {
     color: var(--gunmetal);
-    font-size: 1.6rem;
+    font-size: 1.15rem;
     font-family: var(--font-default);
 }
 
@@ -524,7 +526,7 @@ button {
     padding: 2rem;
     box-shadow: 0 0.063rem 0rem rgba(0, 0, 0, 0.15);
     color: #3C3C3C;
-    font-size: 1.3rem;
+    font-size: 1rem;
     font-family: "Inter";
 }
 
@@ -664,6 +666,8 @@ button {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-left: 4rem;
+    margin-right: 4rem;
 }
 
 .text_section {
@@ -756,11 +760,16 @@ button {
 }
 
 /* Product Card */
+
 .product_section {
     background-color: var(--prussianblue);
     color: var(--brightsnow);
     height: 100vh;
+}
 
+.product-container{
+    margin-left: 4rem;
+    margin-right: 4rem;
 }
 
 .product_title {
@@ -772,8 +781,8 @@ button {
     padding-top: 15vh;
 }
 
-.product_title>h1 {
-    font-size: 3.125rem;
+.product_title h1 {
+    font-size: 2.2rem;
     font-family: 'Inter';
 }
 
