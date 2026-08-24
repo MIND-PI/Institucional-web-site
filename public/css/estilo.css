@@ -12,7 +12,7 @@
     --brightsnow: #FAFAFA;
     --onyx: #131515;
     --deep: #11114E;
-    --white: #ffff;
+    --white: var(--white);
     --font-default: "Inter", sans-serif;
 }
 
@@ -30,7 +30,7 @@
 }
 
 body {
-    background-color: #FAFAFA;
+    background-color: var(--brightsnow);
 }
 
 header {
@@ -125,12 +125,12 @@ button {
 
 .entrar:hover {
     background-color: #ececec;
-    border: 0.063rem solid #04012C;
+    border: 0.063rem solid var(--prussianblue);
 }
 
 .comecar {
-    background-color: #04012C;
-    color: #ffffff;
+    background-color: var(--prussianblue);
+    color: var(--white);
     width: 5.938rem;
     height: 2.5rem;
     border-radius: 0.438rem;
@@ -156,14 +156,15 @@ button {
     width: 100%;
     max-width: 56.25rem;
     font-size: 5rem;
-    color: #04012C;
+    color: var(--prussianblue);
     font-weight: 700;
     letter-spacing: -0.288rem;
     line-height: 1.1;
+    font-size: 5rem;
 }
 
 .destaque {
-    background: linear-gradient(135deg, #04012C 10%, #2563EB 100%);
+    background: linear-gradient(135deg, var(--prussianblue) 10%, #2563EB 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -185,8 +186,8 @@ button {
 }
 
 .agendar {
-    background-color: #04012C;
-    color: #ffffff;
+    background-color: var(--prussianblue);
+    color: var(--white);
     padding: 1rem 1.875rem;
     border-radius: 0.438rem;
 }
@@ -196,11 +197,11 @@ button {
 }
 
 .conhecer {
-    border: 0.063rem solid #04012C;
+    border: 0.063rem solid var(--prussianblue);
     padding: 1rem 1.875rem;
     border-radius: 0.438rem;
     font-size: 0.969rem;
-    color: #04012C;
+    color: var(--prussianblue);
 }
 
 .conhecer:hover {
@@ -358,12 +359,12 @@ button {
 
     .entrar:hover {
         background-color: #ececec;
-        border: 0.063rem solid #04012C;
+        border: 0.063rem solid var(--prussianblue);
     }
 
     .comecar {
-        background-color: #04012C;
-        color: #ffffff;
+        background-color: var(--prussianblue);
+        color: var(--white);
         width: 6.5rem;
         height: 2.5rem;
         border-radius: 0.438rem;
@@ -396,7 +397,7 @@ button {
 }
 
     .destaque {
-        background: linear-gradient(135deg, #04012C 10%, #2563EB 100%);
+        background: linear-gradient(135deg, var(--prussianblue) 10%, #2563EB 100%);
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -418,8 +419,8 @@ button {
     }
 
     .agendar {
-        background-color: #04012C;
-        color: #ffffff;
+        background-color: var(--prussianblue);
+        color: var(--white);
         padding: 1rem 1.875rem;
         border-radius: 0.438rem;
     }
@@ -429,11 +430,11 @@ button {
     }
 
     .conhecer {
-        border: 0.063rem solid #04012C;
+        border: 0.063rem solid var(--prussianblue);
         padding: 1rem 1.875rem;
         border-radius: 0.438rem;
         font-size: 0.969rem;
-        color: #04012C;
+        color: var(--prussianblue);
     }
 
     .conhecer:hover {
@@ -647,7 +648,7 @@ button {
 .text_section>h2 {
     font-size: 1.875rem;
     font-family: 'Inter';
-    color: #04012C;
+    color: var(--prussianblue);
     margin-bottom: 4vh;
 }
 
@@ -663,7 +664,7 @@ button {
 
 .context_card_section {
     background:
-        linear-gradient(to right, #04012C, #2563EB, #04012c) top / 100% 0.313rem no-repeat,
+        linear-gradient(to right, var(--prussianblue), #2563EB, var(--prussianblue)) top / 100% 0.313rem no-repeat,
         #dcdce0;
     width: 40vw;
     height: 40vh;
@@ -717,7 +718,7 @@ button {
 }
 
 #progress_bar_cpu {
-    background-color: #04012C;
+    background-color: var(--prussianblue);
     width: 10vw;
 }
 
@@ -728,8 +729,8 @@ button {
 
 /* Product Card */
 .product_section {
-    background-color: #04012C;
-    color: #fafafa;
+    background-color: var(--prussianblue);
+    color: var(--brightsnow);
     height: 100vh;
 
 }
@@ -809,7 +810,7 @@ button {
 }
 
 .container_contact h3 {
-    color: #04012C;
+    color: var(--prussianblue);
     font-family: 'Inter';
     font-weight: bold;
     font-size: 1.875rem;
@@ -844,7 +845,7 @@ button {
     font-weight: 600;
     line-height: 1.5rem;
     font-size: 1rem;
-    color: #131515;
+    color: var(--onyx);
     margin: 0;
 }
 
@@ -854,7 +855,7 @@ button {
 }
 
 .forms_contact {
-    background-color: #ffffff;
+    background-color: var(--white);
     padding: 2rem;
     border: #DCDCE0 0.063rem solid;
     border-radius: 1rem;
@@ -868,7 +869,7 @@ button {
 }
 
 .forms_contact p {
-    color: #131515;
+    color: var(--onyx);
     font-family: 'Inter';
     font-size: 0.875rem;
     font-weight: 500;
@@ -876,7 +877,7 @@ button {
 }
 
 .forms_contact span {
-    color: #131515;
+    color: var(--onyx);
     font-family: 'Inter';
     font-size: 0.875rem;
     font-weight: 500;
@@ -895,7 +896,7 @@ button {
 .forms_contact input:hover,
 .forms_contact textarea:hover {
     border: #5f5fe47c 0.063rem solid;
-    box-shadow: 0 0.063rem 0.313rem #04012c6c;
+    box-shadow: 0 0.063rem 0.313rem var(--prussianblue)6c;
 }
 
 .forms_contact input:focus,
@@ -914,8 +915,8 @@ button {
 }
 
 .forms_contact button {
-    color: #FAFAFA;
-    background-color: #04012C;
+    color: var(--brightsnow);
+    background-color: var(--prussianblue);
     font-weight: 500;
     font-family: 'Inter';
     line-height: 1.25rem;
@@ -932,7 +933,7 @@ button {
 /* FAQ */
 
 .faq {
-    background-color: #fafafa;
+    background-color: var(--brightsnow);
     padding: 3.125rem 0;
 }
 
@@ -945,7 +946,7 @@ button {
 }
 
 .faq_text h1 {
-    background: linear-gradient(135deg, #04012C 20%, #316cec 100%);
+    background: linear-gradient(135deg, var(--prussianblue) 20%, #316cec 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -955,8 +956,8 @@ button {
 }
 
 .faq_pergunta_content {
-    background-color: #fafafa;
-    border: 0.125rem solid #131515;
+    background-color: var(--brightsnow);
+    border: 0.125rem solid var(--onyx);
     border-radius: 0.625rem;
     margin-bottom: 0.938rem;
     overflow: hidden;
@@ -968,8 +969,8 @@ button {
     padding: 1.25rem;
     border: none;
     border-radius: 0;
-    background-color: #fafafa;
-    color: #04012c;
+    background-color: var(--brightsnow);
+    color: var(--prussianblue);
     font-family: "Barlow", sans-serif;
     font-size: 1.188rem;
     font-weight: 600;
@@ -978,8 +979,8 @@ button {
 }
 
 .botao-expandir:hover {
-    background: linear-gradient(135deg, #04012C 20%, #2563EB 100%);
-    color: #fafafa;
+    background: linear-gradient(135deg, var(--prussianblue) 20%, #2563EB 100%);
+    color: var(--brightsnow);
 }
 
 .texto-escondido {
@@ -1000,11 +1001,11 @@ button {
     transparent 0%,
     rgba(37, 99, 235, 0.5) 35%,
     #2563EB 60%,
-    #04012C 100%
+    var(--prussianblue) 100%
 
 ); */
     background-color: var(--prussianblue);
-    color: #ffffff;
+    color: var(--white);
     width: 100%;
     margin-top: 0.625rem;
 }
@@ -1032,7 +1033,7 @@ button {
     gap: 0.625rem;
     font-size: 1.25rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--white);
     margin-bottom: 1.125rem;
 }
 
@@ -1048,7 +1049,7 @@ button {
 }
 
 .footer-brand p {
-    color: #fafafa;
+    color: var(--brightsnow);
     font-size: 0.875rem;
     line-height: 1.5;
     margin: 0;
@@ -1065,11 +1066,11 @@ button {
     font-size: 0.938rem;
     font-weight: 700;
     margin: 0 0 0.5rem;
-    color: #ffffff;
+    color: var(--white);
 }
 
 .footer-column a {
-    color: #fafafa;
+    color: var(--brightsnow);
     text-decoration: none;
     font-size: 0.875rem;
     transition: 0.2s;
@@ -1096,7 +1097,7 @@ button {
 
 
 .help_desk {
-    background-color: #fafafa;
+    background-color: var(--brightsnow);
     padding: 2.5rem 0;
     display: flex;
 }
@@ -1109,8 +1110,8 @@ button {
 .help_desk_content {
     width: 100%;
     min-height: 8.125rem;
-    background-color: #fafafa;
-    border: 0.125rem solid #131515;
+    background-color: var(--brightsnow);
+    border: 0.125rem solid var(--onyx);
     border-radius: 0.625rem;
     display: flex;
     align-items: center;
@@ -1139,7 +1140,7 @@ button {
 }
 
 .help_desk_text h2 {
-    color: #04012c;
+    color: var(--prussianblue);
     margin: 0 0 0.5rem 0;
     font-size: 1.75rem;
 }
@@ -1151,8 +1152,8 @@ button {
 }
 
 .help_desk_button {
-    background-color: #131515;
-    color: #fafafa;
+    background-color: var(--onyx);
+    color: var(--brightsnow);
     text-decoration: none;
     padding: 0.875rem 1.563rem;
     border-radius: 0.313rem;
@@ -1163,9 +1164,9 @@ button {
 }
 
 .help_desk_button:hover {
-    background: linear-gradient(135deg, #04012C 20%, #2563EB 100%);
+    background: linear-gradient(135deg, var(--prussianblue) 20%, #2563EB 100%);
 
-    color: #fafafa;
+    color: var(--brightsnow);
 }
 
 .help_desk img {
