@@ -628,6 +628,11 @@ button {
     height: 3rem;
 }
 
+.box .icon3 img{
+    width: 2rem;
+    height: 2rem;
+}
+
 .box h4 {
     color: var(--prussianblue);
     font-size: 1.188rem;
