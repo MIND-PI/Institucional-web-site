@@ -1042,9 +1042,13 @@ button {
 }
 
 @media (max-width: 600px) {
-    
+
     header .container .menu {
         display: none;
+    }
+
+    header .container .logo {
+        font-size: 2.2rem;
     }
 
     header .container .hamburger {
@@ -1066,15 +1070,18 @@ button {
         top: 0;
         right: 0;
         height: 100vh;
-        width: 15.625rem;
+        width: 17rem;
         z-index: 1001;
         background-color: #fafafaf2;
-        backdrop-filter: blur(0.625rem);
-        -webkit-backdrop-filter: blur(0.625rem);
+        backdrop-filter: blur(1rem);
+        -webkit-backdrop-filter: blur(1rem);
         box-shadow: -0.625rem 0 0.625rem #0000001a;
-        display: none;
+        display: flex;
         flex-direction: column;
-        padding-top: 5rem;
+        padding: 5.5rem 1.75rem 2rem;
+        transform: translateX(100%);
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
     }
 
     header .container.active .hamburger {
@@ -1086,83 +1093,144 @@ button {
     }
 
     header .container.active .sidebar {
-        display: flex;
+        transform: translateX(0);
+        pointer-events: all;
     }
 
     header .container .sidebar ul {
-        list-style: none;
         display: flex;
         flex-direction: column;
-        gap: 1.4rem;
-        padding-left: 1.5rem;
+        gap: 2rem;
+        list-style: none;
+        width: 100%;
+        padding: 0;
     }
 
     header .container .sidebar ul li {
-        color: #4b4a4a;
+        width: 100%;
+        font-size: 1.3rem;
         font-weight: 500;
-        font-size: 1.2rem;
+        color: var(--gunmetal);
+        transition: color 0.2s ease;
     }
 
-    .texto-banner h1 {
-        width: 90%;
-        max-width: 40rem;
-        font-size: 3.9rem;
-    }
-
-    .destaque {
-        font-size: 3.9rem;
-    }
-
-    .texto-banner .texto-computador{
-        display: none;
-    }
-
-    .texto-celular {
+    header .container .sidebar ul li a {
         display: flex;
-        width: 30rem;
-        align-self: center;
-        font-size: 1.24rem;
-        margin-top: 2.188rem;
-        color: #4b4a4a;
+        align-items: center;
+        width: 100%;
+        height: 2.5rem;
+        padding: 0 1rem;
+        border-radius: 0.5rem;
+        color: var(--gunmetal);
+        text-decoration: none;
+        font-size: 1.2rem;
+        font-weight: 500;
+        transition: all 0.25s ease;
     }
 
-    .calculatorContainer .bodyCalculatorContainer {
+    header .container .sidebar ul li a:hover {
+        background-color: var(--prussianblue);
+        color: var(--white);
+        transform: translateX(0.25rem);
+    }
+
+    header .container .sidebar .botoes {
+        margin: 2rem 0 0 0;
+        display: flex;
         flex-direction: column;
-        height: 28rem;
-    }
-
-    .calculatorContainer .bodyCalculatorContainer .inputs,
-    .calculatorContainer .bodyCalculatorContainer .resultsContainer {
+        gap: 0.75rem;
         width: 100%;
     }
 
-    .margin_contact {
-        flex-direction: column;
+    header .container .sidebar .botoes button {
+        width: 100%;
+        height: 2.75rem;
+        font-size: 1.2rem;
     }
 
-    .help_desk_content {
-        flex-direction: column;
-        gap: 1.5rem;
-        text-align: center;
+    header .container.active .hamburger {
+        display: none;
     }
 
-    .help_desk_text {
-        flex-direction: column;
+    header .container.active .fechar {
+        display: block;
+        animation: fadeIn 0.25s ease;
     }
 
-    .footer-container {
-        grid-template-columns: 1fr;
-        align-items: center;
-        text-align: center;
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.85);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
     }
 
-    .footer-brand p {
-        align-self: center;
-    }
+}
 
-    .footer-logo {
-        align-self: center;
-    }
+.texto-banner h1 {
+    width: 90%;
+    max-width: 40rem;
+    font-size: 3.9rem;
+}
+
+.destaque {
+    font-size: 3.9rem;
+}
+
+.texto-banner .texto-computador {
+    display: none;
+}
+
+.texto-celular {
+    display: flex;
+    width: 30rem;
+    align-self: center;
+    font-size: 1.24rem;
+    margin-top: 2.188rem;
+    color: #4b4a4a;
+}
+
+.calculatorContainer .bodyCalculatorContainer {
+    flex-direction: column;
+    height: 28rem;
+}
+
+.calculatorContainer .bodyCalculatorContainer .inputs,
+.calculatorContainer .bodyCalculatorContainer .resultsContainer {
+    width: 100%;
+}
+
+.margin_contact {
+    flex-direction: column;
+}
+
+.help_desk_content {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+}
+
+.help_desk_text {
+    flex-direction: column;
+}
+
+.footer-container {
+    grid-template-columns: 1fr;
+    align-items: center;
+    text-align: center;
+}
+
+.footer-brand p {
+    align-self: center;
+}
+
+.footer-logo {
+    align-self: center;
+}
 }
 
 @media (max-width: 420px) {
@@ -1171,7 +1239,7 @@ button {
         text-align: justify;
     }
 
-    .botoes-banner{
+    .botoes-banner {
         width: 17rem;
         align-self: center;
         flex-direction: column;
@@ -1183,7 +1251,7 @@ button {
 
     /* não funcionou */
 
-    .bodyCalculatorContainer{
+    .bodyCalculatorContainer {
         height: 40rem;
     }
 }
