@@ -99,7 +99,8 @@ header .container .menu ul li {
 }
 
 header .container .menu ul li a,
-header .container .sidebar ul li a {
+header .container .sidebar ul li a,
+header .container .logo{
     color: inherit;
     text-decoration: none;
     display: block;
