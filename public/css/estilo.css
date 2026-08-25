@@ -516,9 +516,9 @@ button {
 
 .calculatorContainer .bodyCalculatorContainer .resultsContainer .linha1 {
     background-color: #c4c4c4;
-    background-color: black;
     height: 0.063rem;
     width: 100%;
+    flex-shrink: 0;
 }
 
 .calculatorContainer .bodyCalculatorContainer .resultsContainer .economiaContainer {
@@ -989,24 +989,6 @@ button {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @media (max-width: 1024px) {
     header .container .menu ul {
         margin-left: 10rem;
@@ -1049,7 +1031,7 @@ button {
     }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 920px) {
 
 header .container .logo{
     margin-left: -1rem;
@@ -1066,8 +1048,6 @@ header .container .menu ul {
     gap: 0.2rem;
     margin-left: 1rem;
 }
-
-
 }
 
 @media (max-width: 600px) {
@@ -1255,7 +1235,7 @@ header .container .menu ul {
     }
 }
 
-@media (max-width: 420px) {
+@media (max-width: 430px) {
     .texto-celular {
         width: 22rem;
         text-align: justify;
@@ -1268,7 +1248,8 @@ header .container .menu ul {
     }
 
     .context_card_section {
-        width: 22rem;
+        width: auto;
+        max-width: 22rem;
     }
 
     .calculatorContainer .bodyCalculatorContainer {
