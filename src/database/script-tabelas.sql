@@ -1,58 +1,88 @@
--- Arquivo de apoio, caso você queira criar tabelas como as aqui criadas para a API funcionar.
--- Você precisa executar os comandos no banco de dados para criar as tabelas,
--- ter este arquivo aqui não significa que a tabela em seu BD estará como abaixo!
+DROP DATABASE IF EXISTS mind;
+CREATE DATABASE mind;
+USE mind;
 
-/*
-comandos para mysql server
-*/
-
-CREATE DATABASE aquatech;
-
-USE aquatech;
-
-CREATE TABLE empresa (
-	id INT PRIMARY KEY AUTO_INCREMENT,
-	razao_social VARCHAR(50),
-	cnpj CHAR(14),
-	codigo_ativacao VARCHAR(50)
+DROP TABLE IF EXISTS usuario;
+CREATE TABLE usuario(
+id INT AUTO_INCREMENT,
+nome VARCHAR(50) NOT NULL,
+email VARCHAR(50) NOT NULL UNIQUE,
+senha VARCHAR(50) NOT NULL,
+nivel TINYINT NOT NULL DEFAULT(0),
+criado_em TIMESTAMP DEFAULT (current_timestamp()) NOT NULL,
+atualizado_em TIMESTAMP,
+desativado_em TIMESTAMP,
+id_superior INT,
+CONSTRAINT pk_usuario PRIMARY KEY (id),
+CONSTRAINT fk_superior FOREIGN KEY (id_superior) REFERENCES usuario(id),
+CONSTRAINT chk_nivel CHECK(nivel IN (0, 1, 2, 3))
 );
 
-CREATE TABLE usuario (
-	id INT PRIMARY KEY AUTO_INCREMENT,
-	nome VARCHAR(50),
-	email VARCHAR(50),
-	senha VARCHAR(50),
-	fk_empresa INT,
-	FOREIGN KEY (fk_empresa) REFERENCES empresa(id)
+
+DROP TABLE IF EXISTS clp;
+CREATE TABLE clp (
+id INT AUTO_INCREMENT,
+modelo VARCHAR(100) NOT NULL,
+central_processamento VARCHAR(100) NOT NULL,
+memoria_ram INT NOT NULL,
+fonte_alimentacao VARCHAR(10),
+id_usuario INT,
+criado_em TIMESTAMP DEFAULT (current_timestamp()) NOT NULL,
+atualizado_em TIMESTAMP,
+desativado_em TIMESTAMP,
+CONSTRAINT pk_clp PRIMARY KEY (id),
+CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) REFERENCES usuario(id)
 );
 
-CREATE TABLE aviso (
-	id INT PRIMARY KEY AUTO_INCREMENT,
-	titulo VARCHAR(100),
-	descricao VARCHAR(150),
-	fk_usuario INT,
-	FOREIGN KEY (fk_usuario) REFERENCES usuario(id)
+DROP TABLE IF EXISTS alerta;
+CREATE TABLE alerta(
+id INT AUTO_INCREMENT,
+descricao VARCHAR(255),
+prioridade TINYINT DEFAULT (0) NOT NULL,
+id_clp INT,
+criado_em TIMESTAMP DEFAULT (current_timestamp()) NOT NULL,
+atualizado_em TIMESTAMP,
+desativado_em TIMESTAMP,
+CONSTRAINT pk_alertas PRIMARY KEY(id),
+CONSTRAINT chk_prioridade_alerta CHECK (prioridade IN (0, 1, 2, 3)),
+CONSTRAINT fk_clp_alerta FOREIGN KEY (id_clp) REFERENCES clp(id)
 );
 
-create table aquario (
-/* em nossa regra de negócio, um aquario tem apenas um sensor */
-	id INT PRIMARY KEY AUTO_INCREMENT,
-	descricao VARCHAR(300),
-	fk_empresa INT,
-	FOREIGN KEY (fk_empresa) REFERENCES empresa(id)
+DROP TABLE IF EXISTS deteccao;
+CREATE TABLE deteccao(
+id INT AUTO_INCREMENT,
+central_processsamento DECIMAL (5, 2) NOT NULL,
+ram DECIMAL (5, 2) NOT NULL,
+scan_time DECIMAL (5, 2) NOT NULL,
+perda_pacote DECIMAL (5, 2) NOT NULL,
+id_clp INT,
+criado_em TIMESTAMP DEFAULT (current_timestamp()) NOT NULL,
+atualizado_em TIMESTAMP,
+desativado_em TIMESTAMP,
+CONSTRAINT pk_deteccoes PRIMARY KEY (id),
+CONSTRAINT fk_clp FOREIGN KEY (id_clp) REFERENCES clp(id)
 );
 
-/* esta tabela deve estar de acordo com o que está em INSERT de sua API do arduino - dat-acqu-ino */
-
-create table medida (
-	id INT PRIMARY KEY AUTO_INCREMENT,
-	temperatura DECIMAL,
-	momento DATETIME,
-	fk_aquario INT,
-	FOREIGN KEY (fk_aquario) REFERENCES aquario(id)
+DROP TABLE IF EXISTS input;
+CREATE TABLE input(
+id INT AUTO_INCREMENT,
+descricao VARCHAR(255) NOT NULL,
+id_clp INT,
+criado_em TIMESTAMP DEFAULT (current_timestamp()) NOT NULL,
+atualizado_em TIMESTAMP,
+desativado_em TIMESTAMP,
+CONSTRAINT pk_input PRIMARY KEY(id),
+CONSTRAINT fk_clp_input FOREIGN KEY (id_clp) REFERENCES clp(id)
 );
 
-insert into empresa (razao_social, codigo_ativacao) values ('Empresa 1', 'ED145B');
-insert into empresa (razao_social, codigo_ativacao) values ('Empresa 2', 'A1B2C3');
-insert into aquario (descricao, fk_empresa) values ('Aquário de Estrela-do-mar', 1);
-insert into aquario (descricao, fk_empresa) values ('Aquário de Peixe-dourado', 2);
+DROP TABLE IF EXISTS output;
+CREATE TABLE output(
+id INT AUTO_INCREMENT,
+descricao VARCHAR(255) NOT NULL,
+id_clp INT,
+criado_em TIMESTAMP DEFAULT (current_timestamp()) NOT NULL,
+atualizado_em TIMESTAMP,
+desativado_em TIMESTAMP,
+CONSTRAINT pk_output PRIMARY KEY(id),
+CONSTRAINT fk_clp_output FOREIGN KEY (id_clp) REFERENCES clp(id)
+);

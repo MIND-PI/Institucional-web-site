@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+>
+
+<title>Login</title>
+
+<link rel="stylesheet" href="./css/login e cadastro.css">
+
+
+</head>
+
+<body>
+
+
+<main class="pagina">
+
+    <section class="lado-esquerdo">
+
+        <div class="container-formulario">
+
+            <div class="logo">
+                <img src="./assets/imgs/logo.png" alt="Logo Mind">
+            </div>
+
+
+            <div class="titulo-formulario">
+
+                <h1>Acesse a plataforma</h1>
+
+                <p>
+                    Monitore a saúde dos seus CLPs em tempo real.
+                </p>
+
+            </div>
+
+
+            <form
+                class="formulario"
+                id="loginForm"
+            >
+
+                <div class="campo">
+
+                    <label for="email">
+                        E-mail corporativo
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="senha">
+                        Senha
+                    </label>
+
+                    <input
+                        type="password"
+                        id="senha"
+                        minlength="8"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    class="botao-formulario"
+                    type="submit"
+                >
+                    Entrar no Dashboard
+                </button>
+
+            </form>
+
+
+            <p class="texto-final">
+
+                Não possui uma conta?
+
+                <a href="./cadastro.html">
+                    Cadastre-se
+                </a>
+
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="lado-direito">
+
+        <div class="conteudo-direito">
+
+            <h1 class="titulo-direito">
+                "A estabilidade é o nosso padrão."
+            </h1>
+
+            <p class="descricao-direito">
+
+                Identifique falhas de processamento e sobrecargas
+                antes que elas afetem sua linha de produção.
+
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+    var form = document.getElementById("loginForm");
+
+    form.addEventListener("submit", function(evento) {
+
+        evento.preventDefault();
+
+        var email =
+            document.getElementById("email").value;
+
+        var senha =
+            document.getElementById("senha").value;
+
+
+        if (email == "" || senha == "") {
+
+            alert("Preencha todos os campos.");
+
+            return;
+
+        }
+
+
+        fetch("http://localhost:3333/usuarios/autenticar", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                emailServer: email,
+                senhaServer: senha
+
+            })
+
+        })
+
+        .then(function(resposta) {
+
+            if (!resposta.ok) {
+
+                return resposta.text()
+                    .then(function(erro) {
+
+                        throw new Error(erro);
+
+                    });
+
+            }
+
+            return resposta.json();
+
+        })
+
+        .then(function(usuario) {
+
+            sessionStorage.setItem(
+                "ID_USUARIO",
+                usuario.id
+            );
+
+            sessionStorage.setItem(
+                "NOME_USUARIO",
+                usuario.nome
+            );
+
+            sessionStorage.setItem(
+                "EMAIL_USUARIO",
+                usuario.email
+            );
+
+
+            window.location.href =
+                "./index.html";
+
+        })
+
+        .catch(function(erro) {
+
+            console.log(erro);
+
+            alert(
+                erro.message ||
+                "Erro ao fazer login."
+            );
+
+        });
+
+    });
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<title>Cadastro</title>
+
+<link rel="stylesheet" href="./css/login e cadastro.css">
+
+
+</head>
+
+<body>
+
+
+<main class="pagina">
+
+    <section class="lado-esquerdo">
+
+        <div class="container-formulario">
+
+            <div class="logo">
+                <img src="./assets/imgs/logo.png" alt="Logo Mind">
+            </div>
+
+            <div class="titulo-formulario">
+                <h1>Inicie seu projeto piloto</h1>
+
+                <p>
+                    Cadastre-se para receber um contato técnico
+                    da nossa engenharia.
+                </p>
+            </div>
+
+
+            <form class="formulario" id="cadastroForm">
+
+                <div class="campo">
+                    <label for="nome">Nome completo</label>
+
+                    <input
+                        type="text"
+                        id="nome"
+                        required
+                    >
+                </div>
+
+
+                <div class="campo">
+                    <label for="email">E-mail corporativo</label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        required
+                    >
+                </div>
+
+
+                <div class="campo">
+                    <label for="senha">Senha</label>
+
+                    <input
+                        type="password"
+                        id="senha"
+                        minlength="8"
+                        required
+                    >
+                </div>
+
+
+                <div class="campo">
+                    <label for="nivel">Nível do usuário</label>
+
+                    <select id="nivel">
+
+                        <option value="0">
+                            Usuário padrão
+                        </option>
+
+                        <option value="1">
+                            Administrador
+                        </option>
+
+                    </select>
+                </div>
+
+
+                <div id="mensagem"></div>
+
+
+                <button class="botao-formulario" type="submit">
+                    Solicitar contato
+                </button>
+
+            </form>
+
+
+            <p class="texto-final">
+
+                Já é cliente?
+
+                <a href="./login.html">
+                    Faça login
+                </a>
+
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="lado-direito">
+
+        <div class="conteudo-direito">
+
+            <h1 class="titulo-direito">
+                Reduza seu tempo de inatividade não planejado em até 50%.
+            </h1>
+
+            <p class="descricao-direito">
+
+                Nossa plataforma auxilia sua empresa a sair da manutenção
+                corretiva e utilizar inteligência preditiva.
+
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+    var form = document.getElementById("cadastroForm");
+
+    form.addEventListener("submit", function(evento) {
+
+        evento.preventDefault();
+
+        var nome = document.getElementById("nome").value;
+        var email = document.getElementById("email").value;
+        var senha = document.getElementById("senha").value;
+        var nivel = document.getElementById("nivel").value;
+
+        if (
+            nome == "" ||
+            email == "" ||
+            senha == ""
+        ) {
+            alert("Preencha todos os campos.");
+            return;
+        }
+
+
+        if (senha.length < 8) {
+            alert("A senha precisa ter pelo menos 8 caracteres.");
+            return;
+        }
+
+
+        fetch("http://localhost:3333/usuarios/cadastrar", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                nomeServer: nome,
+                emailServer: email,
+                senhaServer: senha,
+                nivelServer: Number(nivel),
+                idSuperiorServer: null
+
+            })
+
+        })
+
+        .then(function(resposta) {
+
+            if (!resposta.ok) {
+                return resposta.text().then(function(erro) {
+                    throw new Error(erro);
+                });
+            }
+
+            return resposta.json();
+
+        })
+
+        .then(function() {
+
+            alert("Cadastro realizado com sucesso!");
+
+            window.location.href = "./login.html";
+
+        })
+
+        .catch(function(erro) {
+
+            console.log(erro);
+
+            alert(erro.message);
+
+        });
+
+    });
+
+</script>
+
+
+</body>
+
+</html>
