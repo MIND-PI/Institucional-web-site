@@ -145,7 +145,7 @@ button {
 }
 
 
-.entrar:hover{
+
 .entrar:hover {
     background-color: #ececec;
     border: 0.063rem solid var(--prussianblue);
@@ -1272,5 +1272,4 @@ header .container .menu ul {
     {
         width: 10rem;
     }
-}
 }
