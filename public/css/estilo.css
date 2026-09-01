@@ -99,7 +99,9 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
+    text-decoration: none;
 }
+
 
 .entrar:hover{
     background-color: #ececec;
@@ -115,10 +117,12 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
+    text-decoration: none;
 }
 
 .comecar:hover{
     background-color: #181452;
+    
 }
 
 .texto-banner{

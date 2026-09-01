@@ -13,6 +13,7 @@ display: flex;
 min-height: 100vh;
 }
 
+
 /* esquerdo */
 
 .lado-esquerdo {
@@ -190,5 +191,39 @@ line-height: 1.5;
 
 color: #c5c2cc;
 
+
+}
+
+/* responsividade */
+
+@media (max-width: 768px) {
+
+  .pagina {
+    display: block;
+  }
+
+  .lado-esquerdo {
+    width: 100%;
+    min-height: 100vh;
+    padding: 30px 20px;
+  }
+
+  .lado-direito {
+    display: none;
+  }
+
+  .container-formulario {
+    width: 100%;
+    max-width: 330px;
+  }
+
+  .logo img {
+    width: 90px;
+    height: 90px;
+  }
+
+  .titulo-formulario h1 {
+    font-size: 24px;
+  }
 
 }
