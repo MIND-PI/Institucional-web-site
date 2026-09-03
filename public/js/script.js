@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function atualizarValor() {
     const valorRange = Number(range.value);
-    const custoMinuto = 10500 * valorRange;
+    const custoMinuto = 4500 * valorRange;
     const reducao = 0.40 * custoMinuto;
 
     const custoFormatado = custoMinuto.toLocaleString('pt-BR', {
