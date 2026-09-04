@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -32,19 +34,22 @@ align-items: center;
 width: 330px;
 }
 
-.logo {
-margin-bottom: 25px;
+
+
+.logo a {
+  display: inline-block;
+  margin-bottom: 25px;
+  background: linear-gradient(135deg, #0f172a 10%, #2563EB 100%); 
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: 'MuseoModerno', sans-serif;
+      font-weight: 800;
+    font-size: 1.6rem;
+    text-decoration: none;
 }
 
-.logo img {
-width: 110px;
-height: 110px;
 
-
-object-fit: contain;
-
-
-}
 
 /* titulo */
 
@@ -217,10 +222,10 @@ color: #c5c2cc;
     max-width: 330px;
   }
 
-  .logo img {
-    width: 90px;
-    height: 90px;
-  }
+ 
+  .logo a {
+    font-size: 20px;
+}
 
   .titulo-formulario h1 {
     font-size: 24px;

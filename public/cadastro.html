@@ -10,6 +10,8 @@
 <title>Cadastro</title>
 
 <link rel="stylesheet" href="./css/login e cadastro.css">
+  <link rel="icon" href="./assets/icon/MIND(1).png">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
 
 
 </head>
@@ -24,7 +26,7 @@
         <div class="container-formulario">
 
             <div class="logo">
-                <img src="./assets/imgs/logo.png" alt="Logo Mind">
+                 <a href="index.html" class="logo">MIND</a>
             </div>
 
             <div class="titulo-formulario">
@@ -58,6 +60,13 @@
                         id="email"
                         required
                     >
+                </div>
+                <div class="campo">
+                    <label for="codigoativacao">Codigo de Ativacao</label>
+                    <input type="text"
+                    id="codigoativacao"
+                    required>
+
                 </div>
 
 
@@ -148,12 +157,14 @@
         var nome = document.getElementById("nome").value;
         var email = document.getElementById("email").value;
         var senha = document.getElementById("senha").value;
+        var codigoativacao = document.getElementById("codigoativacao").value;
         var nivel = document.getElementById("nivel").value;
 
         if (
             nome == "" ||
             email == "" ||
-            senha == ""
+            senha == "" ||
+            codigoativacao == ""
         ) {
             alert("Preencha todos os campos.");
             return;
@@ -164,6 +175,7 @@
             alert("A senha precisa ter pelo menos 8 caracteres.");
             return;
         }
+
 
 
         fetch("http://localhost:3333/usuarios/cadastrar", {
@@ -179,9 +191,8 @@
                 nomeServer: nome,
                 emailServer: email,
                 senhaServer: senha,
-                nivelServer: Number(nivel),
-                idSuperiorServer: null
-
+                codigoServer: codigoativacao,
+                nivelServer: Number(nivel)
             })
 
         })
