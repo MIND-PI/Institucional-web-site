@@ -43,7 +43,42 @@ function cadastrar(nome, email, senha, nivel, idSuperior) {
     return database.executar(instrucaoSql);
 }
 
+function buscarUsuarioPeloId(id) {
+    let instrucaoSql = `select * from usuario where id = ${id}`
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+function atualizarPerfil(idUsuario, nome, senha, imagemPerfil) {
+    let instrucaoSql = `UPDATE usuario SET `;
+    let campos = [];
+
+
+    if (nome !== "" && nome !== undefined) {
+        campos.push(`nome = '${nickname}'`);
+    }
+    if (senha !== "" && senha !== undefined) {
+        campos.push(`senha = '${senha}'`);
+    }
+    
+    if (imagemPerfil !== "" && imagemPerfil !== undefined) {
+        campos.push(`imagemPerfil = '${imagemPerfil}'`);
+    }
+
+    if (campos.length == 0) {
+        console.log("Nenhum campo foi preenchido para atualização.");
+        return Promise.resolve();
+    }
+
+    instrucaoSql += campos.join(', ') + ` WHERE id = ${idUsuario};`;
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     autenticar,
-    cadastrar
+    cadastrar,
+    buscarUsuarioPeloId,
+    atualizarPerfil
 };
