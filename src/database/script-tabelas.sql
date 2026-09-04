@@ -1,88 +1,99 @@
 DROP DATABASE IF EXISTS mind;
-CREATE DATABASE mind;
+CREATE DATABASE IF NOT EXISTS mind;
 USE mind;
 
-DROP TABLE IF EXISTS usuario;
-CREATE TABLE usuario(
-id INT AUTO_INCREMENT,
-nome VARCHAR(50) NOT NULL,
-email VARCHAR(50) NOT NULL UNIQUE,
-senha VARCHAR(50) NOT NULL,
-nivel TINYINT NOT NULL DEFAULT(0),
-criado_em TIMESTAMP DEFAULT (current_timestamp()) NOT NULL,
-atualizado_em TIMESTAMP,
-desativado_em TIMESTAMP,
-id_superior INT,
-CONSTRAINT pk_usuario PRIMARY KEY (id),
-CONSTRAINT fk_superior FOREIGN KEY (id_superior) REFERENCES usuario(id),
-CONSTRAINT chk_nivel CHECK(nivel IN (0, 1, 2, 3))
+
+CREATE TABLE empresa (
+    idempresa INT AUTO_INCREMENT PRIMARY KEY,
+    cod_ativacao VARCHAR(45) DEFAULT (HEX(RANDOM_BYTES(4))),
+    razao_social VARCHAR(100),
+    nome_fantasia VARCHAR(100),
+    empresa_fornecedora INT,
+    tipoEmpresa VARCHAR(45),
+    CONSTRAINT fk_empresa_fornecedora 
+        FOREIGN KEY (empresa_fornecedora) 
+        REFERENCES empresa(idempresa)
 );
 
 
-DROP TABLE IF EXISTS clp;
+CREATE TABLE usuario (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(50),
+    email VARCHAR(50),
+    senha VARCHAR(50),
+    nivel TINYINT,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    desativado_em TIMESTAMP NULL,
+    empresa_idempresa INT,
+    CONSTRAINT fk_usuario_empresa 
+        FOREIGN KEY (empresa_idempresa) 
+        REFERENCES empresa(idempresa)
+);
+
+
 CREATE TABLE clp (
-id INT AUTO_INCREMENT,
-modelo VARCHAR(100) NOT NULL,
-central_processamento VARCHAR(100) NOT NULL,
-memoria_ram INT NOT NULL,
-fonte_alimentacao VARCHAR(10),
-id_usuario INT,
-criado_em TIMESTAMP DEFAULT (current_timestamp()) NOT NULL,
-atualizado_em TIMESTAMP,
-desativado_em TIMESTAMP,
-CONSTRAINT pk_clp PRIMARY KEY (id),
-CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) REFERENCES usuario(id)
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    modelo VARCHAR(100),
+    fonte_alimentacao VARCHAR(10),
+    localizacao VARCHAR(100),
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    desativado_em TIMESTAMP NULL,
+    empresa_idempresa INT,
+    CONSTRAINT fk_clp_empresa 
+        FOREIGN KEY (empresa_idempresa) 
+        REFERENCES empresa(idempresa)
 );
 
-DROP TABLE IF EXISTS alerta;
-CREATE TABLE alerta(
-id INT AUTO_INCREMENT,
-descricao VARCHAR(255),
-prioridade TINYINT DEFAULT (0) NOT NULL,
-id_clp INT,
-criado_em TIMESTAMP DEFAULT (current_timestamp()) NOT NULL,
-atualizado_em TIMESTAMP,
-desativado_em TIMESTAMP,
-CONSTRAINT pk_alertas PRIMARY KEY(id),
-CONSTRAINT chk_prioridade_alerta CHECK (prioridade IN (0, 1, 2, 3)),
-CONSTRAINT fk_clp_alerta FOREIGN KEY (id_clp) REFERENCES clp(id)
+
+CREATE TABLE recurso (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome_recurso VARCHAR(100),
+    unidade_medida VARCHAR(5),
+    descricao VARCHAR(100),
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    desativado_em TIMESTAMP NULL
 );
 
-DROP TABLE IF EXISTS deteccao;
-CREATE TABLE deteccao(
-id INT AUTO_INCREMENT,
-central_processsamento DECIMAL (5, 2) NOT NULL,
-ram DECIMAL (5, 2) NOT NULL,
-scan_time DECIMAL (5, 2) NOT NULL,
-perda_pacote DECIMAL (5, 2) NOT NULL,
-id_clp INT,
-criado_em TIMESTAMP DEFAULT (current_timestamp()) NOT NULL,
-atualizado_em TIMESTAMP,
-desativado_em TIMESTAMP,
-CONSTRAINT pk_deteccoes PRIMARY KEY (id),
-CONSTRAINT fk_clp FOREIGN KEY (id_clp) REFERENCES clp(id)
+
+CREATE TABLE recurso_monitorado (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_clp INT,
+    id_recurso INT,
+    status_recurso TINYINT,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    desativado_em TIMESTAMP NULL,
+    parametro_alerta VARCHAR(45),
+    CONSTRAINT fk_recurso_monitorado_clp 
+        FOREIGN KEY (id_clp) 
+        REFERENCES clp(id),
+    CONSTRAINT fk_recurso_monitorado_recurso 
+        FOREIGN KEY (id_recurso) 
+        REFERENCES recurso(id)
 );
 
-DROP TABLE IF EXISTS input;
-CREATE TABLE input(
-id INT AUTO_INCREMENT,
-descricao VARCHAR(255) NOT NULL,
-id_clp INT,
-criado_em TIMESTAMP DEFAULT (current_timestamp()) NOT NULL,
-atualizado_em TIMESTAMP,
-desativado_em TIMESTAMP,
-CONSTRAINT pk_input PRIMARY KEY(id),
-CONSTRAINT fk_clp_input FOREIGN KEY (id_clp) REFERENCES clp(id)
+
+CREATE TABLE alerta (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    descricao VARCHAR(255),
+    prioridade TINYINT,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    desativado_em TIMESTAMP NULL
 );
 
-DROP TABLE IF EXISTS output;
-CREATE TABLE output(
-id INT AUTO_INCREMENT,
-descricao VARCHAR(255) NOT NULL,
-id_clp INT,
-criado_em TIMESTAMP DEFAULT (current_timestamp()) NOT NULL,
-atualizado_em TIMESTAMP,
-desativado_em TIMESTAMP,
-CONSTRAINT pk_output PRIMARY KEY(id),
-CONSTRAINT fk_clp_output FOREIGN KEY (id_clp) REFERENCES clp(id)
+
+CREATE TABLE historico_alertas (
+    alerta_id INT,
+    recurso_monitorado_id INT,
+    PRIMARY KEY (alerta_id, recurso_monitorado_id),
+    CONSTRAINT fk_historico_alerta 
+        FOREIGN KEY (alerta_id) 
+        REFERENCES alerta(id),
+    CONSTRAINT fk_historico_recurso_monitorado 
+        FOREIGN KEY (recurso_monitorado_id) 
+        REFERENCES recurso_monitorado(id)
 );

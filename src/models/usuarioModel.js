@@ -2,7 +2,7 @@ var database = require("../database/config");
 
 function autenticar(email, senha) {
     var instrucaoSql = `
-        SELECT id, nome, email, nivel, id_superior
+        SELECT id, nome, email, nivel
         FROM usuario
         WHERE email = '${email}'
         AND senha = '${senha}';
@@ -11,35 +11,20 @@ function autenticar(email, senha) {
     return database.executar(instrucaoSql);
 }
 
-function cadastrar(nome, email, senha, nivel, idSuperior) {
 
-    var idSuperiorSql;
-
-    if (idSuperior == null) {
-        idSuperiorSql = "NULL";
-    } else {
-        idSuperiorSql = idSuperior;
-    }
+function cadastrar(nome, email, senha, codigoAtivacao) {
 
     var instrucaoSql = `
-        INSERT INTO usuario (
-            nome,
-            email,
-            senha,
-            nivel,
-            id_superior
-        )
+        INSERT INTO usuario (nome, email, senha, empresa_idempresa) 
         VALUES (
-            '${nome}',
-            '${email}',
-            '${senha}',
-            ${nivel},
-            ${idSuperiorSql}
+            '${nome}', 
+            '${email}', 
+            '${senha}', 
+            (SELECT idempresa FROM empresa WHERE cod_ativacao = '${codigoAtivacao}')
         );
     `;
-
-    console.log(instrucaoSql);
-
+    
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
 
