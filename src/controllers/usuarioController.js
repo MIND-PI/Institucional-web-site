@@ -80,7 +80,37 @@ function cadastrar(req, res) {
     }
 }
 
+function atualizarPerfil(req, res) {
+    let idUsuario = req.params.idUsuario;
+    let nome = req.body.nomeServer;
+    let senha = req.body.senhaServer;
+    let imagemPerfil = req.file?.filename;
+    
+        usuarioModel.atualizarPerfil(idUsuario, nome, senha, imagemPerfil)
+            .then(function (resultadoUpdate) {
+                res.status(200).json("Perfil atualizado com sucesso!");
+            }).catch(function (erro) {
+                console.log(erro);
+                res.status(500).json(erro.sqlMessage);
+            });
+
+}
+
+function buscarUsuarioPeloId(req, res) {
+  console.log(req.params.id);
+  usuarioModel.buscarUsuarioPeloId(req.params.id)
+  .then(resultado => {
+    res.json(resultado);
+  }).catch(err => {
+    res.status(500).send(err);
+  });
+}
+
+
+
 module.exports = {
     autenticar,
-    cadastrar
+    cadastrar,
+    atualizarPerfil,
+    buscarUsuarioPeloId
 };
