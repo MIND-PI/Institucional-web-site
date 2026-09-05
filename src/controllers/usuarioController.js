@@ -81,12 +81,12 @@ function cadastrar(req, res) {
 }
 
 function atualizarPerfil(req, res) {
-    let idUsuario = req.params.idUsuario;
+    let id = req.params.id;
     let nome = req.body.nomeServer;
     let senha = req.body.senhaServer;
     let imagemPerfil = req.file?.filename;
     
-        usuarioModel.atualizarPerfil(idUsuario, nome, senha, imagemPerfil)
+        usuarioModel.atualizarPerfil(id, nome, senha, imagemPerfil)
             .then(function (resultadoUpdate) {
                 res.status(200).json("Perfil atualizado com sucesso!");
             }).catch(function (erro) {

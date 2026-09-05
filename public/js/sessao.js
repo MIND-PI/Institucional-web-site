@@ -43,9 +43,9 @@ function finalizarAguardar(texto) {
 
 function salvarConfiguracoes() {
     let idUsuario = sessionStorage.ID_USUARIO;
-    let nome = iptNome.value;
-    let senha = iptSenha.value;
-    let imagemPerfil = iptImagemPerfil.files[0];
+    let nome = input_nome.value;
+    let senha = input_senha.value;
+    let imagemPerfil = input_foto.files[0];
 
     const formData = new FormData();
     formData.append("idUsuario", idUsuario);
@@ -59,15 +59,10 @@ function salvarConfiguracoes() {
     }).then(function (resposta) {
         if (resposta.ok) {
             alert("Perfil atualizado com sucesso!");
-            if(nome.length === 0) {
-                console.log("Nickname inalterado")
-            } else {
-                sessionStorage.USER_USUARIO = nome; 
+            if(nome && nome.trim() !== "") {
+                sessionStorage.NOME_USUARIO = nome; 
             }
-            
-            window.location = "./dashboard.html";
-        } else if (resposta.status == 409) {
-            msgErroNick.style.display = "block";
+            window.location.reload(true);            
         } else {
             throw("Houve um erro ao tentar atualizar o perfil!");
         }
@@ -77,28 +72,3 @@ function salvarConfiguracoes() {
 
     return false;
 }
-
-
-// Inserir script no dashboard.html
-if (sessionStorage.USER_USUARIO == undefined) {
-        span_nome_usuario.innerHTML = "Indefinido"
-    } else {
-        span_nome_usuario.innerHTML = sessionStorage.USER_USUARIO
-    }
-
-    fetch(`/usuarios/${sessionStorage.ID_USUARIO}`, {
-      method: "GET"
-    })
-      .then(res => {
-        res.json().then(json => {
-          const usuario = json[0];
-          if (usuario.imagemPerfil == undefined) {
-            foto_perfil.src = `/assets/imgs/fotosUsuarios/foto_padrao.png`
-          } else {
-          foto_perfil.src = `/assets/imgs/fotosUsuarios/${usuario.imagemPerfil}`
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err);
-      })

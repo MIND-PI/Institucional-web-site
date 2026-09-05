@@ -34,13 +34,13 @@ function buscarUsuarioPeloId(id) {
     return database.executar(instrucaoSql);
 }
 
-function atualizarPerfil(idUsuario, nome, senha, imagemPerfil) {
+function atualizarPerfil(id, nome, senha, imagemPerfil) {
     let instrucaoSql = `UPDATE usuario SET `;
     let campos = [];
 
 
     if (nome !== "" && nome !== undefined) {
-        campos.push(`nome = '${nickname}'`);
+        campos.push(`nome = '${nome}'`);
     }
     if (senha !== "" && senha !== undefined) {
         campos.push(`senha = '${senha}'`);
@@ -55,7 +55,7 @@ function atualizarPerfil(idUsuario, nome, senha, imagemPerfil) {
         return Promise.resolve();
     }
 
-    instrucaoSql += campos.join(', ') + ` WHERE id = ${idUsuario};`;
+    instrucaoSql += campos.join(', ') + ` WHERE id = ${id};`;
 
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
