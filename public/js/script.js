@@ -62,3 +62,61 @@ document.addEventListener('DOMContentLoaded', () => {
   range.addEventListener("input", atualizarValor);
   atualizarValor();
 });
+
+function enviarEmail() {
+  let nome = nome_completo.value;
+  let email = email_corporativo.value;
+  let email1 = document.getElementById("email_corporativo");
+  let empresa = empresa_input.value;
+  let texto = textoMensagem.value;
+  let teste = /^[a-zA-Zà-úÀ-ÚçÇ\s]+$/;
+  let podeEnviar = true;
+
+  erroNome.innerHTML = "";
+  erroEmail.innerHTML = "";
+  erroEmpresa.innerHTML = "";
+  erroMensagem.innerHTML = "";
+
+  if (nome == "" || !teste.test(nome)) {
+    erroNome.innerHTML = `<span style="color:red; font-size: 0.5rem">Nome inválido. Não pode ter número nem caractere especial</span>`;
+    podeEnviar = false
+  }
+  if (email == "" || !email1.checkValidity()) {
+    erroEmail.innerHTML = `<span style="color:red; font-size: 0.5rem">Email inválido. Não pode ter caractere especial e o formato precisa ser válido</span>`;
+    podeEnviar = false
+  }
+  if (empresa == "" || !teste.test(empresa)) {
+    erroEmpresa.innerHTML = `<span style="color:red; font-size: 0.5rem">Empresa inválida. Não pode ter número nem caractere especial</span>`;
+    podeEnviar = false
+  }
+  
+  
+  if(!podeEnviar){
+    return;
+  }
+
+  erroMensagem.innerHTML = `<span style="color:black; font-size: 0.5rem">Email sendo enviado...</span>`
+  fetch("/email/enviarEmail", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      remetente: email,
+      assunto: empresa,
+      texto: texto,
+      nome: nome
+    })
+  }).then((resposta) => {
+    if(resposta.ok){
+      erroMensagem.innerHTML = `<span style="color:green; font-size: 0.5rem">Email enviado com sucesso. Email utilizado: ${email} </span>`
+    }
+    
+
+  }).catch((erro) => {
+    console.log(erro)
+    erroMensagem.innerHTML = `<span style="color:red; font-size: 0.5rem">Email não enviado </span>`
+  })
+
+
+  }
