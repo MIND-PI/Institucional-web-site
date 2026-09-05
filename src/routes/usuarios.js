@@ -12,4 +12,12 @@ router.post("/autenticar", function (req, res) {
     usuarioController.autenticar(req, res);
 });
 
+router.get('/:id', upload.single('imagemPerfil'), (req, res) => {
+    usuarioController.buscarUsuarioPeloId(req, res);
+});
+
+router.post("/atualizar/:idUsuario", upload.single('imagemPerfil'), function (req, res) {
+    usuarioController.atualizarPerfil(req, res);
+});
+
 module.exports = router;
