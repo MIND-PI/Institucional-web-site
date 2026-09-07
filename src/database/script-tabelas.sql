@@ -22,6 +22,7 @@ CREATE TABLE usuario (
     email VARCHAR(50),
     senha VARCHAR(50),
     nivel TINYINT,
+    imagemPerfil VARCHAR(255),
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     desativado_em TIMESTAMP NULL,
