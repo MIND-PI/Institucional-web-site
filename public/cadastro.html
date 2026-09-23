@@ -83,6 +83,16 @@
 
 
                 <div class="campo">
+                    <label for="confirmacao_senha">Confirmação de Senha</label>
+
+                    <input
+                        type="password"
+                        id="confirmacao_senha"
+                        minlength="8"
+                        required
+                    >
+                </div>
+                <!-- <div class="campo">
                     <label for="nivel">Nível do usuário</label>
 
                     <select id="nivel">
@@ -96,7 +106,7 @@
                         </option>
 
                     </select>
-                </div>
+                </div> -->
 
 
                 <div id="mensagem"></div>
@@ -157,13 +167,14 @@
         var nome = document.getElementById("nome").value;
         var email = document.getElementById("email").value;
         var senha = document.getElementById("senha").value;
+        var confirmacao_senha = document.getElementById("confirmacao_senha").value;
         var codigoativacao = document.getElementById("codigoativacao").value;
-        var nivel = document.getElementById("nivel").value;
 
         if (
             nome == "" ||
             email == "" ||
             senha == "" ||
+            confirmacao_senha == "" ||
             codigoativacao == ""
         ) {
             alert("Preencha todos os campos.");
@@ -176,6 +187,10 @@
             return;
         }
 
+        if (senha != confirmacao_senha) {
+            alert("A senha e a confirmação de senha tem que ser iguais.");
+            return;
+        }
 
 
         fetch("http://localhost:3333/usuarios/cadastrar", {
@@ -191,8 +206,8 @@
                 nomeServer: nome,
                 emailServer: email,
                 senhaServer: senha,
+                confirmacao_senhaServer: confirmacao_senha,
                 codigoServer: codigoativacao,
-                nivelServer: Number(nivel)
             })
 
         })
