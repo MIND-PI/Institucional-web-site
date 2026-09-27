@@ -12,13 +12,13 @@ function autenticar(req, res) {
     var cnpj = req.body.cnpjServer;
     var codigo_ativacao = req.body.codigo_ativacaoServer;
 
-    if (cnpj == undefined) {
+    if (cnpj == undefined || cnpj == "") {
         res.status(400).send("Seu cnpj está undefined!");
-    } else if (codigo_ativacao == undefined) {
+    } else if (codigo_ativacao == undefined || codigo_ativacao == "") {
         res.status(400).send("Seu codigo de ativação está undefined!");
     } else {
 
-        empresaModel.autenticar(codigo_ativacao)
+        empresaModel.autenticar(cnpj, codigo_ativacao)
             .then(function (resultadoAutenticar) {
 
                 console.log(`Resultados encontrados: ${resultadoAutenticar.length}`);
@@ -58,11 +58,14 @@ function cadastrar(req, res) {
     var nome_fantasia = req.body.nomeFantasiaServer;
     var cnpj = req.body.cnpjServer;
     var razao_social = req.body.razaoSocialServer
-    if (nome_fantasia == undefined) {
+    if (nome_fantasia == undefined || nome_fantasia == "") {
         res.status(400).send("O nome fantasia está indefinido!");
     } 
-    else if(cnpj == undefined){
+    else if(cnpj == undefined || cnpj == ""){
         res.status(400).send("O cnpj está indefinido!")
+    }
+    else if(razao_social == undefined || razao_social == ""){
+        res.status(400).send("a razão social está undefined")
     }
     else {
 
@@ -73,9 +76,14 @@ function cadastrar(req, res) {
                     resultado: resultado
                 });
             })
+
             .catch(function (erro) {
                 console.log(erro);
-                res.status(500).json(erro.sqlMessage);
+                if (erro.errno == 1062) {
+                    res.status(409).send("CNPJ ou Código de ativação já cadastrado no sistema!");
+                } else {
+                    res.status(500).json(erro.sqlMessage);
+                }
             });
     }
 }
@@ -84,12 +92,19 @@ function atualizarPerfil(req, res) {
     let idEmpresa = req.params.idEmpresa;
     let nome_fantasia = req.body.nomeFantasiaServer;
     let razao_social = req.body.razaoSocialServer;
-    let cnpj = req.body.cnpjServer;    
 
 
-        empresaModel.atualizarPerfil(idEmpresa, nome_fantasia, razao_social, cnpj)
+        empresaModel.atualizarPerfil(idEmpresa, nome_fantasia, razao_social)
             .then(function (resultadoUpdate) {
+                if(!resultadoUpdate)
+                return res.status(400).send("Nenhum dado válido foi enviado para atualização.")
+
+                 if (resultadoUpdate.affectedRows == 0) {
+                return res.status(404).send("Empresa não encontrada para atualização.");
+            }  
                 res.status(200).json("Perfil atualizado com sucesso!");
+            
+
             }).catch(function (erro) {
                 console.log(erro);
                 res.status(500).json(erro.sqlMessage);
@@ -97,10 +112,22 @@ function atualizarPerfil(req, res) {
 }
 
 function buscarEmpresaPeloId(req, res) {
-  console.log(req.params.idEmpresa);
+let idEmpresa = req.params.idEmpresa;
+
+if (idEmpresa == undefined || isNaN(idEmpresa)) {
+        res.status(400).send("O ID da empresa é inválido!");
+        return;
+    }
+
   empresaModel.buscarEmpresaPeloId(req.params.idEmpresa)
   .then(resultado => {
-    res.json(resultado);
+    
+    if (resultado.length > 0) {
+                res.json(resultado);
+            } else {
+                res.status(404).send("Nenhuma empresa encontrada com este ID.");
+            }
+
   }).catch(err => {
     res.status(500).send(err);
   });

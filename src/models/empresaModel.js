@@ -1,10 +1,10 @@
 var database = require("../database/config");
 
-function autenticar(codigo_ativacao) {
+function autenticar(cnpj, codigo_ativacao) {
     var instrucaoSql = `
         SELECT idEmpresa, nome_fantasia, razao_social, cnpj, codigo_ativacao
         FROM empresa
-        WHERE codigo_ativacao = '${codigo_ativacao}';
+        WHERE codigo_ativacao = '${codigo_ativacao}' AND cnpj = '${cnpj}';
     `;
 
     return database.executar(instrucaoSql);
@@ -33,7 +33,7 @@ function buscarEmpresaPeloId(idEmpresa) {
     return database.executar(instrucaoSql);
 }
 
-function atualizarPerfil(idEmpresa, nome_fantasia, razao_social, cnpj ) {
+function atualizarPerfil(idEmpresa, nome_fantasia, razao_social, ) {
     let instrucaoSql = `UPDATE empresa SET `;
     let campos = [];
 
@@ -45,9 +45,6 @@ function atualizarPerfil(idEmpresa, nome_fantasia, razao_social, cnpj ) {
         campos.push(`razao_social = '${razao_social}'`);
     }
     
-    if (cnpj !== "" && cnpj !== undefined) {
-        campos.push(`cnpj = '${cnpj}'`);
-    }
 
     if (campos.length == 0) {
         console.log("Nenhum campo foi preenchido para atualização.");
