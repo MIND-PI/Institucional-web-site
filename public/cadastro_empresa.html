@@ -62,11 +62,6 @@
                             <input type="text" id="cnpj" maxlength="14" inputmode="numeric" required>
                         </div>
 
-                        <div class="campo">
-                            <label for="codigoativacao">Código de ativação</label>
-                            <input type="text" id="codigoativacao" required>
-                        </div>
-
                         <button class="botao-formulario" type="button" id="btnContinuar">
                             Continuar
                         </button>
@@ -155,9 +150,8 @@
             var nomeFantasia = document.getElementById("nome_fantasia").value.trim();
             var razaoSocial = document.getElementById("razao_social").value.trim();
             var cnpj = document.getElementById("cnpj").value.replace(/\D/g, "");
-            var codigo = document.getElementById("codigoativacao").value.trim();
-
-            if (nomeFantasia == "" || razaoSocial == "" || cnpj == "" || codigo == "") {
+           
+            if (nomeFantasia == "" || razaoSocial == "" || cnpj == "") {
                 alert("Preencha todos os campos.");
                 return false;
             }
@@ -196,7 +190,6 @@
             var nomeFantasia = document.getElementById("nome_fantasia").value.trim();
             var razaoSocial = document.getElementById("razao_social").value.trim();
             var cnpj = document.getElementById("cnpj").value.replace(/\D/g, "");
-            var codigoativacao = document.getElementById("codigoativacao").value.trim();
 
             var nome = document.getElementById("nome").value;
             var email = document.getElementById("email").value;
