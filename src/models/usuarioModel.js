@@ -2,7 +2,7 @@ var database = require("../database/config");
 
 function autenticar(email, senha) {
     var instrucaoSql = `
-        SELECT id, nome, email, nivel
+        SELECT idUsuario, nome, email, url_img
         FROM usuario
         WHERE email = '${email}'
         AND senha = '${senha}';
@@ -29,7 +29,7 @@ function cadastrar(nome, email, senha, codigoAtivacao) {
 }
 
 function buscarUsuarioPeloId(id) {
-    let instrucaoSql = `select * from usuario where id = ${id}`
+    let instrucaoSql = `select * from usuario where idUsuario = ${id}`
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
@@ -55,7 +55,7 @@ function atualizarPerfil(id, nome, senha, imagemPerfil) {
         return Promise.resolve();
     }
 
-    instrucaoSql += campos.join(', ') + ` WHERE id = ${id};`;
+    instrucaoSql += campos.join(', ') + ` WHERE idUsuario = ${id};`;
 
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
