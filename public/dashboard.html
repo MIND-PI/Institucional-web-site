@@ -67,7 +67,7 @@
                 <input type="password" id="input_senha" name="senha" placeholder="Deixe em branco para manter">
             </div>
 
-            <button onclick="salvarConfiguracoes()" type="submit" class="btn_salvar">Salvar Alterações</button>
+            <button onclick="salvarConfiguracoes()" type="button" class="btn_salvar">Salvar Alterações</button>
         </form>
     </div>
 </div>
@@ -81,26 +81,10 @@ if (sessionStorage.NOME_USUARIO == undefined) {
         nomeUsuario.innerHTML = sessionStorage.NOME_USUARIO
     }
 
-fetch(`/usuarios/${sessionStorage.ID_USUARIO}`, {
-      method: "GET"
-    })
-      .then(res => {
-        res.json().then(json => {
-          const usuario = json[0];
-          if (usuario.imagemPerfil == undefined) {
-            img_user.src = `/assets/imgs/fotosUsuarios/foto_padrao.png`
-            preview_foto_modal.src = `/assets/imgs/fotosUsuarios/foto_padrao.png`
-          } else {
-            img_user.src = `/assets/imgs/fotosUsuarios/${usuario.imagemPerfil}`
-            preview_foto_modal.src = `/assets/imgs/fotosUsuarios/${usuario.imagemPerfil}`
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err);
-      })    
-
-
+if (sessionStorage.IMG_URL) {
+    img_user.src = sessionStorage.getItem("IMG_URL")
+    preview_foto_modal.src = sessionStorage.getItem("IMG_URL")
+}
 
 const btnConfig = document.getElementById('btn_config');
 const overlayConfig = document.getElementById('overlay_config');

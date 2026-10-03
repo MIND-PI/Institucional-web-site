@@ -42,6 +42,7 @@ function finalizarAguardar(texto) {
 // Atualizar Usuário
 
 function salvarConfiguracoes() {
+    console.log("EU")
     let idUsuario = sessionStorage.ID_USUARIO;
     let nome = input_nome.value;
     let senha = input_senha.value;
@@ -51,7 +52,7 @@ function salvarConfiguracoes() {
     formData.append("idUsuario", idUsuario);
     formData.append("nomeServer", nome);
     formData.append("senhaServer", senha);
-    formData.append("imagemPerfil", imagemPerfil);  
+    formData.append("imagemPerfil", imagemPerfil);
 
     fetch(`/usuarios/atualizar/${idUsuario}`, {
         method: "PUT",
@@ -59,16 +60,36 @@ function salvarConfiguracoes() {
     }).then(function (resposta) {
         if (resposta.ok) {
             alert("Perfil atualizado com sucesso!");
-            if(nome && nome.trim() !== "") {
-                sessionStorage.NOME_USUARIO = nome; 
+            if (nome && nome.trim() !== "") {
+                sessionStorage.NOME_USUARIO = nome;
             }
-            window.location.reload(true);            
+            if (imagemPerfil) {
+                listarUsuario()
+            }
+            window.location.reload(true)
         } else {
-            throw("Houve um erro ao tentar atualizar o perfil!");
+            throw ("Houve um erro ao tentar atualizar o perfil!");
         }
     }).catch(function (resposta) {
         console.log(`#ERRO: ${resposta}`);
     });
 
     return false;
+}
+
+function listarUsuario() {
+    fetch(`/usuarios/${sessionStorage.ID_USUARIO}`, {
+        method: "GET"
+    })
+        .then(res => {
+            res.json().then(json => {
+                const usuario = json[0];
+                sessionStorage.setItem("IMG_URL", usuario.imgUrl)
+                img_user.src = usuario.imgUrl
+                preview_foto_modal.src = usuario.imgUrl
+            })
+        })
+        .catch(err => {
+            console.log(err);
+        })
 }
