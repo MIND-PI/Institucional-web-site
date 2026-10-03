@@ -47,7 +47,7 @@ function atualizarPerfil(id, nome, senha, imagemPerfil) {
     }
     
     if (imagemPerfil !== "" && imagemPerfil !== undefined) {
-        campos.push(`imagemPerfil = '${imagemPerfil}'`);
+        campos.push(`url_img = '${imagemPerfil}'`);
     }
 
     if (campos.length == 0) {

@@ -1,4 +1,5 @@
 var usuarioModel = require("../models/usuarioModel");
+var uploadS3 = require("../services/uploadS3")
 
 function mensagemErro(erro) {
     if (!erro) return "Erro ao processar a requisição.";
@@ -84,9 +85,11 @@ function atualizarPerfil(req, res) {
     let id = req.params.id;
     let nome = req.body.nomeServer;
     let senha = req.body.senhaServer;
-    let imagemPerfil = req.file?.filename;
+    let imgFile = req.file;
     
-        usuarioModel.atualizarPerfil(id, nome, senha, imagemPerfil)
+    const imgName = uploadS3.uploadS3(imgFile)
+    
+        usuarioModel.atualizarPerfil(id, nome, senha, imgName)
             .then(function (resultadoUpdate) {
                 res.status(200).json("Perfil atualizado com sucesso!");
             }).catch(function (erro) {
