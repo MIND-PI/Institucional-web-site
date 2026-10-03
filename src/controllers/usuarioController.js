@@ -11,9 +11,12 @@ function mensagemErro(erro) {
 }
 
 async function autenticar(req, res) {
+
+    // Pegando email e senha do server
     var email = req.body.emailServer;
     var senha = req.body.senhaServer;
 
+    // Verificação de undefined
     if (email == undefined) {
         return res.status(400).send("Seu email está undefined!");
     }
@@ -23,12 +26,13 @@ async function autenticar(req, res) {
     }
 
     try {
+        // Fazendo autenticação com select pelo banco
         var resultado = await usuarioModel.autenticar(email, senha);
 
         if (resultado.length == 1) {
 
             let url_img = null;
-
+            // Verificando se url_img existe, se exister chama função para pegar url do bucket
             if (resultado[0].url_img) {
                 url_img = await getUrlS3(resultado[0].url_img);
             }
@@ -93,8 +97,8 @@ async function atualizarPerfil(req, res) {
     let senha = req.body.senhaServer;
     let imgFile = req.file;
     let imgName = null
-    console.log("ESSE é o ID:" + id)
 
+    // Verifica se a imagem foi enviada, se foi, chama a função uploadS3 do arquivo /services/uploadS3
     if (imgFile) {
         imgName = await uploadS3(imgFile)
     }
@@ -118,6 +122,7 @@ async function buscarUsuarioPeloId(req, res) {
 
         let imgUrl = null
 
+        // Verifica se a imagem existe, se existe chama função getUrlS3 do arquivo /services/getS3
         if (usuario.url_img) {
             imgUrl = await getUrlS3(usuario.url_img)
         }
@@ -139,32 +144,6 @@ async function buscarUsuarioPeloId(req, res) {
 
     }
 }
-
-// function buscarUsuarioPeloId(req, res) {
-//   usuarioModel.buscarUsuarioPeloId(req.params.id)
-
-//   .then(resultado => {
-//     let imgUrl = null
-//     let usuario = 
-//     if (resultado.url_img) {
-//         console.log("ENTREI")
-//         imgUrl = getUrlS3(resultado.url_img)
-//     }
-//     console.log("IMAGEM:" + imgUrl)
-//     res.json(
-//         resultado.idUsuario,
-//         resultado.nome,
-//         resultado.email,
-//         resultado.empresaId,
-//         resultado.cargo,
-//         resultado.responsavel,
-//         imgUrl
-//     );
-//   }).catch(err => {
-//     res.status(500).send(err);
-//   });
-// }
-
 
 
 module.exports = {
