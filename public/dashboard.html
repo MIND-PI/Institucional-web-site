@@ -55,7 +55,7 @@
                 <h4 class="nav-section-title">CONFIGURAÇÕES</h4>
                 <ul class="nav-list">
                     <li class="nav-item">
-                        <a href="" class="nav-link">
+                        <a class="nav-link" id="btn_config">
                             <i class="bi bi-gear"></i>
                             Configuração de usuario
                         </a>
@@ -78,6 +78,38 @@
                 <p id="tipoUsuario" class="text-user-type">FORNECEDOR</p>
             </div>
         </footer>
+        <div class="overlay_config" id="overlay_config">
+            <div class="modal_config">
+                <div class="modal_header">
+                    <h2>Configurações</h2>
+                    <button type="button" class="btn_fechar" id="btn_fechar_config">✖</button>
+                </div>
+
+                <form id="form_config">
+
+                    <div class="input_group file_group">
+                        <img src="./assets/imgs/fotosUsuarios/foto_padrao.png" alt="Preview da Foto"
+                            id="preview_foto_modal">
+                        <div class="file_upload_wrapper">
+                            <label for="input_foto" class="btn_upload">Escolher nova foto</label>
+                            <input type="file" id="input_foto" name="foto_perfil" accept="image/*">
+                        </div>
+                    </div>
+
+                    <div class="input_group">
+                        <label for="input_nome">Nome de usuário</label>
+                        <input type="text" id="input_nome" name="nome" placeholder="Digite seu novo nome">
+                    </div>
+
+                    <div class="input_group">
+                        <label for="input_senha">Nova senha</label>
+                        <input type="password" id="input_senha" name="senha" placeholder="Deixe em branco para manter">
+                    </div>
+
+                    <button onclick="salvarConfiguracoes()" type="button" class="btn_salvar">Salvar Alterações</button>
+                </form>
+            </div>
+        </div>
     </aside>
     <main>
         <!-- COLOCAR CONTEÚDO PRINCIPAL -->
@@ -88,34 +120,5 @@
 
 </html>
 <script src="./js/sessao.js"></script>
-<script>
-    if (sessionStorage.NOME_USUARIO == undefined) {
-        nomeUsuario.innerHTML = "Indefinido"
-    } else {
-        nomeUsuario.innerHTML = sessionStorage.NOME_USUARIO
-    }
-
-    if (sessionStorage.IMG_URL) {
-        imgUser.src = sessionStorage.getItem("IMG_URL")
-        // preview_foto_modal.src = sessionStorage.getItem("IMG_URL")
-    }
-
-    // const btnConfig = document.getElementById('btn_config');
-    // const overlayConfig = document.getElementById('overlay_config');
-    // const btnFechar = document.getElementById('btn_fechar_config');
-    // const formConfig = document.getElementById('form_config');
-
-    // btnConfig.addEventListener('click', () => {
-    //     overlayConfig.classList.add('ativo');
-    // });
-
-    // btnFechar.addEventListener('click', () => {
-    //     overlayConfig.classList.remove('ativo');
-    // });
-
-    // overlayConfig.addEventListener('click', (e) => {
-    //     if (e.target === overlayConfig) {
-    //         overlayConfig.classList.remove('ativo');
-    //     }
-    // });
+<script src="./js/configuracoes.js">
 </script>
