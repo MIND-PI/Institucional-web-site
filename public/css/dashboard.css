@@ -1,0 +1,143 @@
+/* IMPORTANDO AS FONTES */
+@import url('https://fonts.googleapis.com/css2?family=Geist:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/* INICIO DA DASHBOARD */
+
+:root {
+    --primary: #060A13;
+    --secundary: #0D1527;
+    --contrast: #06B6D4;
+    --icon: #94A3B8;
+    --text: #FFF;
+    --title-side-bar: rgba(255, 255, 255, 0.3);
+    --positve: #22C55E;
+    --bad: #EF4444;
+    --attention: #F59E0B;
+    --border: #1E2B45;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5 {
+    color: var(--text);
+    font-family: "Montserrat", sans-serif;
+}
+
+li,
+i {
+    color: var(--icon);
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background-color: var(--primary);
+    display: flex;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--secundary);
+    min-height: 100vh;
+    position: fixed;
+    padding: 1rem 5rem 1rem 2rem;
+    gap: 2rem;
+    border-right: 2px solid var(--border);
+}
+
+.sidebar-header {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.logo-img img {
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+}
+
+.logo-subtitle {
+    color: var(--contrast);
+    font-weight: 400;
+    font-size: 10px;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+}
+
+.nav-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.nav-section-title {
+    color: var(--title-side-bar);
+    font-size: 0.8rem;
+}
+
+.nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.nav-item i {
+    font-size: 1.3rem;
+}
+
+.nav-item {
+    margin-left: 1rem;
+    display: flex;
+    font-weight: 500;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+
+.user-card {
+    margin-top: auto;
+    width: 100%;
+    height: 6rem;
+    background-color: var(--primary);
+    border-radius: 1rem;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-left: 1rem;
+}
+
+.img-card img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+}
+
+.text-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.text-user-type {
+    color: var(--icon);
+    font-size: 0.8rem;
+}
+
+.text-user-name {
+    font-weight: bold;
+    font-size: 0.8rem;
+}

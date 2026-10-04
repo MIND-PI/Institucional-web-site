@@ -85,7 +85,7 @@ function listarUsuario() {
             res.json().then(json => {
                 const usuario = json[0];
                 sessionStorage.setItem("IMG_URL", usuario.imgUrl)
-                img_user.src = usuario.imgUrl
+                imgUser.src = usuario.imgUrl
                 preview_foto_modal.src = usuario.imgUrl
             })
         })
