@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MIND | Dashboard</title>
     <link rel="stylesheet" href="./css/reset.css">
-    <link rel="stylesheet" href="./css/dashboard.css">
+    <link rel="stylesheet" href="./css/aside.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 
 <body>
     <aside class="sidebar">
+        <!-- HEADER / LOGO DO HEADER -->
         <header class="sidebar-header">
             <div class="logo-img">
                 <img src="./assets/icon/logoMind/mind_logo_branca.png" alt="logo MIND">
@@ -21,8 +22,10 @@
                 <h5 class="logo-subtitle">OBSERVABILIDADE</h5>
             </div>
         </header>
+        <!-- INICIO DA NAV BAR -->
         <nav class="sidebar-nav">
             <section class="nav-section">
+                <!-- TODO: FAZER DIFERENÇA ENTRE FORNECEDOR E CLIENTE QUANDO SE CONECTA NO SISTEMA -->
                 <h4 class="nav-section-title">FLUXO DO FORNECEDOR</h4>
                 <ul class="nav-list">
                     <li class="nav-item">
@@ -69,6 +72,7 @@
                 </ul>
             </section>
         </nav>
+        <!-- CARD DO USUARIO -->
         <footer class="user-card">
             <div class="img-card">
                 <img src="/public/assets/imgs/fotosUsuarios/foto_padrao.png" alt="Foto do usuário" id="imgUser">
@@ -78,6 +82,7 @@
                 <p id="tipoUsuario" class="text-user-type">FORNECEDOR</p>
             </div>
         </footer>
+        <!-- MODAL DAS CONFIGURAÇÕES DO USUARIO -->
         <div class="overlay_config" id="overlay_config">
             <div class="modal_config">
                 <div class="modal_header">
@@ -85,11 +90,11 @@
                     <button type="button" class="btn_fechar" id="btn_fechar_config">✖</button>
                 </div>
 
-                <form id="form_config">
+                <form id="form_config" class="form-config">
 
                     <div class="input_group file_group">
                         <img src="./assets/imgs/fotosUsuarios/foto_padrao.png" alt="Preview da Foto"
-                            id="preview_foto_modal">
+                            id="preview_foto_modal" class="preview-foto-modal">
                         <div class="file_upload_wrapper">
                             <label for="input_foto" class="btn_upload">Escolher nova foto</label>
                             <input type="file" id="input_foto" name="foto_perfil" accept="image/*">
