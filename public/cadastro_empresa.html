@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>MIND | Cadastro</title>
+
+    <link rel="stylesheet" href="./css/login e cadastro.css">
+    <link rel="icon" href="./assets/icon/MIND(1).png">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+
+
+</head>
+
+<body>
+
+    <main class="pagina">
+
+        <section class="lado-esquerdo">
+
+            <div class="container-formulario">
+
+                <div class="logo">
+                    <a href="index.html" class="logo">MIND</a>
+                </div>
+
+                <div class="titulo-formulario">
+                    <div class="titulo-linha">
+                        <button type="button" class="btn-voltar" id="btnVoltar" aria-label="Voltar">&larr;</button>
+                        <h1>Cadastre sua empresa</h1>
+                    </div>
+
+                    <p>Coloque fim às microparadas.</p>
+
+                    <div class="passos">
+                        <span class="passo-bolinha ativo" id="bolinha1">1</span>
+                        <span class="passo-linha"></span>
+                        <span class="passo-bolinha" id="bolinha2">2</span>
+                    </div>
+                </div>
+
+
+                <form class="formulario" id="cadastroForm" novalidate>
+
+
+                    <div class="etapa ativa" id="etapa1">
+
+                        <div class="campo">
+                            <label for="nome_fantasia">Nome fantasia</label>
+                            <input type="text" id="nome_fantasia" required>
+                        </div>
+
+                        <div class="campo">
+                            <label for="razao_social">Razão social</label>
+                            <input type="text" id="razao_social" required>
+                        </div>
+
+                        <div class="campo">
+                            <label for="cnpj">CNPJ</label>
+                            <input type="text" id="cnpj" maxlength="14" inputmode="numeric" required>
+                        </div>
+
+                        <div class="campo">
+                            <label for="codigoativacao">Código de ativação</label>
+                            <input type="text" id="codigoativacao" required>
+                        </div>
+
+                        <button class="botao-formulario" type="button" id="btnContinuar">
+                            Continuar
+                        </button>
+                    </div>
+
+
+                    <div class="etapa" id="etapa2">
+
+                        <div class="campo">
+                            <label for="nome">Nome completo</label>
+                            <input type="text" id="nome" required>
+                        </div>
+
+                        <div class="campo">
+                            <label for="email">E-mail corporativo</label>
+                            <input type="email" id="email" required>
+                        </div>
+
+                        <div class="campo">
+                            <label for="senha">Senha</label>
+                            <input type="password" id="senha" minlength="8" required>
+                        </div>
+
+                        <div class="campo">
+                            <label for="confirmacao_senha">Confirmar senha</label>
+                            <input type="password" id="confirmacao_senha" minlength="8" required>
+                        </div>
+
+                        <div id="mensagem"></div>
+
+                        <button class="botao-formulario" type="submit">
+                            Concluir
+                        </button>
+                    </div>
+
+                </form>
+
+
+                <p class="texto-final">
+                    Já é cliente?
+                    <a href="./login.html">Faça login</a>
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <section class="lado-direito">
+
+            <div class="conteudo-direito">
+
+                <h1 class="titulo-direito">
+                    O primeiro passo
+                    para o seu diferencial
+                    começa aqui
+                </h1>
+
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        var form = document.getElementById("cadastroForm");
+        var etapaAtual = 1;
+
+        function mostrarEtapa(numero) {
+            etapaAtual = numero;
+
+            document.getElementById("etapa1").classList.toggle("ativa", numero == 1);
+            document.getElementById("etapa2").classList.toggle("ativa", numero == 2);
+
+            document.getElementById("bolinha2").classList.toggle("ativo", numero == 2);
+
+            document.getElementById("btnVoltar").style.display = numero == 2 ? "block" : "none";
+        }
+
+
+
+        function validarEtapa1() {
+            var nomeFantasia = document.getElementById("nome_fantasia").value.trim();
+            var razaoSocial = document.getElementById("razao_social").value.trim();
+            var cnpj = document.getElementById("cnpj").value.replace(/\D/g, "");
+            var codigo = document.getElementById("codigoativacao").value.trim();
+
+            if (nomeFantasia == "" || razaoSocial == "" || cnpj == "" || codigo == "") {
+                alert("Preencha todos os campos.");
+                return false;
+            }
+
+            if (cnpj.length != 14) {
+                alert("O CNPJ precisa ter 14 números.");
+                return false;
+            }
+
+            return true;
+        }
+
+        document.getElementById("btnContinuar").addEventListener("click", function () {
+            if (validarEtapa1()) {
+                mostrarEtapa(2);
+            }
+        });
+
+        document.getElementById("btnVoltar").addEventListener("click", function () {
+            mostrarEtapa(1);
+        });
+
+
+        form.addEventListener("submit", function (evento) {
+
+            evento.preventDefault();
+
+            // Enter no passo 1 avança em vez de enviar
+            if (etapaAtual == 1) {
+                if (validarEtapa1()) {
+                    mostrarEtapa(2);
+                }
+                return;
+            }
+
+            var nomeFantasia = document.getElementById("nome_fantasia").value.trim();
+            var razaoSocial = document.getElementById("razao_social").value.trim();
+            var cnpj = document.getElementById("cnpj").value.replace(/\D/g, "");
+            var codigoativacao = document.getElementById("codigoativacao").value.trim();
+
+            var nome = document.getElementById("nome").value;
+            var email = document.getElementById("email").value;
+            var senha = document.getElementById("senha").value;
+            var confirmacao_senha = document.getElementById("confirmacao_senha").value;
+
+            if (nome == "" || email == "" || senha == "" || confirmacao_senha == "") {
+                alert("Preencha todos os campos.");
+                return;
+            }
+
+            if (senha.length < 8) {
+                alert("A senha precisa ter pelo menos 8 caracteres.");
+                return;
+            }
+
+            if (senha != confirmacao_senha) {
+                alert("A senha e a confirmação de senha tem que ser iguais.");
+                return;
+            }
+
+
+            fetch("http://localhost:3333/usuarios/cadastrar", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    nomeFantasiaServer: nomeFantasia,
+                    razaoSocialServer: razaoSocial,
+                    cnpjServer: cnpj,
+
+                    nomeServer: nome,
+                    emailServer: email,
+                    senhaServer: senha,
+                    confirmacao_senhaServer: confirmacao_senha,
+                    codigoServer: codigoativacao
+                })
+
+            })
+
+                .then(function (resposta) {
+
+                    if (!resposta.ok) {
+                        return resposta.text().then(function (erro) {
+                            throw new Error(erro);
+                        });
+                    }
+
+                    return resposta.json();
+
+                })
+
+                .then(function () {
+
+                    alert("Cadastro realizado com sucesso!");
+
+                    window.location.href = "./login.html";
+
+                })
+
+                .catch(function (erro) {
+
+                    console.log(erro);
+
+                    alert(erro.message);
+
+                });
+
+        });
+
+    </script>
+
+</body>
+
+</html>

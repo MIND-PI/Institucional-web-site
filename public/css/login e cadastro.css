@@ -1,10 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  }
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
 
 body {
 font-family: Arial, sans-serif;
@@ -37,16 +37,16 @@ width: 330px;
 
 
 .logo a {
-  display: inline-block;
-  margin-bottom: 25px;
-  background: linear-gradient(135deg, #0f172a 10%, #2563EB 100%); 
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-family: 'MuseoModerno', sans-serif;
-      font-weight: 800;
-    font-size: 1.6rem;
-    text-decoration: none;
+display: inline-block;
+margin-bottom: 25px;
+background: linear-gradient(135deg, #0f172a 10%, #2563EB 100%); 
+-webkit-background-clip: text;
+background-clip: text;
+-webkit-text-fill-color: transparent;
+font-family: 'MuseoModerno', sans-serif;
+    font-weight: 800;
+  font-size: 1.6rem;
+  text-decoration: none;
 }
 
 
@@ -65,6 +65,11 @@ margin-bottom: 10px;
 .titulo-formulario p {
 color: #666;
 line-height: 1.5;
+}
+
+#cadastro_empresa p{
+font-size: 0.55em;
+font-weight: 500;
 }
 
 /* formulario */
@@ -203,32 +208,88 @@ color: #c5c2cc;
 
 @media (max-width: 768px) {
 
-  .pagina {
-    display: block;
-  }
-
-  .lado-esquerdo {
-    width: 100%;
-    min-height: 100vh;
-    padding: 30px 20px;
-  }
-
-  .lado-direito {
-    display: none;
-  }
-
-  .container-formulario {
-    width: 100%;
-    max-width: 330px;
-  }
-
- 
-  .logo a {
-    font-size: 20px;
+.pagina {
+display: block;
 }
 
-  .titulo-formulario h1 {
-    font-size: 24px;
-  }
+.lado-esquerdo {
+width: 100%;
+min-height: 100vh;
+padding: 30px 20px;
+}
 
+.lado-direito {
+display: none;
+}
+
+.container-formulario {
+width: 100%;
+max-width: 330px;
+}
+
+
+.logo a {
+font-size: 20px;
+}
+
+.titulo-formulario h1 {
+font-size: 24px;
+}
+
+}
+
+.titulo-linha {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-voltar {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 28px;
+  line-height: 1;
+  color: #1b0c42;
+  padding: 0;
+}
+
+.passos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 12px 0 25px;
+}
+
+.passo-bolinha {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid #1b0c42;
+  background: #fff;
+  color: #1b0c42;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.passo-bolinha.ativo {
+  background: #1b0c42;
+  color: #fff;
+}
+
+.passo-linha {
+  width: 70px;
+  height: 1.5px;
+  background: #1b0c42;
+}
+
+.etapa {
+  display: none;
+}
+
+.etapa.ativa {
+  display: block;
 }
