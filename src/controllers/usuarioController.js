@@ -41,6 +41,7 @@ async function autenticar(req, res) {
                 id: resultado[0].idUsuario,
                 nome: resultado[0].nome,
                 email: resultado[0].email,
+                cargo: resultado[0].cargo,
                 imgUrl: url_img,
                 codigoativacao: resultado[0].codigoativacao
             });
@@ -82,6 +83,11 @@ function cadastrar(req, res) {
 
         usuarioModel.cadastrar(nome, email, senha, codigoAtivacao)
             .then(function (resultado) {
+                // affectedRows = 0 quando o código não existe ou a empresa ainda não tem responsável
+                if (resultado.affectedRows == 0) {
+                    return res.status(404).json("Código de ativação inválido ou empresa sem responsável cadastrado!");
+                }
+
                 res.json(resultado);
             })
             .catch(function (erro) {

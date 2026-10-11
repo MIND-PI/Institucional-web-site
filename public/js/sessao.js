@@ -17,6 +17,21 @@ function limparSessao() {
     window.location.href = "../login.html";
 }
 
+// menu por cargo
+// O cargo é salvo no sessionStorage (CARGO_USUARIO) no login.
+// Itens com data-cargo="administrador" (ex.: Equipe na sidebar) ficam com
+// display none e só aparecem se o cargo da sessão for esse.
+function controlarMenuPorCargo() {
+    var cargo = sessionStorage.getItem("CARGO_USUARIO");
+
+    document.querySelectorAll("[data-cargo]").forEach(function (item) {
+        // "" devolve o display normal do CSS (.nav-item = flex)
+        item.style.display = item.dataset.cargo == cargo ? "" : "none";
+    });
+}
+
+controlarMenuPorCargo();
+
 // carregamento (loading)
 function aguardar() {
     var divAguardar = document.getElementById("div_aguardar");

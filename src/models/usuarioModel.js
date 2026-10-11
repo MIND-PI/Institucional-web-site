@@ -2,7 +2,7 @@ var database = require("../database/config");
 
 function autenticar(email, senha) {
     var instrucaoSql = `
-        SELECT idUsuario, nome, email, url_img
+        SELECT idUsuario, nome, email, url_img, cargo
         FROM usuario
         WHERE email = '${email}'
         AND senha = '${senha}';
@@ -14,14 +14,18 @@ function autenticar(email, senha) {
 
 function cadastrar(nome, email, senha, codigoAtivacao) {
 
+    // Cadastro normal: o usuário SEMPRE entra como funcionário e passa a ter
+    // como responsavel o responsável da empresa (usuário com responsavel NULL).
+    // O responsável da empresa é cadastrado por outra tela.
+    // Não insere nada (affectedRows = 0) se o código de ativação não existir
+    // ou se a empresa ainda não tiver um responsável.
     var instrucaoSql = `
-        INSERT INTO usuario (nome, email, senha, empresa_idempresa) 
-        VALUES (
-            '${nome}', 
-            '${email}', 
-            '${senha}', 
-            (SELECT idempresa FROM empresa WHERE cod_ativacao = '${codigoAtivacao}')
-        );
+        INSERT INTO usuario (nome, email, senha, empresaId, cargo, responsavel)
+        SELECT '${nome}', '${email}', '${senha}', e.idEmpresa, 'funcionario', r.idUsuario
+        FROM empresa e
+        JOIN usuario r ON r.empresaId = e.idEmpresa AND r.responsavel IS NULL
+        WHERE e.codigo_ativacao = '${codigoAtivacao}'
+        LIMIT 1;
     `;
     
     console.log("Executando a instrução SQL: \n" + instrucaoSql);

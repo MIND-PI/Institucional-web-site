@@ -20,6 +20,8 @@
     --color-warning: #F59E0B;
 
     --color-border: #1E2B45;
+
+    --sidebar-width: 23rem;
 }
 
 /* -------------------------- */
@@ -64,6 +66,9 @@ body {
     padding: 1rem 5rem 1rem 2rem;
     gap: 2rem;
     border-right: 2px solid var(--color-border);
+    top: 0; 
+    left: 0;
+    width: var(--sidebar-width);
 }
 
 /* HEADER DA NAV BAR */
@@ -148,6 +153,7 @@ body {
     align-items: center;
     gap: 1rem;
     padding-left: 1rem;
+    padding-right: 1rem;  
 }
 
 /* Configurando a imagem de perfil do usuario */
@@ -164,6 +170,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    min-width: 0; 
 }
 
 /* Configurando o tipo de usuario que está acessando (fornecedor ou cliente) */
@@ -176,6 +183,9 @@ body {
 .text-user-name {
     font-weight: bold;
     font-size: 0.8rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* -------------------------- */

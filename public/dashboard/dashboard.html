@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MIND | Dashboard</title>
-    <link rel="stylesheet" href="./css/reset.css">
-    <link rel="stylesheet" href="./css/aside.css">
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/aside.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 
@@ -15,7 +15,7 @@
         <!-- HEADER / LOGO DO HEADER -->
         <header class="sidebar-header">
             <div class="logo-img">
-                <img src="./assets/icon/logoMind/mind_logo_branca.png" alt="logo MIND">
+                <img src="../assets/icon/logoMind/mind_logo_branca.png" alt="logo MIND">
             </div>
             <div class="logo-text">
                 <h2 class="logo-title">MIND</h2>
@@ -46,8 +46,9 @@
                             Gerenciamento clp
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="" class="nav-link">
+                    <!-- so adcionar esse data cargo para limitar apenas os adms a verem o item -->
+                    <li class="nav-item" data-cargo="administrador" style="display: none;">
+                        <a href="./equipe.html" class="nav-link">
                             <i class="bi bi-people-fill"></i>
                             Equipe
                         </a>
@@ -93,7 +94,7 @@
                 <form id="form_config" class="form-config">
 
                     <div class="input_group file_group">
-                        <img src="./assets/imgs/fotosUsuarios/foto_padrao.png" alt="Preview da Foto"
+                        <img src="../assets/imgs/fotosUsuarios/foto_padrao.png" alt="Preview da Foto"
                             id="preview_foto_modal" class="preview-foto-modal">
                         <div class="file_upload_wrapper">
                             <label for="input_foto" class="btn_upload">Escolher nova foto</label>
@@ -124,6 +125,6 @@
 </body>
 
 </html>
-<script src="./js/sessao.js"></script>
-<script src="./js/configuracoes.js">
+<script src="../js/sessao.js"></script>
+<script src="../js/configuracoes.js">
 </script>

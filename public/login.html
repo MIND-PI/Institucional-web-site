@@ -5,18 +5,15 @@
 <head>
 
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>MIND | Login</title>
+    <title>MIND | Login</title>
 
-<link rel="stylesheet" href="./css/login e cadastro.css">
-  <link rel="icon" href="./assets/icon/MIND(1).png">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="./css/login e cadastro.css">
+    <link rel="icon" href="./assets/icon/MIND(1).png">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
 
 
 </head>
@@ -24,211 +21,206 @@
 <body>
 
 
-<main class="pagina">
+    <main class="pagina">
 
-    <section class="lado-esquerdo">
+        <section class="lado-esquerdo">
 
-        <div class="container-formulario">
+            <div class="container-formulario">
 
-            <div class="logo">
-                <a href="index.html" class="logo">MIND</a>
-            </div>
+                <div class="logo">
+                    <a href="index.html" class="logo">MIND</a>
+                </div>
 
 
-            <div class="titulo-formulario">
+                <div class="titulo-formulario">
 
-                <h1>Acesse a plataforma</h1>
+                    <h1>Acesse a plataforma</h1>
 
-                <p>
-                    Monitore a saúde dos seus CLPs em tempo real.
+                    <p>
+                        Monitore a saúde dos seus CLPs em tempo real.
+                    </p>
+
+                </div>
+
+
+                <form class="formulario" id="loginForm">
+
+                    <div class="campo">
+
+                        <label for="email">
+                            E-mail corporativo
+                        </label>
+
+                        <input type="email" id="email" required>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label for="senha">
+                            Senha
+                        </label>
+
+                        <input type="password" id="senha" minlength="8" required>
+
+                    </div>
+
+
+                    <button class="botao-formulario" type="submit">
+                        Entrar no Dashboard
+                    </button>
+
+                </form>
+
+
+                <p class="texto-final">
+
+                    Não possui uma conta?
+
+                    <a href="./cadastro.html">
+                        Cadastre-se
+                    </a>
+
                 </p>
 
             </div>
 
-
-            <form
-                class="formulario"
-                id="loginForm"
-            >
-
-                <div class="campo">
-
-                    <label for="email">
-                        E-mail corporativo
-                    </label>
-
-                    <input
-                        type="email"
-                        id="email"
-                        required
-                    >
-
-                </div>
+        </section>
 
 
-                <div class="campo">
+        <section class="lado-direito">
 
-                    <label for="senha">
-                        Senha
-                    </label>
+            <div class="conteudo-direito">
 
-                    <input
-                        type="password"
-                        id="senha"
-                        minlength="8"
-                        required
-                    >
+                <h1 class="titulo-direito">
+                    "A estabilidade é o nosso padrão."
+                </h1>
 
-                </div>
+                <p class="descricao-direito">
 
+                    Identifique falhas de processamento e sobrecargas
+                    antes que elas afetem sua linha de produção.
 
-                <button
-                    class="botao-formulario"
-                    type="submit"
-                >
-                    Entrar no Dashboard
-                </button>
+                </p>
 
-            </form>
+            </div>
+
+        </section>
+
+    </main>
 
 
-            <p class="texto-final">
+    <script>
 
-                Não possui uma conta?
+        var form = document.getElementById("loginForm");
 
-                <a href="./cadastro.html">
-                    Cadastre-se
-                </a>
+        form.addEventListener("submit", function (evento) {
 
-            </p>
+            evento.preventDefault();
 
-        </div>
+            var email =
+                document.getElementById("email").value;
 
-    </section>
-
-
-    <section class="lado-direito">
-
-        <div class="conteudo-direito">
-
-            <h1 class="titulo-direito">
-                "A estabilidade é o nosso padrão."
-            </h1>
-
-            <p class="descricao-direito">
-
-                Identifique falhas de processamento e sobrecargas
-                antes que elas afetem sua linha de produção.
-
-            </p>
-
-        </div>
-
-    </section>
-
-</main>
+            var senha =
+                document.getElementById("senha").value;
 
 
-<script>
+            if (email == "" || senha == "") {
 
-    var form = document.getElementById("loginForm");
+                alert("Preencha todos os campos.");
 
-    form.addEventListener("submit", function(evento) {
-
-        evento.preventDefault();
-
-        var email =
-            document.getElementById("email").value;
-
-        var senha =
-            document.getElementById("senha").value;
-
-
-        if (email == "" || senha == "") {
-
-            alert("Preencha todos os campos.");
-
-            return;
-
-        }
-
-
-        fetch("http://localhost:3333/usuarios/autenticar", {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-
-                emailServer: email,
-                senhaServer: senha
-
-            })
-
-        })
-
-        .then(function(resposta) {
-
-            if (!resposta.ok) {
-
-                return resposta.text()
-                    .then(function(erro) {
-
-                        throw new Error(erro);
-
-                    });
+                return;
 
             }
 
-            return resposta.json();
 
-        })
+            fetch("http://localhost:3333/usuarios/autenticar", {
 
-        .then(function(usuario) {
+                method: "POST",
 
-            sessionStorage.setItem(
-                "ID_USUARIO",
-                usuario.id
-            );
+                headers: {
+                    "Content-Type": "application/json"
+                },
 
-            sessionStorage.setItem(
-                "NOME_USUARIO",
-                usuario.nome
-            );
+                body: JSON.stringify({
 
-            sessionStorage.setItem(
-                "EMAIL_USUARIO",
-                usuario.email
-            );
+                    emailServer: email,
+                    senhaServer: senha
 
-            sessionStorage.setItem(
-                "IMG_URL",
-                usuario.imgUrl
-            )
+                })
+
+            })
+
+                .then(function (resposta) {
+
+                    if (!resposta.ok) {
+
+                        return resposta.text()
+                            .then(function (erro) {
+
+                                throw new Error(erro);
+
+                            });
+
+                    }
+
+                    return resposta.json();
+
+                })
+
+                .then(function (usuario) {
+
+                    sessionStorage.setItem(
+                        "ID_USUARIO",
+                        usuario.id
+                    );
+
+                    sessionStorage.setItem(
+                        "NOME_USUARIO",
+                        usuario.nome
+                    );
+
+                    sessionStorage.setItem(
+                        "EMAIL_USUARIO",
+                        usuario.email
+                    );
+
+                    sessionStorage.setItem(
+                        "IMG_URL",
+                        usuario.imgUrl
+                    );
+                    sessionStorage.removeItem("CARGO_USUARIO");
+
+                    if (usuario.cargo) {
+
+                        sessionStorage.setItem(
+                            "CARGO_USUARIO",
+                            usuario.cargo
+                        );
+
+                    }
 
 
-            window.location.href =
-                "./dashboard.html";
+                    window.location.href =
+                        "./dashboard/dashboard.html";
 
-        })
+                })
 
-        .catch(function(erro) {
+                .catch(function (erro) {
 
-            console.log(erro);
+                    console.log(erro);
 
-            alert(
-                erro.message ||
-                "Erro ao fazer login."
-            );
+                    alert(
+                        erro.message ||
+                        "Erro ao fazer login."
+                    );
+
+                });
 
         });
 
-    });
-
-</script>
+    </script>
 
 
 </body>
