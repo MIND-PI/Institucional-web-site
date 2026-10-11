@@ -12,6 +12,11 @@ router.get("/:idUsuario", function (req, res) {
     equipeController.listar(req, res);
 });
 
+// Edita nome e cargo de um membro (idUsuario = quem está logado, idMembro = quem será editado)
+router.put("/:idUsuario/:idMembro", function (req, res) {
+    equipeController.editar(req, res);
+});
+
 // Remove um membro (idUsuario = quem está logado, idMembro = quem será removido)
 router.delete("/:idUsuario/:idMembro", function (req, res) {
     equipeController.remover(req, res);

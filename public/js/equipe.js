@@ -7,6 +7,12 @@ var CORES_AVATAR = ["#7c3aed", "#0891b2", "#2563eb", "#be185d", "#047857", "#d97
 // como cada cargo do banco aparece na tela
 var NOMES_CARGO = { administrador: "Administrador", funcionario: "Funcionário" };
 
+// membros da última lista carregada (os modais pegam os dados daqui), por id
+var membrosPorId = {};
+
+// membro que está aberto em algum modal
+var idMembroSelecionado = null;
+
 if (!idUsuario) {
     window.location.href = "../login.html";
 }
@@ -44,9 +50,12 @@ function montarLinha(membro) {
     var ehResponsavel = membro.responsavel == null;   // primeiro usuário da empresa
     var ehEu = membro.idUsuario == idUsuario;
 
-    // Esta página só abre para administrador (cargo da sessão), então ele edita/remove
-    // os outros, menos o responsável da empresa (conta protegida) e menos ele mesmo.
-    var podeGerenciar = !ehResponsavel && !ehEu;
+    var souResponsavel = membro.souResponsavel == 1;   // quem está vendo a tela
+    var ehAdministrador = membro.cargo == "administrador";
+
+    // Ninguém mexe no responsável (conta protegida) nem em si mesmo.
+    // O responsável mexe em todos os outros; administrador comum só em funcionário.
+    var podeGerenciar = !ehResponsavel && !ehEu && (souResponsavel || !ehAdministrador);
 
     var acoes = "";
 
@@ -98,6 +107,11 @@ function carregarEquipe(busca) {
         }
         return resposta.json();
     }).then(function (membros) {
+        membrosPorId = {};
+        membros.forEach(function (membro) {
+            membrosPorId[membro.idUsuario] = membro;
+        });
+
         var tabela = document.getElementById("tabela_equipe");
 
         if (membros.length == 0) {
@@ -113,34 +127,129 @@ function carregarEquipe(busca) {
     });
 }
 
-// ---------- remover membro ----------
+// ---------- modais ----------
 
-function removerMembro(idMembro) {
-    if (!confirm("Deseja realmente remover este membro?")) {
+function abrirModal(idOverlay) {
+    document.getElementById(idOverlay).classList.add("ativo");
+}
+
+function fecharModal(idOverlay) {
+    document.getElementById(idOverlay).classList.remove("ativo");
+}
+
+// fecha clicando no X, fora da caixa ou apertando Esc
+function configurarFechamento(idOverlay, idBotaoFechar) {
+    var overlay = document.getElementById(idOverlay);
+
+    document.getElementById(idBotaoFechar).addEventListener("click", function () {
+        fecharModal(idOverlay);
+    });
+
+    overlay.addEventListener("click", function (evento) {
+        if (evento.target == overlay) {
+            fecharModal(idOverlay);
+        }
+    });
+
+    document.addEventListener("keydown", function (evento) {
+        if (evento.key == "Escape") {
+            fecharModal(idOverlay);
+        }
+    });
+}
+
+configurarFechamento("overlay_editar_membro", "btn_fechar_editar");
+configurarFechamento("overlay_remover_membro", "btn_fechar_remover");
+
+// ---------- editar membro ----------
+
+function abrirModalEditar(idMembro) {
+    var membro = membrosPorId[idMembro];
+
+    idMembroSelecionado = idMembro;
+    document.getElementById("input_editar_nome").value = membro.nome;
+    document.getElementById("select_editar_cargo").value = membro.cargo;
+    document.getElementById("erro_editar_membro").innerText = "";
+
+    abrirModal("overlay_editar_membro");
+}
+
+document.getElementById("form_editar_membro").addEventListener("submit", function (evento) {
+    evento.preventDefault();
+
+    var nome = document.getElementById("input_editar_nome").value.trim();
+    var cargo = document.getElementById("select_editar_cargo").value;
+    var erroModal = document.getElementById("erro_editar_membro");
+
+    if (nome == "") {
+        erroModal.innerText = "Digite o nome do membro.";
         return;
     }
 
-    fetch(`/equipe/${idUsuario}/${idMembro}`, {
-        method: "DELETE"
+    fetch(`/equipe/${idUsuario}/${idMembroSelecionado}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nomeServer: nome, cargoServer: cargo })
     }).then(function (resposta) {
         if (resposta.ok) {
+            fecharModal("overlay_editar_membro");
             carregarEquipe(document.getElementById("input_busca").value);
         } else {
             resposta.json().then(function (erro) {
-                alert(erro.message);
+                erroModal.innerText = erro.message;
             });
         }
     }).catch(function (erro) {
         console.log(`#ERRO: ${erro}`);
     });
+});
+
+// ---------- remover membro ----------
+
+function abrirModalRemover(idMembro) {
+    var membro = membrosPorId[idMembro];
+
+    idMembroSelecionado = idMembro;
+    document.getElementById("nome_remover").innerText = membro.nome;
+    document.getElementById("erro_remover_membro").innerText = "";
+
+    abrirModal("overlay_remover_membro");
 }
 
-// um único listener para todos os botões de remover da tabela
-document.getElementById("tabela_equipe").addEventListener("click", function (evento) {
-    var botao = evento.target.closest(".equipe-btn-delete");
+document.getElementById("btn_cancelar_remover").addEventListener("click", function () {
+    fecharModal("overlay_remover_membro");
+});
 
-    if (botao) {
-        removerMembro(botao.closest("tr").dataset.id);
+document.getElementById("btn_confirmar_remover").addEventListener("click", function () {
+    var erroModal = document.getElementById("erro_remover_membro");
+
+    fetch(`/equipe/${idUsuario}/${idMembroSelecionado}`, {
+        method: "DELETE"
+    }).then(function (resposta) {
+        if (resposta.ok) {
+            fecharModal("overlay_remover_membro");
+            carregarEquipe(document.getElementById("input_busca").value);
+        } else {
+            resposta.json().then(function (erro) {
+                erroModal.innerText = erro.message;
+            });
+        }
+    }).catch(function (erro) {
+        console.log(`#ERRO: ${erro}`);
+    });
+});
+
+// um único listener para os botões de editar e remover da tabela
+document.getElementById("tabela_equipe").addEventListener("click", function (evento) {
+    var botaoEditar = evento.target.closest(".equipe-btn-edit");
+    var botaoRemover = evento.target.closest(".equipe-btn-delete");
+
+    if (botaoEditar) {
+        abrirModalEditar(botaoEditar.closest("tr").dataset.id);
+    }
+
+    if (botaoRemover) {
+        abrirModalRemover(botaoRemover.closest("tr").dataset.id);
     }
 });
 

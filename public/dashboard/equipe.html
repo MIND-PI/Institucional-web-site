@@ -163,6 +163,58 @@
         </section>
     </main>
 
+
+    <!-- MODAL: EDITAR MEMBRO (usa as classes do modal de configurações do aside.css) -->
+    <div class="overlay_config" id="overlay_editar_membro">
+        <div class="modal_config">
+            <div class="modal_header">
+                <h2>Editar membro</h2>
+                <button type="button" class="btn_fechar" id="btn_fechar_editar">✖</button>
+            </div>
+
+            <form id="form_editar_membro" class="form-config">
+                <div class="input_group">
+                    <label for="input_editar_nome">Nome</label>
+                    <input type="text" id="input_editar_nome" placeholder="Nome do membro">
+                </div>
+
+                <div class="input_group">
+                    <label for="select_editar_cargo">Cargo</label>
+                    <select id="select_editar_cargo" class="equipe-select">
+                        <option value="administrador">Administrador</option>
+                        <option value="funcionario">Funcionário</option>
+                    </select>
+                </div>
+
+                <p class="equipe-modal-erro" id="erro_editar_membro"></p>
+
+                <button type="submit" class="btn_salvar">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: CONFIRMAR REMOÇÃO -->
+    <div class="overlay_config" id="overlay_remover_membro">
+        <div class="modal_config">
+            <div class="modal_header">
+                <h2>Remover membro</h2>
+                <button type="button" class="btn_fechar" id="btn_fechar_remover">✖</button>
+            </div>
+
+            <p class="equipe-modal-texto">
+                Deseja realmente remover <strong id="nome_remover"></strong>?
+                Essa ação não pode ser desfeita.
+            </p>
+
+            <p class="equipe-modal-erro" id="erro_remover_membro"></p>
+
+            <div class="equipe-modal-acoes">
+                <button type="button" class="btn_salvar equipe-btn-cancelar" id="btn_cancelar_remover">Cancelar</button>
+                <button type="button" class="btn_salvar equipe-btn-perigo" id="btn_confirmar_remover">Remover</button>
+            </div>
+        </div>
+    </div>
+
     <script src="../js/sessao.js"></script>
     <script src="../js/configuracoes.js"></script>
     <script src="../js/equipe.js"></script>
