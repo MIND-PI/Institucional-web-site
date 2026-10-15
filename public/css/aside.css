@@ -359,3 +359,14 @@ body {
     opacity: 0.8;
     transition: all 0.5s;
 }
+
+.profile_name {
+    background-color: var(--color-bg-secondary);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    line-height: 60px;
+}

@@ -24,7 +24,17 @@ if (sessionStorage.NOME_USUARIO == undefined) {
     nomeUsuario.innerHTML = sessionStorage.NOME_USUARIO;
 }
 
-if (sessionStorage.IMG_URL) {
+if (sessionStorage.IMG_URL != "null") {
     imgUser.src = sessionStorage.getItem("IMG_URL");
     preview_foto_modal.src = sessionStorage.getItem("IMG_URL");
+} else {
+    let nome = pegarIniciais(sessionStorage.getItem("NOME_USUARIO"))
+    img_card.innerHTML = `<p class="profile_name">${nome}</p>`
+}
+
+function pegarIniciais(nome) {
+    var partes = nome.trim().split(" ");
+    var primeira = partes[0].charAt(0);
+    var ultima = partes.length > 1 ? partes[partes.length - 1].charAt(0) : "";
+    return (primeira + ultima).toUpperCase();
 }

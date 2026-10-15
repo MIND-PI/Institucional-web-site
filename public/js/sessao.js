@@ -108,3 +108,7 @@ function listarUsuario() {
             console.log(err);
         })
 }
+
+const btnLogout = document.getElementById("btn_logout");
+
+btnLogout.addEventListener('click', limparSessao);
