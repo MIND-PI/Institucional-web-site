@@ -60,8 +60,7 @@ body {
     flex-direction: column;
     background-color: var(--color-bg-secondary);
     min-height: 100vh;
-    position: fixed;
-    padding: 1rem 5rem 1rem 2rem;
+    padding: 1rem 1.5rem;
     gap: 2rem;
     border-right: 2px solid var(--color-border);
 }
