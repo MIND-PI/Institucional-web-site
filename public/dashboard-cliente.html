@@ -13,7 +13,11 @@
 </head>
 
 <body onload="obterDados()">
-    <aside class="sidebar">
+
+    <button class="menu-mobile" id="menuMobile" data-open="false" data-close="bi-list" data-icon-open="bi-x-lg">
+        <i class="bi bi-list"></i>
+    </button>
+    <aside class="sidebar" id="sidebar">
         <!-- HEADER / LOGO DO HEADER -->
         <header class="sidebar-header">
             <div class="logo-img">
@@ -253,7 +257,7 @@
 
                 <div class="pizza-chart-container">
                     <div class="pizza-chart">
-                        <canvas id="pizza"></canvas>
+                        <canvas id="pizza" class="pizza-canvas"></canvas>
                     </div>
 
                     <p class="pizza-text-orange">Atenção</p>
@@ -781,10 +785,8 @@
     const periodoSelect = document.getElementById('period-filter');
     const btnEtl = document.getElementById('btn-etl');
 
-    // Período que está atualmente aplicado ao gráfico
     let periodoAplicado = periodoSelect.value;
 
-    // Detecta mudanças no select
     periodoSelect.addEventListener('change', function () {
         if (periodoSelect.value != '24h') {
             btnEtl.style.display = 'block';
@@ -798,4 +800,28 @@
             }, 2);
         }
     });
+
+
+    const menuMobile = document.getElementById("menuMobile");
+    const sidebar = document.getElementById("sidebar");
+    const iconMenu = menuMobile.querySelector("i");
+
+    menuMobile.addEventListener("click", () => {
+        const aberto = sidebar.classList.toggle("menu-open");
+
+        menuMobile.dataset.open = aberto;
+
+        iconMenu.classList.remove(
+            menuMobile.dataset.close,
+            menuMobile.dataset.iconOpen
+        );
+
+        iconMenu.classList.add(
+            aberto
+                ? menuMobile.dataset.iconOpen
+                : menuMobile.dataset.close
+        );
+
+    });
+
 </script>
