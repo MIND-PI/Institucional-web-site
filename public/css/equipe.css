@@ -22,7 +22,6 @@
 .equipe {
     flex: 1;
     min-width: 0;
-    margin-left: var(--sidebar-width, 23rem);
     padding: 3rem 2rem;
     font-family: "Poppins", sans-serif;
     color: var(--color-text-primary);

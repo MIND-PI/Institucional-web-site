@@ -57,7 +57,6 @@ function finalizarAguardar(texto) {
 // Atualizar Usuário
 
 function salvarConfiguracoes() {
-    console.log("EU")
     let idUsuario = sessionStorage.ID_USUARIO;
     let nome = input_nome.value;
     let senha = input_senha.value;
