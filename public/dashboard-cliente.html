@@ -122,209 +122,214 @@
         <!-- COLOCAR CONTEÚDO PRINCIPAL -->
         <header class="filter-conteiner">
 
-                    <h1 class="clp-h1">SIMENS-S7-1500</h1>
+            <h1 class="clp-h1">PLC-MAQ-03</h1>
 
-                    <div class="status-box">
-                    <p class="status-text">Ativo</p>
-                    </div>
+            <div class="status-box">
+                <p class="status-text">Ativo</p>
+            </div>
 
-                <div class="filter-box">
-                    <p class="filter-text">Periodo</p>
-                    <select name="" id="" class="filter-input">
-                        <option value="" class="filter-option">Últimas 24h</option>
-                        <option value="" class="filter-option"></option>
-                        <option value="" class="filter-option"></option>
-                    </select>
-                </div>
+            <div class="filter-box">
+                <p class="filter-text">Periodo</p>
+                <select id="period-filter" class="filter-input" onchange="atualizarGraficoLinha()">
+                    <option value="24h" class="filter-option">Últimas 24h</option>
+                    <option value="7d" class="filter-option">Últimos 7 dias</option>
+                    <option value="30d" class="filter-option">Últimos 30 dias</option>
+                </select>
+            </div>
 
-                <div class="filter-box">
-                    <p class="filter-text">Modelo</p>
-                    <select name="" id="" class="filter-input">
-                        <option value="" class="filter-option">Todas as empresas</option>
-                        <option value="" class="filter-option"></option>
-                        <option value="" class="filter-option"></option>
-                    </select>
-                </div>
+            <div class="filter-box">
+                <p class="filter-text">Modelo</p>
+                <select name="" id="" class="filter-input">
+                    <option value="" class="filter-option"></option>
+                    <option value="" class="filter-option"></option>
+                    <option value="" class="filter-option"></option>
+                </select>
+            </div>
 
-                <div class="filter-box">
-                    <p class="filter-text">CLP</p>
-                    <select name="" id="" class="filter-input">
-                        <option value="" class="filter-option">Todos os modelos</option>
-                        <option value="" class="filter-option"></option>
-                        <option value="" class="filter-option"></option>
-                    </select>
-                </div>
-                
-                <div class="filter-box">
+            <div class="filter-box">
+                <p class="filter-text">CLP</p>
+                <select name="" id="" class="filter-input">
+                    <option value="" class="filter-option">CLP-01</option>
+                    <option value="" class="filter-option">CLP-02</option>
+                    <option value="" class="filter-option">CLP-03</option>
+                </select>
+            </div>
+
+            <div class="filter-box">
                 <i class="bi bi-arrow-clockwise"></i>
-                </div>
+            </div>
         </header>
 
         <section class="kpi-conteiner">
-                
-                <div class="kpi-box">
-                    <p class="kpi-title">Consumo da CPU</p>
 
-                    <div class="kpi-chart">
-                    <canvas id="graficoCPU"></canvas>
+            <div class="kpi-box">
+                <p class="kpi-title">Consumo CPU</p>
+
+                <div class="kpi-chart">
+                    <canvas id="graph-cpu"></canvas>
                     <p class="kpi-result">65%</p>
-                    </div>
-
-                    <p class="kpi-details">↑ 2% nas ultimas 24h</p>
                 </div>
 
-                <div class="kpi-box">
-                    <p class="kpi-title">Consumo da memória ram</p>
+                <p class="kpi-details">↑ 2% nas ultimas 24h</p>
+            </div>
 
-                    <div class="kpi-chart">
-                    <canvas id="graficoRAM"></canvas>
+            <div class="kpi-box">
+                <p class="kpi-title">Consumo Memória ram</p>
+
+                <div class="kpi-chart">
+                    <canvas id="graph-ram"></canvas>
                     <p class="kpi-result">70%</p>
-                    </div>
-
-                    <p class="kpi-details">↑ 2% nas ultimas 24h</p>
                 </div>
 
-                <div class="kpi-box">
-                    <p class="kpi-title">Uptime(tempo ativo)</p>
-                    <p class="kpi-result-big">6<span class="kpi-little">h</span>23<span class="kpi-little" >min</span></p>
-                </div>
+                <p class="kpi-details">↑ 2% nas ultimas 24h</p>
+            </div>
 
-                <div class="kpi-box">
-                    <p class="kpi-title">Total de alertas</p>
-                    <p class="kpi-result-big">10</p>
-                </div>
+            <div class="kpi-box">
+                <p class="kpi-title">Uptime(tempo ativo)</p>
+                <p class="kpi-result-big">6<span class="kpi-little">h</span>23<span class="kpi-little">min</span></p>
+            </div>
+
+            <div class="kpi-box">
+                <p class="kpi-title">Total de alertas</p>
+                <p class="kpi-result-big">10</p>
+            </div>
 
         </section>
 
         <section class="graph-conteiner">
-            
+
             <div class="graph-box-lines">
 
-            <div class="lines-content">
-                <p class="lines-text">Desempenho do CLP</p>
-            
-            
-            <select id="tipo-grafico" class="chart-select"  >
-            <option value="scanTime">Scan Time</option>    
-            <option value="cpu">Consumo da CPU</option>
-            <option value="ram">Consumo da RAM</option>
-        </select>
-            
-            </div>
-                <div class="lines-datas"> 
-                    
-                <div class="lines-text-box">
-                    <p class="blue-text">Pico Scan time </p>
-                    <p class="lines-metrics">38 ms</p>
-                </div>
-                    
-                <div class="lines-text-box">
-                    <p class="blue-text">Atual Scan time</p>
-                    <p class="lines-metrics">28 ms</p>
-                </div>
+                <div class="lines-content">
+                    <p class="lines-text">Desempenho do CLP</p>
 
-                <div class="lines-text-box">
-                    <p class="blue-text">Média Scan time</p>
-                    <p class="lines-metrics">30 ms</p>
-                </div>
+
+                    <select id="graph-type" class="chart-select" onchange="atualizarGraficoLinha()">
+                        <option value="scanTime">Scan Time</option>
+                        <option value="cpu">Consumo da CPU</option>
+                        <option value="ram">Consumo da RAM</option>
+                    </select>
 
                 </div>
+                <div class="lines-datas">
 
-              <canvas id="linha"></canvas>
+                    <div class="lines-text-box">
+                        <p class="blue-text" id="peak-label">Pico Scan time</p>
+                        <p class="lines-metrics" id="valor-pico">38 ms</p>
+                    </div>
 
-                
+                    <div class="lines-text-box">
+                        <p class="blue-text" id="current-label">Atual Scan time</p>
+                        <p class="lines-metrics" id="valor-atual">28 ms</p>
+                    </div>
+
+                    <div class="lines-text-box">
+                        <p class="blue-text" id="minimun-label">Mínimo Scan time</p>
+                        <p class="lines-metrics" id="valor-minimo">30 ms</p>
+                    </div>
+
+
+                </div>
+                <div class="line-chart-wrapper">
+                    <canvas id="line-chart"></canvas>
+                </div>
+
             </div>
 
             <div class="graph-box-pizza">
 
-            <div class="pizza-content">
-            <p class="pizza-title">Status do clp</p>
-            </div>
-            
-            <div class="pizza-chart">
-            <canvas id="pizza"></canvas>
-            </div>
-
-            <p class="pizza-text-orange">Atenção</p>
-
-            <div class="line"></div>
-
-            <div class="pizza-datas">
-
-            <div class="pizza-text-box">
-                    <p class="pizza-text">ultima atualização</p>
-                    <p class="pizza-text">modelo</p>
-                    <p class="pizza-text">setor</p>
-                </div>
-                    
-                <div class="lines-text-box">
-                    <p class="pizza-text">hoje, 15:42:54</p>
-                    <p class="pizza-text">SIMENS-S7-1500</p>
-                    <p class="pizza-text">produção</p>
+                <div class="pizza-content">
+                    <p class="pizza-title">Status do clp</p>
                 </div>
 
+                <div class="pizza-chart">
+                    <canvas id="pizza"></canvas>
+                </div>
+
+                <p class="pizza-text-orange">Atenção</p>
+
+                <div class="line"></div>
+
+                <div class="pizza-datas">
+
+                    <div class="pizza-row">
+                        <p class="pizza-text">última atualização</p>
+                        <p class="pizza-text">hoje, 15:42:54</p>
+                    </div>
+
+                    <div class="pizza-row">
+                        <p class="pizza-text">modelo</p>
+                        <p class="pizza-text">SIEMENS-S7-1500</p>
+                    </div>
+
+                    <div class="pizza-row">
+                        <p class="pizza-text">setor</p>
+                        <p class="pizza-text">produção</p>
+                    </div>
+
+                </div>
+
             </div>
-            
-        </div>
         </section>
 
         <section class="metrics-conteiner">
-            <div class="metrics-box metrics-comunication">
-                
-                <div class="metrics-top">
-               <div class="metrics-content">
-                <p class="metrics-title">Comunicação</p>
-                <p class="blue-text">latência (ping)</p>
-                <p class="metrics-big">18ms</p>
-                </div> 
+            <div class="metrics-box">
 
-                <div class="scan-chart">
-                    <canvas id="scan-time"></canvas>
+                <div class="metrics-top">
+                    <div class="metrics-content">
+                        <p class="metrics-title">Comunicação</p>
+                        <p class="blue-text">latência (ping)</p>
+                        <p class="metrics-big">18ms</p>
+                    </div>
+
+                    <div class="scan-chart">
+                        <canvas id="scan-time"></canvas>
+                    </div>
+
                 </div>
 
-               </div>
-               
-               <div class="line"></div>
+                <div class="line"></div>
 
-               <div class="metrics-bottom">
+                <div class="metrics-bottom">
 
-               <div class="metrics-blocks">
-                <p class="blue-text">Pacotes enviados</p>
-                <p class="metrics-big">12.432</p>
-               </div>
+                    <div class="metrics-blocks">
+                        <p class="blue-text">Pacotes enviados</p>
+                        <p class="metrics-big">12.432</p>
+                    </div>
 
-               <div class="metrics-blocks">
-               <p class="blue-text">Pacotes recebidos</p>
-               <p class="metrics-big">12.492</p>
-               </div>
+                    <div class="metrics-blocks">
+                        <p class="blue-text">Pacotes recebidos</p>
+                        <p class="metrics-big">12.432</p>
+                    </div>
 
-               <div class="metrics-blocks">
-               <p class="blue-text">Perda de pacotes</p>
-               <p class="metrics-big">0.00%</p>
-               </div>
+                    <div class="metrics-blocks">
+                        <p class="blue-text">Perda de pacotes</p>
+                        <p class="metrics-big">0.00%</p>
+                    </div>
 
-               </div>
+                </div>
 
-               <div class="metrics-status">
-                <div class="green-circle"></div>
-                <p class="green-text">Comunicação estável</p>
-               </div>
+                <div class="metrics-status">
+                    <div class="green-circle"></div>
+                    <p class="green-text">Comunicação estável</p>
+                </div>
 
             </div>
 
 
-            
-             <div class="metrics-box metrics-processes">
 
-            <div class="process-title">
-            <p>Processos com mais aparições</p>
-            <span>Ocorrências</span>
+            <div class="metrics-box">
+
+                <div class="process-header">
+                    <p class="process-title">Processos com mais aparições</p>
+                    <span>Ocorrências</span>
+                </div>
+
+                <div class="process-chart-container" id="process-chart">
+                </div>
+
             </div>
 
-            <div class="process-chart-container" id="process-chart">
-            </div>
-
-</div>
         </section>
 
     </main>
@@ -335,295 +340,348 @@
 <script src="./js/configuracoes.js"></script>
 
 <script>
-function obterDados() {
 
-const dadosGrafico1 = [
-{ horarios: '00:00', alertasCPU: 55, alertasScanTime: 10 },
-{ horarios: '03:00', alertasCPU: 62, alertasScanTime: 11 },
-{ horarios: '06:00', alertasCPU: 65, alertasScanTime: 9 },
-{ horarios: '09:00', alertasCPU: 58, alertasScanTime: 8 },
-{ horarios: '12:00', alertasCPU: 60, alertasScanTime: 18 },
-{ horarios: '15:00', alertasCPU: 72, alertasScanTime: 17 },
-{ horarios: '18:00', alertasCPU: 57, alertasScanTime: 12 },
-{ horarios: '21:00', alertasCPU: 67, alertasScanTime: 10 }
-];
+    let graficoLinha = null;
 
-const dadosGrafico2 = [
-{ healthScore: 58 }
-];
-
-plotarGraficoLinha(dadosGrafico1);
-plotarGraficoPizza(dadosGrafico2);
-GraficoConsumo('graficoCPU', 65);
-GraficoConsumo('graficoRAM', 70);
-GraficoScanTime(dadosGrafico1);
-GraficoProcessosConsumo();
-}
-
-
-function plotarGraficoLinha(dados) {
-
-const alertasCPU = [];
-const alertasScanTime = [];
-const horarios = [];
-
-    for (let i = 0; i < dados.length; i++) {
-        alertasCPU.push(dados[i].alertasCPU);
-        alertasScanTime.push(dados[i].alertasScanTime);
-        horarios.push(dados[i].horarios);
-    }
-
-    const ctx = document.getElementById('linha').getContext('2d');
-
-    new Chart(ctx, {
-        type: 'line',
-
-        data: {
-            labels: horarios,
-
-            datasets: [
-                {
-                    label: 'CPU (%)',
-                    data: alertasCPU,
-                    borderColor: '#06B6D4',
-                    backgroundColor: '#06B6D4',
-                    borderWidth: 2
-                },
-                
-            ]
-        },
-
-        options: {
-            plugins: {
-                legend: {
-                    display: false
-                }
-            }
-        }
-    });
-}
-
-
-function plotarGraficoPizza(dados) {
-
-    const score = dados[0].healthScore;
-    const restante = 100 - score;
-    const ctx = document.getElementById('pizza').getContext('2d');
-
-    const pluginCentro = {
-        id: 'textoCentro',
-
-        afterDraw: function(chart) {
-            const contexto = chart.ctx;
-
-            const x = chart.width / 2;
-            const y = chart.height / 2;
-
-            contexto.save();
-
-            contexto.textAlign = 'center';
-            contexto.textBaseline = 'middle';
-            contexto.fillStyle = '#FFFFFF';
-
-            contexto.font = 'bold 38px Geist';
-            contexto.fillText(score, x, y - 8);
-
-            contexto.font = '10px Geist';
-            contexto.fillText('HEALTH SCORE', x, y + 27);
-
-            contexto.restore();
-        }
+    const dadosPorPeriodo = {
+        '24h': [
+            { horarios: '00:00', alertasCPU: 55, alertasScanTime: 10, alertasRAM: 60 },
+            { horarios: '03:00', alertasCPU: 62, alertasScanTime: 11, alertasRAM: 63 },
+            { horarios: '06:00', alertasCPU: 65, alertasScanTime: 9, alertasRAM: 66 },
+            { horarios: '09:00', alertasCPU: 58, alertasScanTime: 8, alertasRAM: 64 },
+            { horarios: '12:00', alertasCPU: 60, alertasScanTime: 18, alertasRAM: 68 },
+            { horarios: '15:00', alertasCPU: 72, alertasScanTime: 17, alertasRAM: 74 },
+            { horarios: '18:00', alertasCPU: 57, alertasScanTime: 12, alertasRAM: 70 },
+            { horarios: '21:00', alertasCPU: 67, alertasScanTime: 10, alertasRAM: 69 }
+        ],
+        '7d': [
+            { horarios: '18/10', alertasCPU: 58, alertasScanTime: 12, alertasRAM: 63 },
+            { horarios: '19/10', alertasCPU: 61, alertasScanTime: 14, alertasRAM: 65 },
+            { horarios: '20/10', alertasCPU: 66, alertasScanTime: 11, alertasRAM: 68 },
+            { horarios: '21/10', alertasCPU: 59, alertasScanTime: 16, alertasRAM: 64 },
+            { horarios: '22/10', alertasCPU: 70, alertasScanTime: 15, alertasRAM: 72 },
+            { horarios: '23/10', alertasCPU: 63, alertasScanTime: 13, alertasRAM: 69 },
+            { horarios: '24/10', alertasCPU: 65, alertasScanTime: 12, alertasRAM: 70 }
+        ],
+        '30d': [
+            { horarios: '25/09', alertasCPU: 54, alertasScanTime: 10, alertasRAM: 60 },
+            { horarios: '30/09', alertasCPU: 60, alertasScanTime: 13, alertasRAM: 64 },
+            { horarios: '05/10', alertasCPU: 68, alertasScanTime: 17, alertasRAM: 71 },
+            { horarios: '10/10', alertasCPU: 57, alertasScanTime: 11, alertasRAM: 66 },
+            { horarios: '15/10', alertasCPU: 64, alertasScanTime: 14, alertasRAM: 68 },
+            { horarios: '20/10', alertasCPU: 66, alertasScanTime: 12, alertasRAM: 70 }
+        ]
     };
 
-    new Chart(ctx, {
-        type: 'doughnut',
+    const configGraficoLinha = {
+        scanTime: { campo: 'alertasScanTime', nome: 'Scan Time', unidade: ' ms' },
+        cpu: { campo: 'alertasCPU', nome: 'CPU', unidade: '%' },
+        ram: { campo: 'alertasRAM', nome: 'RAM', unidade: '%' }
+    };
 
-        data: {
-            labels: ['Saúde', 'Restante'],
+    function obterDados() {
 
-            datasets: [{
-                data: [score, restante],
-                backgroundColor: ['#FFA500', 'transparent'],
-                borderWidth: 0,
-                hoverOffset: 0
-            }]
-        },
+        const dadosGrafico1 = dadosPorPeriodo['24h'];
 
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: '82%',
-            rotation: -30,
-            circumference: 340,
+        const dadosGrafico2 = [
+            { healthScore: 58 }
+        ];
 
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    enabled: false
-                }
-            }
-        },
-
-        plugins: [pluginCentro]
-    });
-}
-
-
-function GraficoConsumo(idCanvas, consumo) {
-
-    const ctx = document.getElementById(idCanvas);
-
-    new Chart(ctx, {
-        type: 'doughnut',
-
-        data: {
-            datasets: [{
-                data: [consumo, 100 - consumo],
-                backgroundColor: ['#06B6D4', '#D1D5DB'],
-                borderWidth: 0
-            }]
-        },
-
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            rotation: -90,
-            circumference: 180,
-            cutout: '75%',
-
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    enabled: false
-                }
-            }
-        }
-    });
-}
-
-
-function GraficoScanTime(dados) {
-
-    const horarios = [];
-    const alertasScanTime = [];
-
-    for (let i = 0; i < dados.length; i++) {
-        horarios.push(dados[i].horarios);
-        alertasScanTime.push(dados[i].alertasScanTime);
+        plotarGraficoPizza(dadosGrafico2);
+        GraficoConsumo('graph-cpu', 65);
+        GraficoConsumo('graph-ram', 70);
+        GraficoScanTime(dadosGrafico1);
+        GraficoProcessosConsumo();
+        atualizarGraficoLinha()
     }
 
-    const ctx = document.getElementById('scan-time');
 
-    new Chart(ctx, {
-        type: 'line',
+    function atualizarGraficoLinha() {
 
-        data: {
-            labels: horarios,
+        const periodo = document.getElementById('period-filter').value;
+        const tipo = document.getElementById('graph-type').value;
+        const dados = dadosPorPeriodo[periodo];
+        const config = configGraficoLinha[tipo];
+        const horarios = [];
+        const valores = [];
 
-            datasets: [{
-                label: 'Scan Time (ms)',
-                data: alertasScanTime,
+        for (let i = 0; i < dados.length; i++) {
+            horarios.push(dados[i].horarios);
+            valores.push(dados[i][config.campo]);
+        }
 
-                borderColor: '#06B6D4',
-                backgroundColor: 'rgba(6, 182, 212, 0.12)',
+        document.getElementById('peak-label').textContent = 'Pico ' + config.nome;
+        document.getElementById('current-label').textContent = 'Atual ' + config.nome;
+        document.getElementById('minimun-label').textContent = 'Mínimo ' + config.nome;
+        document.getElementById('valor-pico').textContent = Math.max(...valores) + config.unidade;
+        document.getElementById('valor-atual').textContent = valores[valores.length - 1] + config.unidade;
+        document.getElementById('valor-minimo').textContent = Math.min(...valores) + config.unidade;
 
-                borderWidth: 2,
-                pointRadius: 3,
-                pointBackgroundColor: '#06B6D4',
-                pointBorderWidth: 0,
 
-                tension: 0.35,
-                fill: true
-            }]
-        },
+        if (graficoLinha != null) {
+            graficoLinha.destroy();
+        }
 
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
+        const ctx = document.getElementById('line-chart').getContext('2d');
 
-            plugins: {
-                legend: {
-                    display: false
+        graficoLinha = new Chart(ctx, {
+            type: 'line',
+
+            data: {
+                labels: horarios,
+                datasets: [{
+                    label: config.nome,
+                    data: valores,
+                    borderColor: '#06B6D4',
+                    backgroundColor: '#06B6D4'
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: { display: false }
+                },
+
+                scales: {
+                    x: {
+                        ticks: { color: '#94A3B8' },
+                        grid: { display: false }
+                    },
+                    y: {
+                        ticks: { color: '#94A3B8' },
+                        grid: { color: 'rgba(255, 255, 255, 0.08)' }
+                    }
+                }
+            }
+        });
+    }
+
+
+
+
+    function plotarGraficoPizza(dados) {
+
+        const score = dados[0].healthScore;
+        const restante = 100 - score;
+        const ctx = document.getElementById('pizza').getContext('2d');
+
+        const pluginCentro = {
+            id: 'textoCentro',
+
+            afterDraw: function (chart) {
+                const contexto = chart.ctx;
+
+                const x = chart.width / 2;
+                const y = chart.height / 2;
+
+                contexto.save();
+
+                contexto.textAlign = 'center';
+                contexto.textBaseline = 'middle';
+                contexto.fillStyle = '#FFFFFF';
+
+                contexto.font = 'bold 38px Geist';
+                contexto.fillText(score, x, y - 8);
+
+                contexto.font = '10px Geist';
+                contexto.fillText('HEALTH SCORE', x, y + 27);
+
+                contexto.restore();
+            }
+        };
+
+        new Chart(ctx, {
+            type: 'doughnut',
+
+            data: {
+                labels: ['Saúde', 'Restante'],
+
+                datasets: [{
+                    data: [score, restante],
+                    backgroundColor: ['#FFA500', 'transparent'],
+                    borderWidth: 0,
+                    hoverOffset: 0
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '82%',
+                rotation: -30,
+                circumference: 340,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
                 }
             },
 
-            scales: {
-                x: {
-                    ticks: {
-                        color: '#94A3B8',
-                        maxTicksLimit: 4,
-                        font: {
-                            size: 9
-                        }
-                    },
+            plugins: [pluginCentro]
+        });
+    }
 
-                    grid: {
+
+    function GraficoConsumo(idCanvas, consumo) {
+
+        const ctx = document.getElementById(idCanvas);
+
+        new Chart(ctx, {
+            type: 'doughnut',
+
+            data: {
+                datasets: [{
+                    data: [consumo, 100 - consumo],
+                    backgroundColor: ['#06B6D4', '#D1D5DB'],
+                    borderWidth: 0
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                rotation: -90,
+                circumference: 180,
+                cutout: '75%',
+
+                plugins: {
+                    legend: {
                         display: false
                     },
+                    tooltip: {
+                        enabled: false
+                    }
+                }
+            }
+        });
+    }
 
-                    border: {
+
+    function GraficoScanTime(dados) {
+
+        const horarios = [];
+        const alertasScanTime = [];
+
+        for (let i = 0; i < dados.length; i++) {
+            horarios.push(dados[i].horarios);
+            alertasScanTime.push(dados[i].alertasScanTime);
+        }
+
+        const ctx = document.getElementById('scan-time');
+
+        new Chart(ctx, {
+            type: 'line',
+
+            data: {
+                labels: horarios,
+
+                datasets: [{
+                    label: 'Scan Time (ms)',
+                    data: alertasScanTime,
+
+                    borderColor: '#06B6D4',
+                    backgroundColor: 'rgba(6, 182, 212, 0.12)',
+
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#06B6D4',
+                    pointBorderWidth: 0,
+
+                    tension: 0.35,
+                    fill: true
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
                         display: false
                     }
                 },
 
-                y: {
-                    min: 0,
-                    max: 60,
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#94A3B8',
+                            maxTicksLimit: 4,
+                            font: {
+                                size: 9
+                            }
+                        },
 
-                    ticks: {
-                        color: '#94A3B8',
-                        font: {
-                            size: 9
+                        grid: {
+                            display: false
+                        },
+
+                        border: {
+                            display: false
                         }
                     },
 
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.08)'
-                    },
+                    y: {
+                        min: 0,
+                        max: 60,
 
-                    border: {
-                        display: false
+                        ticks: {
+                            color: '#94A3B8',
+                            font: {
+                                size: 9
+                            }
+                        },
+
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.08)'
+                        },
+
+                        border: {
+                            display: false
+                        }
                     }
                 }
             }
-        }
-    });
-}
-
-
-function GraficoProcessosConsumo() {
-
-    const container = document.getElementById('process-chart');
-
-    const processos = [
-        'Scada Runtime',
-        'Comunicação CLP',
-        'Historiador',
-        'Monitor de rede',
-        'Outros'
-    ];
-
-    const aparicoes = [42, 31, 25, 18, 12];
-
-    let maiorValor = aparicoes[0];
-
-    for (let i = 0; i < aparicoes.length; i++) {
-        if (aparicoes[i] > maiorValor) {
-            maiorValor = aparicoes[i];
-        }
+        });
     }
 
-    let conteudo = '';
 
-    for (let i = 0; i < processos.length; i++) {
+    function GraficoProcessosConsumo() {
 
-        const largura = (aparicoes[i] / maiorValor) * 100;
+        const container = document.getElementById('process-chart');
 
-        conteudo += `
+        const processos = [
+            'Scada Runtime',
+            'Comunicação CLP',
+            'Historiador',
+            'Monitor de rede',
+            'Outros'
+        ];
+
+        const aparicoes = [42, 31, 25, 18, 12];
+
+        let maiorValor = aparicoes[0];
+
+        for (let i = 0; i < aparicoes.length; i++) {
+            if (aparicoes[i] > maiorValor) {
+                maiorValor = aparicoes[i];
+            }
+        }
+
+        let conteudo = '';
+
+        for (let i = 0; i < processos.length; i++) {
+
+            const largura = (aparicoes[i] / maiorValor) * 100;
+
+            conteudo += `
             <div class="process-item">
 
                 <div class="process-info">
@@ -637,8 +695,8 @@ function GraficoProcessosConsumo() {
 
             </div>
         `;
-    }
+        }
 
-    container.innerHTML = conteudo;
-}
+        container.innerHTML = conteudo;
+    }
 </script>
