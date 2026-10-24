@@ -80,8 +80,8 @@
                 <img src="/public/assets/imgs/fotosUsuarios/foto_padrao.png" alt="Foto do usuário" id="imgUser">
             </div>
             <div class="text-card">
-                <p id="nomeUsuario" class="text-user-name">LÍDIA ALMEIDA</p>
-                <p id="tipoUsuario" class="text-user-type">FORNECEDOR</p>
+                <p id="nomeUsuario" class="text-user-name">Rogerio Andrade</p>
+                <p id="tipoUsuario" class="text-user-type">CLIENTE</p>
             </div>
         </footer>
         <!-- MODAL DAS CONFIGURAÇÕES DO USUARIO -->
@@ -120,44 +120,53 @@
     </aside>
     <main>
         <!-- COLOCAR CONTEÚDO PRINCIPAL -->
-        <header class="filter-conteiner">
+        <header class="header-main">
 
-            <h1 class="clp-h1">PLC-MAQ-03</h1>
+            <div class="box-title">
+                <h1 class="clp-h1">CLP-MAQ-03</h1>
 
-            <div class="status-box">
-                <p class="status-text">Ativo</p>
+                <div class="status-box">
+                    <p class="status-text">Ativo</p>
+                </div>
             </div>
 
-            <div class="filter-box">
-                <p class="filter-text">Periodo</p>
-                <select id="period-filter" class="filter-input" onchange="atualizarGraficoLinha()">
-                    <option value="24h" class="filter-option">Últimas 24h</option>
-                    <option value="7d" class="filter-option">Últimos 7 dias</option>
-                    <option value="30d" class="filter-option">Últimos 30 dias</option>
-                </select>
+            <div class="filter-container">
+
+                <div class="filter-box">
+                    <button id="btn-etl" class="btn-etl">
+                        Atualizar
+                    </button>
+                </div>
+
+
+                <div class="filter-box">
+                    <p class="filter-text">Periodo</p>
+                    <select id="period-filter" class="filter-input" onchange="atualizarGraficoLinha()">
+                        <option value="24h" class="filter-option">Últimas 24h</option>
+                        <option value="7d" class="filter-option">Últimos 7 dias</option>
+                        <option value="30d" class="filter-option">Últimos 30 dias</option>
+                    </select>
+                </div>
+
+                <div class="filter-box">
+                    <p class="filter-text">Modelo</p>
+                    <select name="" id="" class="filter-input">
+                        <option value="" class="filter-option">SIEMENS-S7-1500</option>
+                    </select>
+                </div>
+
+                <div class="filter-box">
+                    <p class="filter-text">CLP</p>
+                    <select name="" id="" class="filter-input">
+                        <option value="" class="filter-option">CLP-MAQ-03</option>
+                    </select>
+                </div>
+                <div class="filter-box">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </div>
             </div>
 
-            <div class="filter-box">
-                <p class="filter-text">Modelo</p>
-                <select name="" id="" class="filter-input">
-                    <option value="" class="filter-option"></option>
-                    <option value="" class="filter-option"></option>
-                    <option value="" class="filter-option"></option>
-                </select>
-            </div>
 
-            <div class="filter-box">
-                <p class="filter-text">CLP</p>
-                <select name="" id="" class="filter-input">
-                    <option value="" class="filter-option">CLP-01</option>
-                    <option value="" class="filter-option">CLP-02</option>
-                    <option value="" class="filter-option">CLP-03</option>
-                </select>
-            </div>
-
-            <div class="filter-box">
-                <i class="bi bi-arrow-clockwise"></i>
-            </div>
         </header>
 
         <section class="kpi-conteiner">
@@ -186,7 +195,7 @@
 
             <div class="kpi-box">
                 <p class="kpi-title">Uptime(tempo ativo)</p>
-                <p class="kpi-result-big">6<span class="kpi-little">h</span>23<span class="kpi-little">min</span></p>
+                <p class="kpi-result-big">6h 23min</p>
             </div>
 
             <div class="kpi-box">
@@ -201,7 +210,7 @@
             <div class="graph-box-lines">
 
                 <div class="lines-content">
-                    <p class="lines-text">Desempenho do CLP</p>
+                    <p class="title-graph">Desempenho do CLP</p>
 
 
                     <select id="graph-type" class="chart-select" onchange="atualizarGraficoLinha()">
@@ -239,32 +248,37 @@
             <div class="graph-box-pizza">
 
                 <div class="pizza-content">
-                    <p class="pizza-title">Status do clp</p>
+                    <p class="title-graph">Status do CLP</p>
                 </div>
 
-                <div class="pizza-chart">
-                    <canvas id="pizza"></canvas>
+                <div class="pizza-chart-container">
+                    <div class="pizza-chart">
+                        <canvas id="pizza"></canvas>
+                    </div>
+
+                    <p class="pizza-text-orange">Atenção</p>
                 </div>
-
-                <p class="pizza-text-orange">Atenção</p>
-
-                <div class="line"></div>
 
                 <div class="pizza-datas">
 
                     <div class="pizza-row">
-                        <p class="pizza-text">última atualização</p>
-                        <p class="pizza-text">hoje, 15:42:54</p>
+                        <p class="pizza-text">Última atualização</p>
+                        <p class="pizza-text"><span id="time_now"></span></p>
                     </div>
 
                     <div class="pizza-row">
-                        <p class="pizza-text">modelo</p>
+                        <p class="pizza-text">Modelo</p>
                         <p class="pizza-text">SIEMENS-S7-1500</p>
                     </div>
 
                     <div class="pizza-row">
-                        <p class="pizza-text">setor</p>
-                        <p class="pizza-text">produção</p>
+                        <p class="pizza-text">Endereço MAC</p>
+                        <p class="pizza-text">00:19:B9:FB:E2:58</p>
+                    </div>
+
+                    <div class="pizza-row">
+                        <p class="pizza-text">Setor</p>
+                        <p class="pizza-text">Produção</p>
                     </div>
 
                 </div>
@@ -277,9 +291,9 @@
 
                 <div class="metrics-top">
                     <div class="metrics-content">
-                        <p class="metrics-title">Comunicação</p>
+                        <p class="title-graph">Comunicação</p>
                         <p class="blue-text">latência (ping)</p>
-                        <p class="metrics-big">18ms</p>
+                        <p class="metrics-big">10ms</p>
                     </div>
 
                     <div class="scan-chart">
@@ -318,14 +332,14 @@
 
 
 
-            <div class="metrics-box">
+            <div class="metrics-box metrics-processes">
 
-                <div class="process-header">
-                    <p class="process-title">Processos com mais aparições</p>
-                    <span>Ocorrências</span>
+                <div class="process-title">
+                    <p class="title-graph">Processos com mais aparições</p>
                 </div>
 
-                <div class="process-chart-container" id="process-chart">
+                <div class="process-chart-container">
+                    <canvas id="process-chart"></canvas>
                 </div>
 
             </div>
@@ -342,6 +356,11 @@
 <script>
 
     let graficoLinha = null;
+    const agora = new Date();
+
+    const dia = agora.toLocaleString('pt-BR');
+
+    time_now.innerHTML = dia
 
     const dadosPorPeriodo = {
         '24h': [
@@ -583,7 +602,7 @@
                 labels: horarios,
 
                 datasets: [{
-                    label: 'Scan Time (ms)',
+                    label: 'Ping (ms)',
                     data: alertasScanTime,
 
                     borderColor: '#06B6D4',
@@ -655,48 +674,128 @@
 
     function GraficoProcessosConsumo() {
 
-        const container = document.getElementById('process-chart');
+        const canvas = document.getElementById('process-chart');
 
         const processos = [
-            'Scada Runtime',
-            'Comunicação CLP',
-            'Historiador',
-            'Monitor de rede',
-            'Outros'
+            'scada runtime',
+            'codesyscontrol',
+            'plcnext',
+            'python',
+            'code run'
         ];
 
         const aparicoes = [42, 31, 25, 18, 12];
 
-        let maiorValor = aparicoes[0];
+        new Chart(canvas, {
+            type: 'bar',
 
-        for (let i = 0; i < aparicoes.length; i++) {
-            if (aparicoes[i] > maiorValor) {
-                maiorValor = aparicoes[i];
-            }
-        }
+            data: {
+                labels: processos,
+                datasets: [{
+                    data: aparicoes,
+                    backgroundColor: '#06B6D4',
+                    borderRadius: 0,
+                    borderSkipped: false,
+                    barThickness: 20
+                }]
+            },
 
-        let conteudo = '';
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
 
-        for (let i = 0; i < processos.length; i++) {
+                plugins: {
+                    legend: {
+                        display: false
+                    },
 
-            const largura = (aparicoes[i] / maiorValor) * 100;
+                    title: {
+                        display: false
+                    },
 
-            conteudo += `
-            <div class="process-item">
+                    tooltip: {
+                        callbacks: {
+                            label: (context) =>
+                                `${context.raw} ocorrências`
+                        }
+                    },
+                },
 
-                <div class="process-info">
-                    <span class="process-name">${processos[i]}</span>
-                    <span class="process-count">${aparicoes[i]}</span>
-                </div>
+                scales: {
+                    x: {
+                        display: false,
+                        beginAtZero: true,
+                        max: 46
+                    },
 
-                <div class="process-track">
-                    <div class="process-bar" style="width: ${largura}%"></div>
-                </div>
+                    y: {
+                        grid: {
+                            display: false
+                        },
 
-            </div>
-        `;
-        }
+                        border: {
+                            display: false
+                        },
 
-        container.innerHTML = conteudo;
+                        ticks: {
+                            color: '#FFFFFF',
+                            font: {
+                                family: 'Montserrat',
+                                size: 12,
+                                weight: '600'
+                            }
+                        }
+                    }
+                }
+            },
+
+            plugins: [{
+                id: 'valoresNasBarras',
+
+                afterDatasetsDraw(chart) {
+                    const { ctx } = chart;
+
+                    chart.data.datasets[0].data.forEach((valor, index) => {
+                        const barra = chart.getDatasetMeta(0).data[index];
+
+                        ctx.save();
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.font = '600 12px Montserrat, sans-serif';
+                        ctx.textAlign = 'left';
+                        ctx.textBaseline = 'middle';
+
+                        ctx.fillText(
+                            valor,
+                            barra.x + 8,
+                            barra.y
+                        );
+
+                        ctx.restore();
+                    });
+                }
+            }]
+        });
     }
+
+    const periodoSelect = document.getElementById('period-filter');
+    const btnEtl = document.getElementById('btn-etl');
+
+    // Período que está atualmente aplicado ao gráfico
+    let periodoAplicado = periodoSelect.value;
+
+    // Detecta mudanças no select
+    periodoSelect.addEventListener('change', function () {
+        if (periodoSelect.value != '24h') {
+            btnEtl.style.display = 'block';
+            setInterval(() => {
+                btnEtl.style.opacity = 1
+            }, 2);
+        } else {
+            btnEtl.style.display = 'none';
+            setInterval(() => {
+                btnEtl.style.opacity = 0
+            }, 2);
+        }
+    });
 </script>
