@@ -585,6 +585,13 @@ main {
     display: none;
 }
 
+.kpi-alert {
+    width: 100%;
+    text-align: right;
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+}
+
 @media (max-width: 1024px) {
 
     main {
