@@ -64,7 +64,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="https://equipe-mind.atlassian.net/servicedesk/customer/portal/2" class="nav-link" target="_blank">
+                        <a href="https://equipe-mind.atlassian.net/servicedesk/customer/portal/2" class="nav-link"
+                            target="_blank">
                             <i class="bi bi-question-circle"></i>
                             Ajuda
                         </a>
@@ -154,13 +155,6 @@
                         <option value="24h" class="filter-option">Últimas 24h</option>
                         <option value="7d" class="filter-option">Últimos 7 dias</option>
                         <option value="30d" class="filter-option">Últimos 30 dias</option>
-                    </select>
-                </div>
-
-                <div class="filter-box">
-                    <p class="filter-text">Modelo</p>
-                    <select name="" id="" class="filter-input">
-                        <option value="" class="filter-option">SIEMENS-S7-1500</option>
                     </select>
                 </div>
 
@@ -797,14 +791,11 @@
     periodoSelect.addEventListener('change', function () {
         if (periodoSelect.value != '24h') {
             btnEtl.style.display = 'block';
-            setInterval(() => {
-                btnEtl.style.opacity = 1
-            }, 2);
+            btnEtl.style.opacity = 1
         } else {
             btnEtl.style.display = 'none';
-            setInterval(() => {
-                btnEtl.style.opacity = 0
-            }, 2);
+
+            btnEtl.style.opacity = 0
         }
     });
 
