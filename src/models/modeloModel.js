@@ -1,3 +1,4 @@
+const { adicionarModelo } = require("../controllers/modeloController");
 var database = require("../database/config");
 
 function listarModelos(idEmpresa) {
@@ -21,8 +22,6 @@ function listarModelos(idEmpresa) {
 function atualizarModelo(nome, idModelo, status) {
 
     let campos = []
-
-    console.log("Status: " + status)
 
     if (nome != null && nome.trim().length !== 0) {
         campos.push(`nome = '${nome}'`)
@@ -48,7 +47,20 @@ function atualizarModelo(nome, idModelo, status) {
     return database.executar(instrucaoSql);
 }
 
+
+function cadastrarModelo(nome, idEmpresa) {
+
+    var instrucaoSql = `
+    INSERT INTO modelo (nome, empresaId)
+    VALUE ('${nome}', ${idEmpresa})
+    `;
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     listarModelos,
-    atualizarModelo
+    atualizarModelo,
+    cadastrarModelo
 };

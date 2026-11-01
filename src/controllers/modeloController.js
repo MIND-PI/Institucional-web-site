@@ -33,7 +33,6 @@ function atualizarModelo(req, res) {
     if (idModelo == undefined) {
         res.status(400).send("O id do modelo está indefinido!");
     } else {
-        console.log(nome, status, idModelo)
         usuarioModel.atualizarModelo(nome, idModelo, status)
             .then(function (resultado) {
                 // affectedRows = 0 quando o código não existe ou a empresa ainda não tem responsável
@@ -50,7 +49,29 @@ function atualizarModelo(req, res) {
     }
 }
 
+function cadastrarModelo(req, res) {
+
+    var nome = req.body.nomeServer;
+    var id_empresa = req.params.idEmpresa;
+
+    if (id_empresa == undefined) {
+        res.status(400).send("O id da empresa está indefinido!");
+    }else if (nome == undefined || nome.trim().length <= 0) {
+        res.status(400).send("O nome está indefinido")
+    } else {
+        usuarioModel.cadastrarModelo(nome, id_empresa)
+            .then(function (resultado) {
+                res.json(resultado);
+            })
+            .catch(function (erro) {
+                console.log(erro);
+                res.status(500).json(erro.sqlMessage);
+            });
+    }
+}
+
 module.exports = {
     listarModelos,
-    atualizarModelo
+    atualizarModelo,
+    cadastrarModelo
 }

@@ -11,5 +11,10 @@ router.put("/atualizar/:idModelo", function (req, res) {
     modeloController.atualizarModelo(req, res);
 });
 
+router.post("/cadastrar/:idEmpresa", function (req, res) {
+    modeloController.cadastrarModelo(req, res);
+});
+
+
 
 module.exports = router;
