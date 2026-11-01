@@ -85,7 +85,7 @@
         <footer class="user-card">
             <div class="img-card">
                 <img src="../assets/imgs/fotosUsuarios/foto_padrao.png" alt="Foto do usuário" id="imgUser"
-     onerror="this.onerror=null; this.src='../assets/imgs/fotosUsuarios/foto_padrao.png'">
+                    onerror="this.onerror=null; this.src='../assets/imgs/fotosUsuarios/foto_padrao.png'">
             </div>
             <div class="text-card">
                 <p id="nomeUsuario" class="text-user-name">Rogerio Andrade</p>
@@ -169,6 +169,62 @@
             </footer>
         </section>
     </main>
+
+    <div class="overlay_config" id="overlay_edit_model">
+        <div class="modal_config">
+            <div class="modal_header">
+                <h2>Editar modelo</h2>
+                <button type="button" class="btn_fechar" id="btn_fechar_editar">✖</button>
+            </div>
+
+            <form id="form_editar_membro" class="form-config">
+                <div class="input_group">
+                    <label for="input_editar_nome">Nome</label>
+                    <input type="text" id="input_editar_nome" placeholder="Nome do modelo">
+                </div>
+
+                <div class="input_group">
+                    <label for="select_editar_cargo">Status</label>
+                    <select id="select_editar_cargo" class="equipe-select">
+                        <option value="ativo">Ativo</option>
+                        <option value="inativo">Inativo</option>
+                    </select>
+                </div>
+
+                <p class="equipe-modal-erro" id="erro_editar_modelo"></p>
+
+                <button type="submit" class="btn_save_edit">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+
+        <div class="overlay_config" id="overlay_remove_model">
+        <div class="modal_config">
+            <div class="modal_header">
+                <h2>Editar modelo</h2>
+                <button type="button" class="btn_fechar" id="btn_fechar_remover">✖</button>
+            </div>
+
+            <form id="form_editar_membro" class="form-config">
+                <div class="input_group">
+                    <label for="input_editar_nome">Nome</label>
+                    <input type="text" id="input_editar_nome" placeholder="Nome do modelo">
+                </div>
+
+                <div class="input_group">
+                    <label for="select_editar_cargo">Status</label>
+                    <select id="select_editar_cargo" class="equipe-select">
+                        <option value="ativo">Ativo</option>
+                        <option value="inativo">Inativo</option>
+                    </select>
+                </div>
+
+                <p class="equipe-modal-erro" id="erro_editar_modelo"></p>
+
+                <button type="submit" class="btn_salvar" id="btn_remove">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
 
     <script src="../js/sessao.js"></script>
     <script src="../js/configuracoes.js"></script>

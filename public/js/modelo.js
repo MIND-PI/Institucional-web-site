@@ -42,6 +42,11 @@ async function loadModel() {
     }
 
     // Colocando total de modelos
+    if (json.length == 0) {
+        total_models.innerHTML = "Sem modelos cadastrados"
+        return
+    }
+
     total_models.innerHTML = `${json.length} modelos`
 }
 
@@ -61,4 +66,44 @@ function loadActions() {
     return actions
 }
 
+function openModal(modal) {
+    document.getElementById(modal).classList.add("ativo");
+}
+
+function closeModal(modal) {
+    document.getElementById(modal).classList.remove("ativo");
+}
+
+// Carregando modelos
 loadModel()
+
+
+// ======================================
+// Botões que estão ouvindo os comandos
+// ======================================
+
+// Evento de click na tabela para verificar somente botão de editar e remover
+document.getElementById("table_management").addEventListener("click", (event) => {
+    let btnEdit = event.target.closest(".management-btn-edit")
+    let btnRemove = event.target.closest(".management-btn-delete")
+
+    if (btnEdit) {
+        openModal("overlay_edit_model")
+    }
+
+    if (btnRemove) {
+        openModal("overlay_remove_model")
+    }
+})
+
+// Evento de click no botão de fechar o pop up de editar
+document.getElementById("btn_fechar_editar").addEventListener("click", (event) => {
+    closeModal("overlay_edit_model")
+})
+
+// Evento de click no botão de fechar o pop up de remover
+document.getElementById("btn_fechar_remover").addEventListener("click", (event) => {
+    closeModal("overlay_remove_model")
+})
+
+// Evento de click no botão de salvar alterações do modelo
