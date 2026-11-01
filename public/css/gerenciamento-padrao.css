@@ -1,0 +1,220 @@
+/* ===== PÁGINA EQUIPE ===== */
+
+/* ÁREA PRINCIPAL
+   A sidebar é position: fixed, então o main precisa de margin-left
+   com a largura dela. O 23rem é só um valor de reserva caso
+   --sidebar-width ainda não exista no aside.css */
+.main {
+    flex: 1;
+    min-width: 0;
+    padding: 3rem 2rem;
+    font-family: "Poppins", sans-serif;
+    color: var(--color-text-primary);
+}
+
+/* td, th, span, button e input não são cobertos pelo aside.css,
+   por isso herdam a fonte aqui */
+.main button,
+.main input {
+    font-family: inherit;
+}
+
+.header-main {
+    margin-bottom: 1.5rem;
+}
+
+.title-management {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle-management {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+
+/* BUSCA + BOTÃO */
+.toolbar-management {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.search-management {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    width: 100%;
+    max-width: 17rem;
+    height: 2.6rem;
+    padding: 0 1rem;
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    transition: border-color 0.3s;
+}
+
+.search-management:focus-within {
+    border-color: var(--color-accent);
+}
+
+.search-management-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--color-text-primary);
+    font-size: 0.85rem;
+}
+
+.search-management-input::placeholder {
+    color: var(--color-text-secondary);
+}
+
+.btn-management {
+    background-color: var(--color-accent);
+    border: none;
+    border-radius: 5px;
+    padding: 0.6rem 1.5rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* TABELA */
+.table-card-management{
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+.table-management {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.table-management th,
+.table-management td {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+}
+
+.table-management th {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+}
+
+.table-management td {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+
+.table-management tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.management-col-actions {
+    width: 8rem;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* BOTÕES DE AÇÃO */
+.management-btn-icon {
+    background: transparent;
+    border: none;
+    padding: 0.25rem;
+    margin: 0 0.25rem;
+    cursor: pointer;
+}
+
+.management-btn-icon i {
+    font-size: 1.3rem;
+    transition: opacity 0.3s;
+}
+
+.management-btn-icon:hover i {
+    opacity: 0.7;
+}
+
+.management-btn-delete i {
+    color: var(--color-danger);
+}
+
+/* RODAPÉ DA TABELA */
+.table-footer-management {
+    padding: 0.9rem 1rem;
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+}
+
+/* LISTA VAZIA */
+.table-management td.management-empty {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+/* CADEADO DA CONTA DO RESPONSÁVEL */
+.management-lock {
+    font-size: 1.1rem;
+}
+
+/* ===== MODAIS (usam .overlay_config e .modal_config do aside.css) ===== */
+
+.equipe-select {
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 12px 15px;
+    color: var(--color-text-primary);
+    font-family: "Poppins", sans-serif;
+    color-scheme: dark;
+    outline: none;
+    transition: border-color 0.5s;
+}
+
+.equipe-select:focus {
+    border-color: var(--color-accent);
+}
+
+.equipe-modal-texto {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.equipe-modal-erro {
+    font-size: 0.8rem;
+    color: var(--color-danger);
+    margin-bottom: 1rem;
+}
+
+.equipe-modal-erro:empty {
+    display: none;
+}
+
+.equipe-modal-acoes {
+    display: flex;
+    gap: 1rem;
+}
+
+.equipe-btn-cancelar {
+    background-color: transparent;
+    border: 1px solid var(--color-border);
+}
+
+.equipe-btn-perigo {
+    background-color: var(--color-danger);
+}
+
+#input_editar_nome,
+#select_editar_cargo {
+    color: rgba(255, 255, 255, 0.5);
+}

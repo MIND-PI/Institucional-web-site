@@ -61,14 +61,14 @@ function montarLinha(membro) {
 
     if (podeGerenciar) {
         acoes = `
-            <button type="button" class="equipe-btn-icon equipe-btn-edit" title="Editar">
+            <button type="button" class="management-btn-icon management-btn-edit" title="Editar">
                 <i class="bi bi-pencil-square"></i>
             </button>
-            <button type="button" class="equipe-btn-icon equipe-btn-delete" title="Remover">
+            <button type="button" class="management-btn-icon management-btn-delete" title="Remover">
                 <i class="bi bi-trash3"></i>
             </button>`;
     } else if (ehResponsavel) {
-        acoes = `<i class="bi bi-lock-fill equipe-lock" title="Conta do responsável da empresa"></i>`;
+        acoes = `<i class="bi bi-lock-fill management-lock" title="Conta do responsável da empresa"></i>`;
     }
 
     // Foto do banco por cima da inicial. Se não tiver foto, ou se a imagem
@@ -115,7 +115,7 @@ function carregarEquipe(busca) {
         var tabela = document.getElementById("tabela_equipe");
 
         if (membros.length == 0) {
-            tabela.innerHTML = `<tr><td colspan="5" class="equipe-empty">Nenhum membro encontrado.</td></tr>`;
+            tabela.innerHTML = `<tr><td colspan="5" class="management-empty">Nenhum membro encontrado.</td></tr>`;
         } else {
             tabela.innerHTML = membros.map(montarLinha).join("");
         }

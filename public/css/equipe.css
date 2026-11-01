@@ -4,75 +4,6 @@
    A sidebar é position: fixed, então o main precisa de margin-left
    com a largura dela. O 23rem é só um valor de reserva caso
    --sidebar-width ainda não exista no aside.css */
-.equipe {
-    flex: 1;
-    min-width: 0;
-    padding: 3rem 2rem;
-    font-family: "Poppins", sans-serif;
-    color: var(--color-text-primary);
-}
-
-/* td, th, span, button e input não são cobertos pelo aside.css,
-   por isso herdam a fonte aqui */
-.equipe button,
-.equipe input {
-    font-family: inherit;
-}
-
-.equipe-header {
-    margin-bottom: 1.5rem;
-}
-
-.equipe-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-
-.equipe-subtitle {
-    font-size: 0.9rem;
-    color: var(--color-text-secondary);
-}
-
-/* BUSCA + BOTÃO */
-.equipe-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.equipe-search {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    width: 100%;
-    max-width: 17rem;
-    height: 2.6rem;
-    padding: 0 1rem;
-    background-color: var(--color-bg-secondary);
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    transition: border-color 0.3s;
-}
-
-.equipe-search:focus-within {
-    border-color: var(--color-accent);
-}
-
-.equipe-search-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: var(--color-text-primary);
-    font-size: 0.85rem;
-}
-
-.equipe-search-input::placeholder {
-    color: var(--color-text-secondary);
-}
 
 /* CÓDIGO DA EMPRESA */
 .equipe-code {
@@ -124,50 +55,9 @@
 }
 
 /* TABELA */
-.equipe-table-card {
-    background-color: var(--color-bg-secondary);
-    border: 1px solid var(--color-border);
-    border-radius: 10px;
-    overflow-x: auto;
-}
-
-.equipe-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-}
-
-.equipe-table th,
-.equipe-table td {
-    padding: 0.9rem 1rem;
-    border-bottom: 1px solid var(--color-border);
-    vertical-align: middle;
-}
-
-.equipe-table th {
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: var(--color-text-secondary);
-}
-
-.equipe-table td {
-    font-size: 0.9rem;
-    color: var(--color-text-secondary);
-}
-
-.equipe-table tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.03);
-}
 
 .equipe-col-avatar {
     width: 4rem;
-}
-
-.equipe-col-actions {
-    width: 8rem;
-    text-align: center;
-    white-space: nowrap;
 }
 
 .equipe-member-name {
@@ -207,46 +97,6 @@
 .equipe-badge-funcionario {
     background-color: var(--color-border);
     color: var(--color-text-secondary);
-}
-
-/* BOTÕES DE AÇÃO */
-.equipe-btn-icon {
-    background: transparent;
-    border: none;
-    padding: 0.25rem;
-    margin: 0 0.25rem;
-    cursor: pointer;
-}
-
-.equipe-btn-icon i {
-    font-size: 1.3rem;
-    transition: opacity 0.3s;
-}
-
-.equipe-btn-icon:hover i {
-    opacity: 0.7;
-}
-
-.equipe-btn-delete i {
-    color: var(--color-danger);
-}
-
-/* RODAPÉ DA TABELA */
-.equipe-table-footer {
-    padding: 0.9rem 1rem;
-    font-size: 0.8rem;
-    color: var(--color-text-secondary);
-}
-
-/* LISTA VAZIA */
-.equipe-table td.equipe-empty {
-    text-align: center;
-    padding: 2rem 1rem;
-}
-
-/* CADEADO DA CONTA DO RESPONSÁVEL */
-.equipe-lock {
-    font-size: 1.1rem;
 }
 
 /* FOTO DO USUÁRIO (cobre a inicial) */
