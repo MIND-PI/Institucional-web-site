@@ -5,7 +5,10 @@ function listarModelos(idEmpresa) {
     var instrucaoSql = `
     SELECT 
         mo.nome,
-        mo.status
+        mo.status,
+        mo.idModelo,
+        mo.data_criacao,
+        mo.data_atualizacao
     FROM empresa em
     JOIN modelo mo ON mo.empresaId = em.idEmpresa
     WHERE em.idEmpresa = ${idEmpresa};

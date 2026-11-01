@@ -190,6 +190,9 @@
                         "IMG_URL",
                         usuario.imgUrl
                     );
+
+                    sessionStorage.setItem("ID_EMPRESA", usuario.idEmpresa)
+
                     sessionStorage.removeItem("CARGO_USUARIO");
 
                     if (usuario.cargo) {
