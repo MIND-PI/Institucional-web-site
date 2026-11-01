@@ -1,4 +1,3 @@
-const { adicionarModelo } = require("../controllers/modeloController");
 var database = require("../database/config");
 
 function listarModelos(idEmpresa) {

@@ -48,6 +48,62 @@ async function loadModel() {
     }
 
     total_models.innerHTML = `${json.length} modelos`
+
+    sessionStorage.setItem("MODELOS_CADASTRADOS", json)
+}
+
+async function registerModel(event) {
+    let id_empresa = sessionStorage.getItem("ID_EMPRESA")
+
+    let nome = input_adicionar_nome.value
+
+    if (!nome || nome.trim().length === 0) {
+        erro_adicionar_modelo.innerHTML = "O nome precisa estar preenchido"
+        event.preventDefault()
+        return
+    }
+
+    let response = await fetch(`/modelo/cadastrar/${id_empresa}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            "nomeServer": nome
+        })
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        erro_adicionar_modelo.innerHTML = "Não conseguiu fazer a conexão com o servidor"
+        event.preventDefault()
+        return
+    }
+}
+
+async function updateModel(event) {
+    let id_empresa = sessionStorage.getItem("ID_EMPRESA")
+
+    let nome = input_editar_nome.value
+    let status = select_editar_cargo.value
+
+    let response = await fetch(`/modelo/atualizar/${id_empresa}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            "nomeServer": nome,
+            "statusServer": status
+        })
+    })
+
+    if (!response.ok) {
+        erro_editar_modelo.innerHTML = "Não conseguiu fazer a conexão com o servidor"
+        event.preventDefault()
+        return
+    }
 }
 
 function loadActions() {
@@ -118,4 +174,14 @@ document.getElementById("btn_management_model").addEventListener("click", () => 
 // Evento de click no botão de fechar o pop up de adiconar novo modelo
 document.getElementById("btn_fechar_adicionar").addEventListener("click", () => {
     closeModal("overlay_add_model")
+})
+
+// Adicionando evento no formulario do adicionar modelo quando ele é enviado
+document.getElementById("form_adicionar_modelo").addEventListener("submit", (event) => {
+    registerModel(event)
+});
+
+// Adicionando evento no formulário de edição de modelo quando ele é enviado
+document.getElementById("form_editar_modelo").addEventListener("submit", (event) => {
+    updateModel(event)
 })

@@ -177,7 +177,7 @@
                 <button type="button" class="btn_fechar" id="btn_fechar_editar">✖</button>
             </div>
 
-            <form id="form_editar_membro" class="form-config">
+            <form id="form_editar_modelo" class="form-config">
                 <div class="input_group">
                     <label for="input_editar_nome">Nome</label>
                     <input type="text" id="input_editar_nome" placeholder="Nome do modelo">
@@ -186,14 +186,14 @@
                 <div class="input_group">
                     <label for="select_editar_cargo">Status</label>
                     <select id="select_editar_cargo" class="equipe-select">
-                        <option value="ativo">Ativo</option>
-                        <option value="inativo">Inativo</option>
+                        <option value="1">Ativo</option>
+                        <option value="0">Inativo</option>
                     </select>
                 </div>
 
                 <p class="equipe-modal-erro" id="erro_editar_modelo"></p>
 
-                <button type="submit" class="btn_save_edit">Salvar Alterações</button>
+                <button type="submit" class="btn_salvar" id="btn_save_edit">Salvar Alterações</button>
             </form>
         </div>
     </div>
@@ -207,19 +207,11 @@
 
             <form id="form_editar_membro" class="form-config">
                 <div class="input_group">
-                    <label for="input_editar_nome">Nome</label>
-                    <input type="text" id="input_editar_nome" placeholder="Nome do modelo">
+                    <label for="input_remover">Nome</label>
+                    <input type="text" id="input_remover" placeholder="Nome do modelo">
                 </div>
 
-                <div class="input_group">
-                    <label for="select_editar_cargo">Status</label>
-                    <select id="select_editar_cargo" class="equipe-select">
-                        <option value="ativo">Ativo</option>
-                        <option value="inativo">Inativo</option>
-                    </select>
-                </div>
-
-                <p class="equipe-modal-erro" id="erro_editar_modelo"></p>
+                <p class="equipe-modal-erro" id="erro_remover_modelo"></p>
 
                 <button type="submit" class="btn_salvar" id="btn_remove">Salvar Alterações</button>
             </form>
@@ -233,15 +225,15 @@
                 <button type="button" class="btn_fechar" id="btn_fechar_adicionar">✖</button>
             </div>
 
-            <form id="form_editar_membro" class="form-config">
+            <form id="form_adicionar_modelo" class="form-config">
                 <div class="input_group">
-                    <label for="input_editar_nome">Nome</label>
-                    <input type="text" id="input_editar_nome" placeholder="Nome do modelo">
+                    <label for="input_adicionar_nome">Nome</label>
+                    <input type="text" id="input_adicionar_nome" placeholder="Nome do modelo">
                 </div>
 
-                <p class="equipe-modal-erro" id="erro_editar_modelo"></p>
+                <p class="equipe-modal-erro" id="erro_adicionar_modelo"></p>
 
-                <button type="submit" class="btn_salvar" id="btn_remove">Salvar Alterações</button>
+                <button type="submit" class="btn_salvar" id="btn_salvar_adicionar">Salvar Alterações</button>
             </form>
         </div>
     </div>
