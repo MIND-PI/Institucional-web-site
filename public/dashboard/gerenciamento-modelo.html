@@ -140,7 +140,7 @@
                 <input type="text" class="search-management-input" id="input_busca" placeholder="Buscar por nome">
             </div>
             <div class="btn-management-content">
-                <button type="button" class="btn-management" id="btn_copiar_codigo" title="Copiar código">
+                <button type="button" class="btn-management" id="btn_management_model" title="Copiar código">
                     Adicionar modelo
                 </button>
             </div>
@@ -198,7 +198,7 @@
         </div>
     </div>
 
-        <div class="overlay_config" id="overlay_remove_model">
+    <div class="overlay_config" id="overlay_remove_model">
         <div class="modal_config">
             <div class="modal_header">
                 <h2>Editar modelo</h2>
@@ -225,6 +225,27 @@
             </form>
         </div>
     </div>
+
+    <div class="overlay_config" id="overlay_add_model">
+        <div class="modal_config">
+            <div class="modal_header">
+                <h2>Adicionar novo modelo</h2>
+                <button type="button" class="btn_fechar" id="btn_fechar_adicionar">✖</button>
+            </div>
+
+            <form id="form_editar_membro" class="form-config">
+                <div class="input_group">
+                    <label for="input_editar_nome">Nome</label>
+                    <input type="text" id="input_editar_nome" placeholder="Nome do modelo">
+                </div>
+
+                <p class="equipe-modal-erro" id="erro_editar_modelo"></p>
+
+                <button type="submit" class="btn_salvar" id="btn_remove">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+
 
     <script src="../js/sessao.js"></script>
     <script src="../js/configuracoes.js"></script>

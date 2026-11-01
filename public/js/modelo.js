@@ -74,7 +74,11 @@ function closeModal(modal) {
     document.getElementById(modal).classList.remove("ativo");
 }
 
+
+
+// ======================================
 // Carregando modelos
+// ======================================
 loadModel()
 
 
@@ -97,13 +101,21 @@ document.getElementById("table_management").addEventListener("click", (event) =>
 })
 
 // Evento de click no botão de fechar o pop up de editar
-document.getElementById("btn_fechar_editar").addEventListener("click", (event) => {
+document.getElementById("btn_fechar_editar").addEventListener("click", () => {
     closeModal("overlay_edit_model")
 })
 
 // Evento de click no botão de fechar o pop up de remover
-document.getElementById("btn_fechar_remover").addEventListener("click", (event) => {
+document.getElementById("btn_fechar_remover").addEventListener("click", () => {
     closeModal("overlay_remove_model")
 })
 
-// Evento de click no botão de salvar alterações do modelo
+// Evento de click no botão de adicionar mais um modelo
+document.getElementById("btn_management_model").addEventListener("click", () => {
+    openModal("overlay_add_model")
+})
+
+// Evento de click no botão de fechar o pop up de adiconar novo modelo
+document.getElementById("btn_fechar_adicionar").addEventListener("click", () => {
+    closeModal("overlay_add_model")
+})
