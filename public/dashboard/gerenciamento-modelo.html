@@ -19,7 +19,7 @@
         <!-- HEADER / LOGO DO HEADER -->
         <header class="sidebar-header">
             <div class="logo-img">
-                <img src="../assets/icon/logoMind/mind_logo_branca.png" alt="logo MIND">
+                <img src="./../assets/icon/logoMind/mind_logo_branca.png" alt="logo MIND">
             </div>
             <div class="logo-text">
                 <h2 class="logo-title">MIND</h2>
@@ -29,27 +29,9 @@
         <!-- INICIO DA NAV BAR -->
         <nav class="sidebar-nav">
             <section class="nav-section">
-                <h4 class="nav-section-title">FLUXO DO FORNECEDOR</h4>
-                <ul class="nav-list">
-                    <li class="nav-item">
-                        <a href="./dashboard-cliente.html" class="nav-link">
-                            <i class="bi bi-bar-chart-fill"></i>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="" class="nav-link">
-                            <i class="bi bi-cpu"></i>
-                            Gerenciamento clp
-                        </a>
-                    </li>
-                    <li class="nav-item" data-cargo="administrador" style="display: none;">
-                        <!-- "active" marca a página atual -->
-                        <a href="./equipe.html" class="nav-link active">
-                            <i class="bi bi-people-fill"></i>
-                            Equipe
-                        </a>
-                    </li>
+                <!-- TODO: FAZER DIFERENÇA ENTRE FORNECEDOR E CLIENTE QUANDO SE CONECTA NO SISTEMA -->
+                <h4 class="nav-section-title" id="nav_title">FLUXO DO CLIENTE</h4>
+                <ul class="nav-list" id="nav_flow">
                 </ul>
             </section>
             <section class="nav-section">
@@ -62,7 +44,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="https://equipe-mind.atlassian.net/servicedesk/customer/portal/2" class="nav-link">
+                        <a href="https://equipe-mind.atlassian.net/servicedesk/customer/portal/2" class="nav-link"
+                            target="_blank">
                             <i class="bi bi-question-circle"></i>
                             Ajuda
                         </a>
@@ -81,6 +64,7 @@
                 </ul>
             </section>
         </nav>
+        <!-- CARD DO USUARIO -->
         <!-- CARD DO USUARIO -->
         <footer class="user-card">
             <div class="img-card">

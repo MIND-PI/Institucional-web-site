@@ -44,7 +44,8 @@ async function autenticar(req, res) {
                 cargo: resultado[0].cargo,
                 imgUrl: url_img,
                 codigoativacao: resultado[0].codigoativacao,
-                idEmpresa: resultado[0].empresaId
+                idEmpresa: resultado[0].empresaId,
+                tipoEmpresa: resultado[0].tipo
             });
 
         } else if (resultado.length == 0) {

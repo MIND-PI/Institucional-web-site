@@ -195,6 +195,8 @@
 
                     sessionStorage.removeItem("CARGO_USUARIO");
 
+                    sessionStorage.setItem("TIPO_EMPRESA", usuario.tipoEmpresa)
+
                     if (usuario.cargo) {
 
                         sessionStorage.setItem(

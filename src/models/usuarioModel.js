@@ -2,8 +2,9 @@ var database = require("../database/config");
 
 function autenticar(email, senha) {
     var instrucaoSql = `
-        SELECT idUsuario, nome, email, url_img, cargo, empresaId
-        FROM usuario
+        SELECT idUsuario, nome, email, url_img, cargo, empresaId, tipo
+        FROM usuario u
+        JOIN empresa em ON em.idEmpresa = u.empresaId
         WHERE email = '${email}'
         AND senha = '${senha}';
     `;
