@@ -1,4 +1,4 @@
-async function loadModel() {
+async function getModel() {
     // Pegando id da empresa do session storage
     let id_empresa = sessionStorage.getItem("ID_EMPRESA")
 
@@ -16,16 +16,22 @@ async function loadModel() {
     // Transformando a resposta em json
     let json = await response.json()
 
+    sessionStorage.setItem("MODELOS_CADASTRADOS", JSON.stringify(json))
 
+    return json
+}
+
+function renderModels(modelos) {
     let table = document.getElementById("table_management")
+    table.innerHTML = ""
 
     // Validando as ações que o cargo do usuario pode fazer
     let actions = loadActions()
-
+    
     // Criando a tabela 
-    for (let i = 0; i < json.length; i++) {
+    for (let i = 0; i < modelos.length; i++) {
         // Variavel que representa cada modelo vindo do json
-        const model = json[i];
+        const model = modelos[i];
 
         // Tratando data e hora
         let data_criacao = new Date(model.data_criacao).toLocaleDateString("pt-br")
@@ -42,14 +48,12 @@ async function loadModel() {
     }
 
     // Colocando total de modelos
-    if (json.length == 0) {
+    if (modelos.length == 0) {
         total_models.innerHTML = "Sem modelos cadastrados"
         return
     }
 
-    total_models.innerHTML = `${json.length} modelos`
-
-    sessionStorage.setItem("MODELOS_CADASTRADOS", json)
+    total_models.innerHTML = `${modelos.length} modelos`
 }
 
 async function registerModel(event) {
@@ -83,12 +87,10 @@ async function registerModel(event) {
 }
 
 async function updateModel(event) {
-    let id_empresa = sessionStorage.getItem("ID_EMPRESA")
-
     let nome = input_editar_nome.value
     let status = select_editar_cargo.value
 
-    let response = await fetch(`/modelo/atualizar/${id_empresa}`, {
+    let response = await fetch(`/modelo/atualizar/${id_modelo}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -130,23 +132,75 @@ function closeModal(modal) {
     document.getElementById(modal).classList.remove("ativo");
 }
 
+async function deleteModel(event) {
 
+    let modelos = JSON.parse(sessionStorage.getItem("MODELOS_CADASTRADOS"))
+
+    let nome = input_remover.value
+
+    if (searchDeleteModel(nome, modelos)) {
+        erro_remover_modelo.innerHTML = "A confirmação precisa ser o mesmo nome do modelo"
+        event.preventDefault()
+        return
+    }
+
+    let response = await fetch(`/modelo/deletar/${id_modelo}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+
+    if (!response.ok) {
+        erro_remover_modelo.innerHTML = "O modelo tem registros e não é possível deletá-lo"
+        event.preventDefault()
+        return
+    }
+}
+
+function searchDeleteModel(nome, modelos) {
+    for (let i = 0; i < modelos.length; i++) {
+        const modelo = modelos[i];
+        if (modelo.nome == nome && modelo.idModelo == id_modelo) {
+            return false
+        }
+    }
+
+    return true
+}
+
+function searchModel() {
+    let input_search = input_busca.value.toLowerCase()
+
+    let models = JSON.parse(sessionStorage.getItem("MODELOS_CADASTRADOS"))
+
+    let model_filter = models.filter(model => model.nome.toLowerCase().includes(input_search))
+
+    renderModels(model_filter)
+}
 
 // ======================================
 // Carregando modelos
 // ======================================
-loadModel()
+async function loadModels() {
+    let models = await getModel()
+    renderModels(models)
+}
 
+loadModels()
 
 // ======================================
 // Botões que estão ouvindo os comandos
 // ======================================
 
 // Evento de click na tabela para verificar somente botão de editar e remover
+
+let id_modelo
+
 document.getElementById("table_management").addEventListener("click", (event) => {
     let btnEdit = event.target.closest(".management-btn-edit")
     let btnRemove = event.target.closest(".management-btn-delete")
-
+    id_modelo = event.target.closest("tr").getAttribute("data-id")
     if (btnEdit) {
         openModal("overlay_edit_model")
     }
@@ -159,11 +213,13 @@ document.getElementById("table_management").addEventListener("click", (event) =>
 // Evento de click no botão de fechar o pop up de editar
 document.getElementById("btn_fechar_editar").addEventListener("click", () => {
     closeModal("overlay_edit_model")
+    id_modelo = null
 })
 
 // Evento de click no botão de fechar o pop up de remover
 document.getElementById("btn_fechar_remover").addEventListener("click", () => {
     closeModal("overlay_remove_model")
+    id_modelo = null
 })
 
 // Evento de click no botão de adicionar mais um modelo
@@ -184,4 +240,12 @@ document.getElementById("form_adicionar_modelo").addEventListener("submit", (eve
 // Adicionando evento no formulário de edição de modelo quando ele é enviado
 document.getElementById("form_editar_modelo").addEventListener("submit", (event) => {
     updateModel(event)
+})
+
+document.getElementById("form_remover_modelo").addEventListener("submit", (event) => {
+    deleteModel(event)
+})
+
+document.getElementById("input_busca").addEventListener("input", () => {
+    searchModel()
 })
