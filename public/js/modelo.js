@@ -170,10 +170,13 @@ function searchDeleteModel(nome, modelos) {
 }
 
 function searchModel() {
+    // Validando input e colocando em lower case
     let input_search = input_busca.value.toLowerCase()
 
+    // Transformando o session storage em json
     let models = JSON.parse(sessionStorage.getItem("MODELOS_CADASTRADOS"))
 
+    // Filtrando modelo pelo nome, verificando se o input_search value está presente em algum dos indices do array
     let model_filter = models.filter(model => model.nome.toLowerCase().includes(input_search))
 
     renderModels(model_filter)
@@ -189,13 +192,21 @@ async function loadModels() {
 
 loadModels()
 
+
+
+// ======================================
+// Criação de variavel universal
+// ======================================
+
+// Criando variavel modelo para ser usada como id no edit e remove
+let id_modelo
+
+
 // ======================================
 // Botões que estão ouvindo os comandos
 // ======================================
 
 // Evento de click na tabela para verificar somente botão de editar e remover
-
-let id_modelo
 
 document.getElementById("table_management").addEventListener("click", (event) => {
     let btnEdit = event.target.closest(".management-btn-edit")
@@ -242,10 +253,12 @@ document.getElementById("form_editar_modelo").addEventListener("submit", (event)
     updateModel(event)
 })
 
+// Adicionando evento no formulário de remoção de moddelos quado ele é enviado
 document.getElementById("form_remover_modelo").addEventListener("submit", (event) => {
     deleteModel(event)
 })
 
+// Adicionando evento de input no input de busca para filtrar por nome
 document.getElementById("input_busca").addEventListener("input", () => {
     searchModel()
 })
