@@ -58,8 +58,20 @@ function cadastrarModelo(nome, idEmpresa) {
     return database.executar(instrucaoSql);
 }
 
+function deletarModelo(idModelo) {
+
+    var instrucaoSql = `
+    DELETE FROM modelo 
+    WHERE idModelo = ${idModelo}
+    `;
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     listarModelos,
     atualizarModelo,
-    cadastrarModelo
+    cadastrarModelo,
+    deletarModelo
 };

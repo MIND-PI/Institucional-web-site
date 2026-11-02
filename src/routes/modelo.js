@@ -15,6 +15,8 @@ router.post("/cadastrar/:idEmpresa", function (req, res) {
     modeloController.cadastrarModelo(req, res);
 });
 
-
+router.delete("/deletar/:idModelo", function (req, res) {
+    modeloController.deletarModelo(req, res);
+});
 
 module.exports = router;

@@ -1,4 +1,4 @@
-var usuarioModel = require("../models/modeloModel");
+var modeloModel = require("../models/modeloModel");
 
 function listarModelos(req, res) {
 
@@ -8,7 +8,7 @@ function listarModelos(req, res) {
         res.status(400).send("O id da empresa está indefinido!");
     } else {
 
-        usuarioModel.listarModelos(idEmpresa)
+        modeloModel.listarModelos(idEmpresa)
             .then(function (resultado) {
                 // affectedRows = 0 quando o código não existe ou a empresa ainda não tem responsável
                 if (resultado.affectedRows == 0) {
@@ -33,7 +33,7 @@ function atualizarModelo(req, res) {
     if (idModelo == undefined) {
         res.status(400).send("O id do modelo está indefinido!");
     } else {
-        usuarioModel.atualizarModelo(nome, idModelo, status)
+        modeloModel.atualizarModelo(nome, idModelo, status)
             .then(function (resultado) {
                 // affectedRows = 0 quando o código não existe ou a empresa ainda não tem responsável
                 if (resultado.length == 0) {
@@ -59,7 +59,25 @@ function cadastrarModelo(req, res) {
     }else if (nome == undefined || nome.trim().length <= 0) {
         res.status(400).send("O nome está indefinido")
     } else {
-        usuarioModel.cadastrarModelo(nome, id_empresa)
+        modeloModel.cadastrarModelo(nome, id_empresa)
+            .then(function (resultado) {
+                res.json(resultado);
+            })
+            .catch(function (erro) {
+                console.log(erro);
+                res.status(500).json(erro.sqlMessage);
+            });
+    }
+}
+
+function deletarModelo(req, res) {
+
+    var id_modelo = req.params.idModelo;
+
+    if (id_modelo == undefined) {
+        res.status(400).send("O id do modelo está indefinido!");
+    } else {
+        modeloModel.deletarModelo(id_modelo)
             .then(function (resultado) {
                 res.json(resultado);
             })
@@ -73,5 +91,6 @@ function cadastrarModelo(req, res) {
 module.exports = {
     listarModelos,
     atualizarModelo,
-    cadastrarModelo
+    cadastrarModelo,
+    deletarModelo
 }

@@ -29,7 +29,7 @@ async function loadModel() {
 
         // Tratando data e hora
         let data_criacao = new Date(model.data_criacao).toLocaleDateString("pt-br")
-        let data_atualizacao = new Date(model.data_criacao).toLocaleDateString("pt-br")
+        let data_atualizacao = new Date(model.data_atualizacao).toLocaleDateString("pt-br")
 
         // Criando os dados da tabela
         table.innerHTML += `<tr data-id="${model.idModelo}">
