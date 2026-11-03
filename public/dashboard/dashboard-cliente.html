@@ -165,7 +165,7 @@
                     <p class="kpi-result">65%</p>
                 </div>
 
-                <p class="kpi-details">↑ 2% nas ultimas 24h</p>
+                <p class="kpi-details danger">↑ 2% nas ultimas 24h</p>
             </div>
 
             <div class="kpi-box">
@@ -176,7 +176,7 @@
                     <p class="kpi-result">70%</p>
                 </div>
 
-                <p class="kpi-details">↑ 2% nas ultimas 24h</p>
+                <p class="kpi-details danger">↑ 2% nas ultimas 24h</p>
             </div>
 
             <div class="kpi-box">
@@ -187,17 +187,17 @@
             <div class="kpi-box">
                 <p class="kpi-title">Total de alertas</p>
                 <p class="kpi-result-big">10</p>
-                <p class="kpi-alert">Últimas 24 horas</p>
+                <p class="kpi-time">Últimas 24 horas</p>
             </div>
 
         </section>
 
         <section class="graph-conteiner">
 
-            <div class="graph-box-lines">
+            <div class="graph-box-lines standard-graph">
 
-                <div class="lines-content">
-                    <p class="title-graph">Desempenho do CLP</p>
+                <div class="lines-header">
+                    <h2 class="title-graph">Desempenho do CLP</h2>
 
 
                     <select id="graph-type" class="chart-select" onchange="atualizarGraficoLinha()">
@@ -207,21 +207,21 @@
                     </select>
 
                 </div>
-                <div class="lines-datas">
+                <div class="lines-kpi">
 
                     <div class="lines-text-box">
-                        <p class="blue-text" id="peak-label">Pico Scan time</p>
+                        <p id="peak-label">Pico Scan time</p>
                         <p class="lines-metrics" id="valor-pico">38 ms</p>
                     </div>
 
                     <div class="lines-text-box">
-                        <p class="blue-text" id="current-label">Atual Scan time</p>
-                        <p class="lines-metrics" id="valor-atual">28 ms</p>
+                        <p id="current-label">Atual Scan time</p>
+                        <p id="valor-atual">28 ms</p>
                     </div>
 
                     <div class="lines-text-box">
-                        <p class="blue-text" id="minimun-label">Mínimo Scan time</p>
-                        <p class="lines-metrics" id="valor-minimo">30 ms</p>
+                        <p id="minimun-label">Mínimo Scan time</p>
+                        <p id="valor-minimo">30 ms</p>
                     </div>
 
 
@@ -232,10 +232,10 @@
 
             </div>
 
-            <div class="graph-box-pizza">
+            <div class="graph-box-pizza standard-graph">
 
-                <div class="pizza-content">
-                    <p class="title-graph">Status do CLP</p>
+                <div class="pizza-header">
+                    <h2 class="title-graph">Status do CLP</h2>
                 </div>
 
                 <div class="pizza-chart-container">
@@ -243,7 +243,7 @@
                         <canvas id="pizza" class="pizza-canvas"></canvas>
                     </div>
 
-                    <p class="pizza-text-orange">Atenção</p>
+                    <p class="warning">Atenção</p>
                 </div>
 
                 <div class="pizza-datas">

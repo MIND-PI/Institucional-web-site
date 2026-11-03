@@ -132,7 +132,7 @@ function atualizarGraficoLinha() {
                             : '#06B6D4';
                     },
                     borderDash: (ctx) =>
-                        ctx.p0DataIndex >= 5 ? [6, 4] : [],
+                        ctx.p0DataIndex >= 5 ? [6, 6] : [],
                 },
             },
             ]
