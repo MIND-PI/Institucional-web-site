@@ -44,7 +44,7 @@ let graficoLinha = null;
 // Funções de gráfico
 // ============================
 
-// Gráfico de linha - desempenho do clp dinâmico
+// Gráfico de doughnut
 function GraficoConsumo(idCanvas, consumo) {
 
     const ctx = document.getElementById(idCanvas);
@@ -56,7 +56,7 @@ function GraficoConsumo(idCanvas, consumo) {
             datasets: [{
                 data: [consumo, 100 - consumo],
                 backgroundColor: ['#06B6D4', '#D1D5DB'],
-                borderWidth: 0
+                borderWidth: 0,
             }]
         },
 
@@ -79,7 +79,7 @@ function GraficoConsumo(idCanvas, consumo) {
     });
 }
 
-// Deixando dados do gráfico de linha dinâmico
+// Gráfico de linha dinâmico
 function atualizarGraficoLinha() {
 
     const periodo = document.getElementById('period-filter').value;
@@ -117,8 +117,25 @@ function atualizarGraficoLinha() {
                 label: config.nome,
                 data: valores,
                 borderColor: '#06B6D4',
-                backgroundColor: '#06B6D4'
-            }]
+                backgroundColor: '#06B6D4',
+                pointBackgroundColor: (ctx) => {
+                    return ctx.dataIndex >= 5 ? '#FFF' : '#06B6D4';
+                },
+
+                pointBorderColor: (ctx) => {
+                    return ctx.dataIndex >= 5 ? '#FFF' : '#06B6D4';
+                },
+                segment: {
+                    borderColor: (ctx) => {
+                        return ctx.p0DataIndex >= 5
+                            ? '#FFF'
+                            : '#06B6D4';
+                    },
+                    borderDash: (ctx) =>
+                        ctx.p0DataIndex >= 5 ? [6, 4] : [],
+                },
+            },
+            ]
         },
 
         options: {
