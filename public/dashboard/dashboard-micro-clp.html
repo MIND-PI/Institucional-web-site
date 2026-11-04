@@ -155,44 +155,45 @@
 
         </header>
 
-        <section class="kpi-conteiner">
+        <section class="kpi-container">
 
             <div class="kpi-box">
                 <p class="kpi-title">Consumo CPU</p>
 
                 <div class="kpi-chart">
                     <canvas id="graph-cpu"></canvas>
-                    <p class="kpi-result">65%</p>
+                    <p class="kpi-result" id="kpi_cpu">65%</p>
                 </div>
 
                 <p class="kpi-details danger">↑ 2% nas ultimas 24h</p>
             </div>
 
             <div class="kpi-box">
-                <p class="kpi-title">Consumo Memória ram</p>
+                <p class="kpi-title">Consumo Memória Ram</p>
 
                 <div class="kpi-chart">
                     <canvas id="graph-ram"></canvas>
-                    <p class="kpi-result">70%</p>
+                    <p class="kpi-result" id="kpi_ram">70%</p>
                 </div>
 
                 <p class="kpi-details danger">↑ 2% nas ultimas 24h</p>
             </div>
 
             <div class="kpi-box">
-                <p class="kpi-title">Uptime(tempo ativo)</p>
-                <p class="kpi-result-big">6h 23min</p>
+                <p class="kpi-title">Scan Time </p>
+                <p class="kpi-result-big">120ms</p>
+                <p class="kpi-details danger">↑ 2% nas ultimas 24h</p>
             </div>
 
             <div class="kpi-box">
-                <p class="kpi-title">Total de alertas</p>
-                <p class="kpi-result-big">10</p>
-                <p class="kpi-time">Últimas 24 horas</p>
+                <p class="kpi-title">Previsão de risco</p>
+                <p class="kpi-result-big">Sem risco</p>
+                <p class="kpi-time">Previsão para a próxima 1 hora</p>
             </div>
 
         </section>
 
-        <section class="graph-conteiner">
+        <section class="graph-container">
 
             <div class="graph-box-lines standard-graph">
 
@@ -273,8 +274,47 @@
             </div>
         </section>
 
+        <section class="graph-container">
+            <div class="standard-graph standard-container container-prevision-error">
+                <div class="header-prevision-error">
+                    <h2>Indicadores do modelo</h2>
+                </div>
+                <div class="content-value-indicator">
+                    <div class="indicator-text">
+                        <h4>Erro médio do (MAE)</h4>
+                        <p>10ms</p>
+                    </div>
+                    <div class="indicator-text">
+                        <h4>Erro quadrático (RMSE)</h4>
+                        <p>20ms</p>
+                    </div>
+                    <div class="indicator-text">
+                        <h4>O quanto o modelo explica</h4>
+                        <p>90%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="standard-graph standard-container container-previous-bot">
+                <div class="content-info-chat-bot">
+                    <div class="title-chat-bot">
+                        <h2>Suporte da IA</h2>
+                        <p>A CPU representa tendência de alta nos próximos 10 minutos, possibilidade de atingir 75%</p>
+                    </div>
+                    <div class="info-chat-bot">
+                        <i class="bi bi-info-circle"></i>
+                        <p><span class="info-text-strong">Dica da ia:</span> Veja os processos com maior consumo de cpu</p>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn-ia"><i class="bi bi-chat-dots"></i></i><span>Abrir Assistente</span> <i
+                            class="bi bi-chevron-right arrow"></i></i></button>
+                </div>
+            </div>
+        </section>
 
-
+        <section class="container-chat">
+            <section></section>
+        </section>
     </main>
 </body>
 

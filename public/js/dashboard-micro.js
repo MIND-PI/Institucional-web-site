@@ -240,6 +240,7 @@ function obterDados() {
     plotarGraficoPizza(dadosGrafico2);
     GraficoConsumo('graph-cpu', 65);
     GraficoConsumo('graph-ram', 70);
+    GraficoConsumo('graph-scan', 75)
     atualizarGraficoLinha();
 }
 
