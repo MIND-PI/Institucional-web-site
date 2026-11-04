@@ -1,0 +1,257 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root {
+    --popup-backgraund: #0d1527;
+    --border-color: #1F2b45;
+    --box-border-radius: 10px;
+    --border-radius: 5px;
+    --select-input-border: #25479E;
+    --text-color: #fff;
+}
+
+body{
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* #1e2b45 */
+
+.pop-up {
+    background-color: var(--popup-backgraund);
+    border: 2px solid;
+    border-color: var(--border-color);
+    border-radius: var(--box-border-radius);
+    color: var(--text-color);
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    padding: 25px;
+    padding-top: 15px;
+    width: 100%;
+}
+
+.pop-up-top {
+    display: flex;
+    justify-content: center;
+    
+    width: 100%;
+}
+
+.pop-up .box{
+    border: 2px solid;
+    border-color: var(--border-color);
+    border-radius: var(--box-border-radius);
+    
+    width: 95%;
+    margin: 30px;
+    margin-top: 15px;
+}
+
+.sub-title, .title, .pop-up p {
+    margin: 0%;
+}
+.title {
+    font-family: 'Montserrat';
+    font-weight: 700;
+    /* margin-bottom: 10px; */
+    text-align: center;
+    font-size: 18px;
+    width: 95%;
+}
+.sub-title {
+    color: #ffffffb7;
+    font-size: 16px;
+}
+
+.sub-title, .componente {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 2px solid;
+    border-color: var(--border-color);
+}
+.add-comp {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-comp, .componente {
+    padding: 10px 5px;
+    justify-content: start;
+}
+
+
+.componente input, .componente label {
+    padding: 0px 5px;
+}
+.componente .parametro {
+    padding: 2.5px 20px;
+    width: 75px;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.recursos-slt,.recursos-slt option, .parametro, .pop-up-button {
+    background-color: transparent;
+    border-color: var(--select-input-border);
+    border-radius: var(--border-radius);
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.recursos-slt {
+    border-width: 2px;
+    color: #ffffffb7;
+}
+
+.recursos-slt option {
+    background-color: var(--popup-backgraund);
+}
+
+.add-comp select {
+    padding: 0px 10px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+.flex-center i {
+    font-size: 28px;
+    margin: 0 4px;
+    cursor: pointer;
+}
+.flex-center .slt-title {
+    font-weight: 500;
+    color: #ffffffb7;
+}
+
+/* Para juntar o +adicionar e a caixinha e o nome do componente */
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0 20px ;
+}
+
+.pop-up-button {
+    border-width: 1px;
+    border-style: solid;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.border-red {
+    border-color: red;
+}
+.border-green {
+    border-color: #8dd61f;
+}
+.border-yellow {
+    border-color: yellow;
+}
+
+@media (min-width: 425px) {
+    
+    .pop-up {
+        width: max-content;
+    }
+
+}
+
+            /* pop up Editar CLP */
+
+.edit-clp {
+    font-family: 'Montserrat';
+}
+
+.box-clp {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    width: fit-content;
+    margin: 20px 0;
+}
+
+.flex-start {
+    display: flex;
+    justify-content: start;
+    font-size: 12px;
+}
+.flex-start .slt-title {
+    font-weight: 700;
+    color: #ffffffb7;
+
+    margin-left: 4px;
+}
+
+.red {
+    color: red;
+}
+
+.select .clp-slt, .clp-slt::placeholder {
+    background-color: #fff;
+    border-radius: var(--border-radius);
+    font-weight: 700;
+    font-size: 12px;
+    color: #272727da;
+    border-style: none;
+
+    padding: 4px 12px;
+    padding-left: 4px;
+}
+
+.select {
+    margin: 10px 20px;
+    margin-left: 0;
+}
+
+.select input, .select select {
+    cursor: pointer;
+}
+
+@media (min-width: 425px) {
+    .edit-clp {
+        width: 530px;
+    }
+    .box-clp {
+        justify-content: flex-start;
+    }
+}
+
+            /* pop up Adicionar Cliente */
+
+.select .clt-slt, .clp-slt::placeholder {
+    background-color: #fff;
+    border-radius: var(--border-radius);
+    font-weight: 700;
+    font-size: 12px;
+    color: #272727da;
+    border-style: none;
+
+    padding: 4px 12px;
+    padding-left: 4px;
+}
+
+.box-clt {
+    padding: 10px;
+}
+
+.box-clt .select {
+    margin: 20px 0;
+}
+
+/* Visualizar cliente */
+
