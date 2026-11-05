@@ -260,4 +260,10 @@ function renderClps(clps){
     total_clps.innerHTML = clps.length == 0 ? "Sem CLPs cadastrados" : `${clps.length} CLPs`
 }
 
+async function loadClps() {
+    let clps = await getClps()
+    renderClps(clps)
+}
+
+loadClps()
 
