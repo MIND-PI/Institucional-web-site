@@ -245,6 +245,19 @@ function renderClps(clps){
 
     for (let i = 0; i < clps.length; i++){
         const clp = clps[i]
-        let data_criacao = new 
+        
+        table.innerHTML += `<tr data-id="${clp.idClp}">
+            <td><div class="management-status ${clp.status == 1 ? "active" : "disabled"}">${clp.status == 1 ? "Ativo" : "Inativo"}</div></td>
+            <td><div>${clp.modelo ?? "Sem modelo"}</div></td>
+            <td><div>${clp.nome}</div></td>
+            <td><div>${clp.localizacao}</div></td>
+            <td><div>${data_criacao}</div></td>
+            <td><div>${data_atualizacao}</div></td>
+            <td class="management-col-actions">${actions}</td>
+        </tr>`
     }
+
+    total_clps.innerHTML = clps.length == 0 ? "Sem CLPs cadastrados" : `${clps.length} CLPs`
 }
+
+
