@@ -220,3 +220,19 @@ async function getClps(){
     sessionStorage.setItem("CLPS_CADASTRADOS", JSON.stringify(json))
     return json
 }
+
+// Se não for admin, não pode editar nem excluir o clp, aparece um cadeado
+function loadActions(){
+    let actions = `<button type="button" class="management-btn-icon management-btn-monitor" title="Monitorar">
+            <i class="bi bi-graph-up-arrow"></i>
+        </button>`
+
+    if(sessionStorage.getItem("CARGO_USUARIO") === 'administrador'){
+        actions += `<button type="button" class="management-btn-icon management-btn-edit" title="Editar">
+                <i class="bi bi-pencil-square"></i></button>
+            <button type="button" class="management-btn-icon management-btn-delete" title="Remover">
+                <i class="bi bi-trash3"></i></button>`
+    }
+    return actions
+}
+
