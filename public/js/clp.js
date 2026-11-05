@@ -197,3 +197,26 @@ document.getElementById("table_clps").addEventListener("click", function (evento
     if (evento.target.closest(".management-btn-edit"))    abrirModalEditar();
     if (evento.target.closest(".management-btn-delete"))  abrirModalRemover(linha);
 });
+
+
+// FETCHES DO BANCO
+
+async function getClps(){
+    let id_empresa = sessionStorage.getItem("ID_EMPRESA")
+
+    let response = await fetch(
+        `/clp/${id_empresa}`, {
+            method: "GET"
+        }
+    )
+
+    if(!response.ok){
+        console.log("Não foi possível encontrar os CLPs")
+        return[]
+    }
+
+    let json = await response.json()
+    // Converte o texto em uma lista de objetos
+    sessionStorage.setItem("CLPS_CADASTRADOS", JSON.stringify(json))
+    return json
+}
