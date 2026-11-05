@@ -251,8 +251,8 @@ function renderClps(clps){
             <td><div>${clp.modelo ?? "Sem modelo"}</div></td>
             <td><div>${clp.nome}</div></td>
             <td><div>${clp.localizacao}</div></td>
-            <td><div>${data_criacao}</div></td>
-            <td><div>${data_atualizacao}</div></td>
+            <td><div>${clp.data_criacao}</div></td>
+            <td><div>${clp.data_atualizacao}</div></td>
             <td class="management-col-actions">${actions}</td>
         </tr>`
     }
@@ -262,6 +262,7 @@ function renderClps(clps){
 
 async function loadClps() {
     let clps = await getClps()
+    console.log(clps)
     renderClps(clps)
 }
 
