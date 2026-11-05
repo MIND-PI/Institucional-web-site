@@ -9,11 +9,11 @@ function listarClps(idEmpresa) {
     c.status,
     c.modeloId,
     m.nome AS modelo,
-    c.data_criacao,
-    c.data_atualizacao
-        FROM clp c
-        LEFT JOIN modelo m ON m.idModelo = c.modeloId
-        WHERE c.empresaId = ${idEmpresa};
+    DATE_FORMAT(c.data_criacao, '%d/%m/%Y') AS data_criacao,
+    DATE_FORMAT(c.data_atualizacao, '%d/%m/%Y') AS data_atualizacao
+    FROM clp c
+    LEFT JOIN modelo m ON m.idModelo = c.modeloId
+    WHERE c.empresaId = ${idEmpresa};
         `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);

@@ -236,3 +236,15 @@ function loadActions(){
     return actions
 }
 
+// Desenhar a tabela com os CLPs
+
+function renderClps(clps){
+    let table = document.getElementById("table_clps")
+    table.innerHTML = ""
+    let actions = loadActions()
+
+    for (let i = 0; i < clps.length; i++){
+        const clp = clps[i]
+        let data_criacao = new 
+    }
+}
