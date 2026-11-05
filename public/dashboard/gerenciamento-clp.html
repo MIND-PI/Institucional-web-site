@@ -76,7 +76,7 @@
                 <p id="tipoUsuario" class="text-user-type">CLIENTE</p>
             </div>
         </footer>
-        <!-- MODAL DAS CONFIGURAÇÕES DO USUARIO -->
+        <!-- CONFIGURAÇÕES DO USUARIO -->
         <div class="overlay_config" id="overlay_config">
             <div class="modal_config">
                 <div class="modal_header">
@@ -117,7 +117,6 @@
             <p class="subtitle-management">Gerencie seus CLPs.</p>
         </header>
 
-        <!-- BUSCA + BOTÃO ADICIONAR -->
         <section class="toolbar-management">
             <div class="search-management">
                 <i class="bi bi-search"></i>
@@ -156,317 +155,150 @@
         </section>
     </main>
 
-    <div class="overlay_config" id="overlay_edit_clp">
-    <div class="modal_config">
-        <div class="modal_header">
-            <h2>Editar CLP</h2>
-            <button type="button" class="btn_fechar" id="btn_fechar_editar">✖</button>
-        </div>
-
-        <form id="form_editar_clp" class="form-config">
-            <div class="input_group">
-                <label for="input_editar_apelido">Apelido</label>
-                <input type="text" id="input_editar_apelido" placeholder="Apelido do CLP" maxlength="100">
-            </div>
-
-            <div class="input_group">
-                <label for="input_editar_mac">Endereço MAC</label>
-                <input type="text" id="input_editar_mac" placeholder="00:1B:1B:00:00:01" maxlength="17" autocomplete="off">
-            </div>
-
-            <div class="input_group">
-                <label for="input_editar_localizacao">Localização</label>
-                <input type="text" id="input_editar_localizacao" placeholder="Localização do CLP" maxlength="255">
-            </div>
-
-            <div class="input_group">
-                <label for="select_editar_modelo">Modelo</label>
-                <select id="select_editar_modelo" class="equipe-select"></select>
-            </div>
-
-            <div class="input_group">
-                <label for="select_editar_status">Status</label>
-                <select id="select_editar_status" class="equipe-select">
-                    <option value="1">Ativo</option>
-                    <option value="0">Inativo</option>
-                </select>
-            </div>
-
-            <p class="equipe-modal-erro" id="erro_editar_clp"></p>
-
-            <button type="submit" class="btn_salvar" id="btn_save_edit">Salvar Alterações</button>
-        </form>
-    </div>
-</div>
-
-    <div class="overlay_config" id="overlay_remove_clp">
-    <div class="modal_config">
-        <div class="modal_header">
-            <h2>Deletar CLP</h2>
-            <button type="button" class="btn_fechar" id="btn_fechar_remover">✖</button>
-        </div>
-
-        <form id="form_remover_clp" class="form-config">
-            <p class="equipe-modal-texto">
-                Essa ação não pode ser desfeita. Para confirmar, digite o apelido do CLP abaixo.
-            </p>
-
-            <div class="input_group">
-                <label for="input_remover">Apelido</label>
-                <input type="text" id="input_remover" placeholder="Digite o apelido do CLP para confirmação">
-            </div>
-
-            <p class="equipe-modal-erro" id="erro_remover_clp"></p>
-
-            <button type="submit" class="btn_salvar equipe-btn-perigo" id="btn_remover_clp">Deletar CLP</button>
-        </form>
-    </div>
-</div>
-
+    <!-- ===== ADICIONAR CLP ===== -->
     <div class="overlay_config" id="overlay_add_clp">
-    <div class="modal_config">
-        <div class="modal_header">
-            <h2>Adicionar novo CLP</h2>
-            <button type="button" class="btn_fechar" id="btn_fechar_adicionar">✖</button>
-        </div>
+        <div class="modal_config modal-clp">
+            <h2 class="modal-clp-titulo centro">Adicionar CLP</h2>
 
-        <form id="form_adicionar_clp" class="form-config">
-            <div class="input_group">
-                <label for="input_adicionar_apelido">Apelido</label>
-                <input type="text" id="input_adicionar_apelido" placeholder="Ex: CLP-MAQ-01" maxlength="100">
-            </div>
+            <form id="form_adicionar_clp" novalidate>
+                <div class="grade-clp">
+                    <div class="campo-clp">
+                        <label for="select_adicionar_modelo">Modelo<span class="obrigatorio">*</span></label>
+                        <select id="select_adicionar_modelo">
+                            <option value="" disabled selected>Selecione</option>
+                            <!-- opções geradas pelo clp.js -->
+                        </select>
+                    </div>
 
-            <div class="input_group">
-                <label for="input_adicionar_mac">Endereço MAC</label>
-                <input type="text" id="input_adicionar_mac" placeholder="00:1B:1B:00:00:01" maxlength="17" autocomplete="off">
-            </div>
+                    <div class="campo-clp">
+                        <label for="select_adicionar_status">Status<span class="obrigatorio">*</span></label>
+                        <select id="select_adicionar_status">
+                            <option value="1" selected>Ativo</option>
+                            <option value="0">Inativo</option>
+                        </select>
+                    </div>
 
-            <div class="input_group">
-                <label for="input_adicionar_localizacao">Localização</label>
-                <input type="text" id="input_adicionar_localizacao" placeholder="Ex: Bloco A" maxlength="255">
-            </div>
+                    <div class="campo-clp">
+                        <label for="input_adicionar_localizacao">Localização<span class="obrigatorio">*</span></label>
+                        <input type="text" id="input_adicionar_localizacao" placeholder="Localização do CLP" maxlength="100">
+                    </div>
 
-            <div class="input_group">
-                <label for="select_adicionar_modelo">Modelo</label>
-                <select id="select_adicionar_modelo" class="equipe-select">
-                    <option value="" disabled selected>Selecione um modelo</option>
-                    <!-- opções geradas pelo clp.js -->
-                </select>
-            </div>
-
-            <p class="equipe-modal-erro" id="erro_adicionar_clp"></p>
-
-            <button type="submit" class="btn_salvar" id="btn_salvar_adicionar">Adicionar CLP</button>
-        </form>
-    </div>
-</div>
-
-
-        <!-- Pop up de adicionar CLP -->
-
-
-    <div class="pop-up edit-clp">
-
-        <div class="pop-up-top">
-            <h3 class="title">Adicionar CLP</h3>
-        </div>
-        <div class="box-clp">
-            <div class="select">
-                <div class="flex-start">
-                <p class="slt-title">Modelo</p>
-                <p class="red">*</p>
+                    <div class="campo-clp">
+                        <label for="input_adicionar_apelido">Apelido<span class="obrigatorio">*</span></label>
+                        <input type="text" id="input_adicionar_apelido" placeholder="Digite o apelido" maxlength="100">
+                    </div>
                 </div>
-                <select name="recursos-slt" class="clp-slt" id="options-clp">
-                    <!-- adicionar conforme banco -->
-                    <option value="1">Selecione</option>
-                    <option value="1">Swap</option>
-                    <option value="1">Uptime</option>
-                    <option value="1">Latencia</option>
-                    <option value="1">Pacotes perdidos</option>
-                </select>
-            </div>
-            <div class="select">
-                <div class="flex-start">
-                <p class="slt-title">Status</p>
-                <p class="red">*</p>
+
+                <p class="equipe-modal-erro" id="erro_adicionar_clp"></p>
+
+                <div class="botoes-clp">
+                    <button type="button" class="btn-clp vermelho" id="btn_cancelar_adicionar">Cancelar</button>
+                    <button type="submit" class="btn-clp verde" id="btn_confirmar_adicionar">Confirmar</button>
                 </div>
-                <select name="recursos-slt" class="clp-slt" id="options-clp">
-                    <option value="1">Ativo</option>
-                    <option value="0">Inativo</option>
-                </select>
-            </div>
-            <div class="select">
-                <div class="flex-start">
-                <p class="slt-title">Localização</p>
-                <p class="red">*</p>
-                </div>
-                <input type="text" name="localizacao-clp" class="clp-slt" id="localizacao" placeholder="Localização do CLP">
-            </div>
-            <div class="select">
-                <div class="flex-start">
-                <p class="slt-title">Apelido</p>
-                <p class="red">*</p>
-                </div>
-                <input type="text" name="apelido-clp" class="clp-slt" id="apelido" placeholder="Digite o apelido">
-            </div>
-        </div>
-        <div class="buttons">
-            <button class="pop-up-button border-red" id="cancel">CANCELAR</button>
-            <button class="pop-up-button border-green" id="confirm">CONFIRMAR</button>
+            </form>
         </div>
     </div>
 
-    <!-- Pop up editar CLP -->
+    <!-- ===== EDITAR CLP ===== -->
+    <div class="overlay_config" id="overlay_edit_clp">
+        <div class="modal_config modal-clp">
+            <h2 class="modal-clp-titulo esquerda">Editar CLP</h2>
 
+            <form id="form_editar_clp" novalidate>
+                <div class="grade-clp">
+                    <div class="campo-clp">
+                        <label for="select_editar_modelo">Modelo<span class="obrigatorio">*</span></label>
+                        <select id="select_editar_modelo">
+                            <!-- opções geradas pelo clp.js -->
+                        </select>
+                    </div>
 
-    <div class="pop-up edit-clp">
+                    <div class="campo-clp">
+                        <label for="select_editar_status">Status<span class="obrigatorio">*</span></label>
+                        <select id="select_editar_status">
+                            <option value="1">Ativo</option>
+                            <option value="0">Inativo</option>
+                        </select>
+                    </div>
 
-        <div class="pop-up-top">
-            <h3 class="title">Editar CLP</h3>
-        </div>
-        <div class="box-clp">
-            <div class="select">
-                <div class="flex-start">
-                <p class="slt-title">Modelo</p>
-                <p class="red">*</p>
+                    <div class="campo-clp">
+                        <label for="input_editar_localizacao">Localização<span class="obrigatorio">*</span></label>
+                        <input type="text" id="input_editar_localizacao" placeholder="Localização do CLP" maxlength="100">
+                    </div>
+
+                    <div class="campo-clp">
+                        <label for="input_editar_apelido">Apelido<span class="obrigatorio">*</span></label>
+                        <input type="text" id="input_editar_apelido" placeholder="Digite o apelido" maxlength="100">
+                    </div>
                 </div>
-                <select name="recursos-slt" class="clp-slt" id="options-clp">
-                    <!-- adicionar conforme banco -->
-                    <option value="1">Selecione</option>
-                    <option value="1">Swap</option>
-                    <option value="1">Uptime</option>
-                    <option value="1">Latencia</option>
-                    <option value="1">Pacotes perdidos</option>
-                </select>
-            </div>
-            <div class="select">
-                <div class="flex-start">
-                <p class="slt-title">Status</p>
-                <p class="red">*</p>
+
+                <p class="equipe-modal-erro" id="erro_editar_clp"></p>
+
+                <div class="botoes-clp">
+                    <button type="button" class="btn-clp vermelho" id="btn_cancelar_editar">Cancelar</button>
+                    <button type="submit" class="btn-clp verde" id="btn_confirmar_editar">Confirmar</button>
                 </div>
-                <select name="recursos-slt" class="clp-slt" id="options-clp">
-                    <option value="1">Ativo</option>
-                    <option value="0">Inativo</option>
-                </select>
-            </div>
-            <div class="select">
-                <div class="flex-start">
-                <p class="slt-title">Localização</p>
-                <p class="red">*</p>
-                </div>
-                <input type="text" name="localizacao-clp" class="clp-slt" id="localizacao" placeholder="Localização do CLP">
-            </div>
-            <div class="select">
-                <div class="flex-start">
-                <p class="slt-title">Apelido</p>
-                <p class="red">*</p>
-                </div>
-                <input type="text" name="apelido-clp" class="clp-slt" id="apelido" placeholder="Digite o apelido">
-            </div>
-        </div>
-        <div class="buttons">
-            <button class="pop-up-button border-red" id="cancel">CANCELAR</button>
-            <button class="pop-up-button border-green" id="confirm">CONFIRMAR</button>
+            </form>
         </div>
     </div>
 
-        
-        <!-- Pop up  de parametros -->
+    <!-- ===== EXCLUIR CLP ===== -->
+    <div class="overlay_config" id="overlay_remove_clp">
+        <div class="modal_config modal-clp modal-clp-estreito">
+            <p class="texto-excluir">Tem certeza que quer excluir o <strong><span id="nome_remover_clp"></span> ?</strong></p>
 
-    <div class="pop-up">
+            <form id="form_remover_clp" novalidate>
+                <div class="campo-excluir">
+                    <!-- o placeholder recebe o apelido do CLP (feito pelo clp.js) -->
+                    <input type="text" id="input_remover_clp" placeholder="" autocomplete="off">
+                    <small>Digite para confirmar</small>
+                </div>
 
-        <div class="pop-up-top">
-            <h3 class="title">Escolha o que deseja monitorar</h3>
-        </div>
-        <div class="box">
-            <h4 class="sub-title">Selecionados</h4>
-            <div id="componentes" class="componentes">
-                <div class="componente">
-                    <div class="flex-center">
-                        <input type="checkbox" checked id="cpu" name="recursos" value="1">
-                        <label for="cpu">CPU</label>
-                    </div>
-                    <input type="text" required class="parametro" placeholder="Limite (%)">
+                <p class="equipe-modal-erro" id="erro_remover_clp"></p>
+
+                <div class="botoes-clp">
+                    <button type="button" class="btn-clp verde" id="btn_cancelar_remover">Cancelar</button>
+                    <button type="submit" class="btn-clp vermelho" id="btn_confirmar_remover">Excluir</button>
                 </div>
-                <div class="componente">
-                    <div class="flex-center">
-                        <input type="checkbox" checked id="ram" name="recursos" value="1">
-                        <label for="ram">RAM</label>
-                    </div>
-                    <input type="text" required class="parametro" placeholder="Limite (%)">
-                </div>
-                <div class="componente">
-                    <div class="flex-center">
-                        <input type="checkbox" checked id="swap" name="recursos" value="1">
-                        <label for="swap">Swap</label>
-                    </div>
-                    <input type="text" required class="parametro" placeholder="Limite (ms)">
-                </div>
-                <div class="componente">
-                    <div class="flex-center">
-                        <input type="checkbox" checked id="ram" name="recursos" value="1">
-                        <label for="ram">RAM</label>
-                    </div>
-                    <input type="text" required class="parametro" placeholder="Limite (%)">
-                </div>
-                <div class="componente">
-                    <div class="flex-center">
-                        <input type="checkbox" checked id="ram" name="recursos" value="1">
-                        <label for="ram">RAM</label>
-                    </div>
-                    <input type="text" required class="parametro" placeholder="Limite (%)">
-                </div>
-                <div class="componente">
-                    <div class="flex-center">
-                        <input type="checkbox" checked id="ram" name="recursos" value="1">
-                        <label for="ram">RAM</label>
-                    </div>
-                    <input type="text" required class="parametro" placeholder="Limite (%)">
-                </div>
-                <div class="componente">
-                    <div class="flex-center">
-                        <input type="checkbox" checked id="ram" name="recursos" value="1">
-                        <label for="ram">RAM</label>
-                    </div>
-                    <input type="text" required class="parametro" placeholder="Limite (%)">
-                </div>
-                <div class="componente">
-                    <div class="flex-center">
-                        <input type="checkbox" checked id="ram" name="recursos" value="1">
-                        <label for="ram">RAM</label>
-                    </div>
-                    <input type="text" required class="parametro" placeholder="Limite (%)">
-                </div>
-                <div class="componente">
-                    <div class="flex-center">
-                        <input type="checkbox" checked id="ram" name="recursos" value="1">
-                        <label for="ram">RAM</label>
-                    </div>
-                    <input type="text" required class="parametro" placeholder="Limite (%)">
-                </div>
-            </div>
-            <div class="add-comp">
-                <div class="flex-center">
-                    <!-- <i class="bi bi-plus"></i> -->
-                    <i class="ph-bold ph-plus"></i>
-                    <p class="slt-title">adicionar</p>
-                </div>
-                <select name="recursos-slt" class="recursos-slt" id="options-component">
-                    <!-- adicionar conforme banco -->
-                     <option value="1">Selecione</option>
-                     <option value="1">Swap</option>
-                     <option value="1">Uptime</option>
-                     <option value="1">Latencia</option>
-                     <option value="1">Pacotes perdidos</option>
-                </select>
-            </div>
-        </div>
-        <div class="buttons">
-            <button class="pop-up-button border-red" id="cancel">CANCELAR</button>
-            <button class="pop-up-button border-green" id="confirm">CONFIRMAR</button>
+            </form>
         </div>
     </div>
 
+    <!-- ===== ESCOLHER O QUE MONITORAR ===== -->
+    <div class="overlay_config" id="overlay_monitor_clp">
+        <div class="modal_config modal-clp modal-clp-monitorar">
+            <div class="modal-clp-topo">
+                <h2 class="modal-clp-titulo">Escolha o que deseja monitorar</h2>
+                <button type="button" class="btn_fechar" id="btn_fechar_monitorar" title="Fechar">✖</button>
+            </div>
+
+            <form id="form_monitorar_clp" novalidate>
+                <div class="caixa-monitorar">
+                    <h3 class="caixa-monitorar-titulo">Selecionados</h3>
+
+                    <!-- linhas geradas pelo clp.js (CPU, RAM e Swap já vêm marcados) -->
+                    <div class="lista-monitorar" id="lista_monitorar"></div>
+
+                    <div class="linha-adicionar">
+                        <label class="rotulo-adicionar" for="select_adicionar_recurso">
+                            <i class="bi bi-plus-lg"></i> Adicionar
+                        </label>
+                        <select id="select_adicionar_recurso">
+                            <option value="" selected>Selecione</option>
+                            <!-- opções geradas pelo clp.js -->
+                        </select>
+                    </div>
+                </div>
+
+                <p class="equipe-modal-erro" id="erro_monitorar_clp"></p>
+
+                <div class="botoes-clp">
+                    <button type="button" class="btn-clp vermelho" id="btn_cancelar_monitorar">Cancelar</button>
+                    <button type="submit" class="btn-clp verde" id="btn_confirmar_monitorar">Confirmar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="../js/sessao.js"></script>
     <script src="../js/configuracoes.js"></script>

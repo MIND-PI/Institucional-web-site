@@ -1,257 +1,342 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
 :root {
-    --popup-backgraund: #0d1527;
-    --border-color: #1F2b45;
-    --box-border-radius: 10px;
-    --border-radius: 5px;
-    --select-input-border: #25479E;
-    --text-color: #fff;
+    --clp-azul: #25479E;
+    --clp-azul-check: #2563EB;
+    --clp-campo-bg: #FFFFFF;
+    --clp-campo-texto: #272727;
+    --clp-verde: #22C55E;
+    --clp-vermelho: #EF4444;
 }
 
-body{
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.modal_config.modal-clp {
+    max-width: 640px;
+    padding: 28px 40px 30px;
+    border-radius: 12px;
+    font-family: "Montserrat", sans-serif;
 }
 
-/* #1e2b45 */
+.modal_config.modal-clp.modal-clp-estreito {
+    max-width: 520px;
+}
 
-.pop-up {
-    background-color: var(--popup-backgraund);
-    border: 2px solid;
-    border-color: var(--border-color);
-    border-radius: var(--box-border-radius);
-    color: var(--text-color);
-    font-family: 'Poppins', Arial, Helvetica, sans-serif;
-    
+.modal_config.modal-clp.modal-clp-monitorar {
+    max-width: 480px;
+    padding: 24px 30px 28px;
+}
+
+.modal-clp-titulo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 28px;
+}
+
+.modal-clp-titulo.centro { text-align: center; }
+.modal-clp-titulo.esquerda { text-align: left; }
+
+.modal-clp-topo {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.modal-clp-topo .modal-clp-titulo {
+    margin: 0;
+    text-align: center;
+    padding: 0 28px;
+}
+
+.modal-clp-topo .btn_fechar {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    opacity: 1;
+    font-size: 1.3rem;
+}
+
+.grade-clp {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1.6fr;
+    gap: 18px 24px;
+}
+
+.campo-clp {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    
-    padding: 25px;
-    padding-top: 15px;
-    width: 100%;
+    gap: 6px;
+    min-width: 0;
 }
 
-.pop-up-top {
-    display: flex;
-    justify-content: center;
-    
-    width: 100%;
-}
-
-.pop-up .box{
-    border: 2px solid;
-    border-color: var(--border-color);
-    border-radius: var(--box-border-radius);
-    
-    width: 95%;
-    margin: 30px;
-    margin-top: 15px;
-}
-
-.sub-title, .title, .pop-up p {
-    margin: 0%;
-}
-.title {
-    font-family: 'Montserrat';
+.campo-clp label {
+    font-size: 0.7rem;
     font-weight: 700;
-    /* margin-bottom: 10px; */
-    text-align: center;
-    font-size: 18px;
-    width: 95%;
-}
-.sub-title {
-    color: #ffffffb7;
-    font-size: 16px;
+    color: rgba(255, 255, 255, 0.85);
 }
 
-.sub-title, .componente {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-bottom: 2px solid;
-    border-color: var(--border-color);
-}
-.add-comp {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.campo-clp label .obrigatorio {
+    color: var(--clp-vermelho);
+    margin-left: 2px;
 }
 
-.add-comp, .componente {
-    padding: 10px 5px;
-    justify-content: start;
-}
-
-
-.componente input, .componente label {
-    padding: 0px 5px;
-}
-.componente .parametro {
-    padding: 2.5px 20px;
-    width: 75px;
-    border-style: solid;
-    border-width: 1px;
-}
-
-.recursos-slt,.recursos-slt option, .parametro, .pop-up-button {
-    background-color: transparent;
-    border-color: var(--select-input-border);
-    border-radius: var(--border-radius);
+.modal-clp .campo-clp input[type="text"],
+.modal-clp .campo-clp select {
+    width: 100%;
+    height: 30px;
+    padding: 0 10px;
+    background-color: var(--clp-campo-bg);
+    color: var(--clp-campo-texto);
+    border: 2px solid transparent;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.75rem;
     font-weight: 700;
-    color: var(--text-color);
+    outline: none;
+    transition: border-color 0.3s;
 }
 
-.recursos-slt {
-    border-width: 2px;
-    color: #ffffffb7;
+.modal-clp .campo-clp input::placeholder {
+    color: rgba(39, 39, 39, 0.6);
 }
 
-.recursos-slt option {
-    background-color: var(--popup-backgraund);
+.modal-clp .campo-clp input[type="text"]:focus,
+.modal-clp .campo-clp select:focus {
+    border-color: var(--color-accent);
+    box-shadow: none;
 }
 
-.add-comp select {
-    padding: 0px 10px;
-    margin: 0 10px;
+.modal-clp .campo-clp select {
     cursor: pointer;
-}
-.flex-center i {
-    font-size: 28px;
-    margin: 0 4px;
-    cursor: pointer;
-}
-.flex-center .slt-title {
-    font-weight: 500;
-    color: #ffffffb7;
+    color-scheme: light;
 }
 
-/* Para juntar o +adicionar e a caixinha e o nome do componente */
-.flex-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.modal-clp .campo-clp .invalido {
+    border-color: var(--clp-vermelho) !important;
 }
 
-#buttons {
+.modal-clp .equipe-modal-erro {
+    margin: 14px 0 0;
+}
+
+/* ---------- CANCELAR / CONFIRMAR ---------- */
+.botoes-clp {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 30px;
+}
+
+.btn-clp {
+    min-width: 104px;
+    padding: 8px 18px;
+    background: transparent;
+    color: var(--color-text-primary);
+    border: 1px solid;
+    border-radius: 6px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+.btn-clp.vermelho { border-color: var(--clp-vermelho); }
+.btn-clp.verde    { border-color: var(--clp-verde); }
+
+.btn-clp.vermelho:hover { background-color: rgba(239, 68, 68, 0.15); }
+.btn-clp.verde:hover    { background-color: rgba(34, 197, 94, 0.15); }
+
+.btn-clp:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: transparent;
+}
+
+/* ---------- EXCLUIR ---------- */
+.texto-excluir {
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 400;
+    margin-bottom: 24px;
+}
+
+.texto-excluir strong {
+    font-weight: 700;
+}
+
+.modal-clp .campo-excluir input[type="text"] {
     width: 100%;
-    margin: 0 20px ;
+    height: 38px;
+    padding: 0 16px;
+    background-color: var(--clp-campo-bg);
+    color: var(--clp-campo-texto);
+    border: 2px solid transparent;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    outline: none;
 }
 
-.pop-up-button {
-    border-width: 1px;
-    border-style: solid;
-    padding: 5px 10px;
+.modal-clp .campo-excluir input[type="text"]::placeholder {
+    color: rgba(39, 39, 39, 0.45);  /* o apelido aparece cinza, como no protótipo */
+}
+
+.modal-clp .campo-excluir input[type="text"]:focus {
+    border-color: var(--clp-vermelho);
+}
+
+.campo-excluir small {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* ---------- MONITORAMENTO ---------- */
+.caixa-monitorar {
+    border: 2px solid var(--clp-azul);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.caixa-monitorar-titulo {
+    padding: 4px 0;
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.7);
+    border-bottom: 2px solid var(--clp-azul);
+}
+
+.lista-monitorar {
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+.linha-monitorar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--clp-azul);
+}
+
+.linha-monitorar .rotulo-recurso {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 92px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
     cursor: pointer;
 }
 
-.border-red {
-    border-color: red;
-}
-.border-green {
-    border-color: #8dd61f;
-}
-.border-yellow {
-    border-color: yellow;
+.linha-monitorar .rotulo-recurso .obrigatorio {
+    color: var(--clp-vermelho);
+    margin-left: -6px;
 }
 
-@media (min-width: 425px) {
-    
-    .pop-up {
-        width: max-content;
-    }
 
-}
-
-            /* pop up Editar CLP */
-
-.edit-clp {
-    font-family: 'Montserrat';
-}
-
-.box-clp {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-
-    width: fit-content;
-    margin: 20px 0;
-}
-
-.flex-start {
-    display: flex;
-    justify-content: start;
-    font-size: 12px;
-}
-.flex-start .slt-title {
-    font-weight: 700;
-    color: #ffffffb7;
-
-    margin-left: 4px;
-}
-
-.red {
-    color: red;
-}
-
-.select .clp-slt, .clp-slt::placeholder {
-    background-color: #fff;
-    border-radius: var(--border-radius);
-    font-weight: 700;
-    font-size: 12px;
-    color: #272727da;
-    border-style: none;
-
-    padding: 4px 12px;
-    padding-left: 4px;
-}
-
-.select {
-    margin: 10px 20px;
-    margin-left: 0;
-}
-
-.select input, .select select {
+.linha-monitorar input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--clp-azul-check);
     cursor: pointer;
 }
 
-@media (min-width: 425px) {
-    .edit-clp {
-        width: 530px;
-    }
-    .box-clp {
-        justify-content: flex-start;
-    }
-}
-
-            /* pop up Adicionar Cliente */
-
-.select .clt-slt, .clp-slt::placeholder {
-    background-color: #fff;
-    border-radius: var(--border-radius);
+.linha-monitorar .parametro {
+    flex: 1;
+    min-width: 0;
+    height: 30px;
+    padding: 0 14px;
+    background: transparent;
+    color: var(--color-text-primary);
+    border: 1px solid var(--clp-azul);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.75rem;
     font-weight: 700;
-    font-size: 12px;
-    color: #272727da;
-    border-style: none;
-
-    padding: 4px 12px;
-    padding-left: 4px;
+    outline: none;
+    transition: border-color 0.3s;
 }
 
-.box-clt {
-    padding: 10px;
+.linha-monitorar .parametro::placeholder { color: rgba(255, 255, 255, 0.6); }
+.linha-monitorar .parametro:focus        { border-color: var(--color-accent); }
+.linha-monitorar .parametro:disabled     { opacity: 0.35; cursor: not-allowed; }
+.linha-monitorar .parametro.invalido     { border-color: var(--clp-vermelho); }
+
+
+.linha-adicionar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
 }
 
-.box-clt .select {
-    margin: 20px 0;
+.linha-adicionar .rotulo-adicionar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 92px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
 }
 
-/* Visualizar cliente */
+.linha-adicionar .rotulo-adicionar i {
+    font-size: 1.7rem;
+    color: var(--color-text-primary);
+    line-height: 1;
+}
 
+.linha-adicionar select {
+    flex: 1;
+    min-width: 0;
+    height: 30px;
+    padding: 0 10px;
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+    border: 2px solid var(--clp-azul);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    outline: none;
+    color-scheme: dark;
+}
+
+.linha-adicionar select:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ---------- CELULAR ---------- */
+@media (max-width: 600px) {
+    .modal_config.modal-clp {
+        padding: 22px 20px 24px;
+    }
+
+    .grade-clp {
+        grid-template-columns: 1fr;
+    }
+
+    .botoes-clp {
+        flex-wrap: wrap;
+    }
+
+    .btn-clp {
+        flex: 1;
+    }
+
+    .linha-monitorar,
+    .linha-adicionar {
+        flex-wrap: wrap;
+    }
+}
+
+.management-btn-monitor i {
+    color: var(--color-text-primary);
+}
