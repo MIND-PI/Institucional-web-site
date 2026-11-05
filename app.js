@@ -20,7 +20,7 @@ var usuarioRouter = require("./src/routes/usuarios");
 var emailRouter = require("./src/routes/email");
 var equipeRouter = require("./src/routes/equipe");
 var modeloRouter = require("./src/routes/modelo");
-
+var clpRouter = require("./src/routes/clp");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -33,6 +33,7 @@ app.use("/usuarios", usuarioRouter);
 app.use("/email", emailRouter);
 app.use("/equipe", equipeRouter);
 app.use("/modelo", modeloRouter);
+app.use("/clp", clpRouter);
 
 app.listen(PORTA_APP, function () {
     console.log(`
