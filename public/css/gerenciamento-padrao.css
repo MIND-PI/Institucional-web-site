@@ -108,12 +108,12 @@
     font-size: 0.7rem;
     font-weight: 600;
     text-transform: uppercase;
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary);
 }
 
 .table-management td {
     font-size: 0.9rem;
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary);
 }
 
 .table-management tbody tr:hover {
