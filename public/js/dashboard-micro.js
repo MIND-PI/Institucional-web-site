@@ -45,39 +45,39 @@ let graficoLinha = null;
 // ============================
 
 // Gráfico de doughnut
-function GraficoConsumo(idCanvas, consumo) {
+// function GraficoConsumo(idCanvas, consumo) {
 
-    const ctx = document.getElementById(idCanvas);
+//     const ctx = document.getElementById(idCanvas);
 
-    new Chart(ctx, {
-        type: 'doughnut',
+//     new Chart(ctx, {
+//         type: 'doughnut',
 
-        data: {
-            datasets: [{
-                data: [consumo, 100 - consumo],
-                backgroundColor: ['#06B6D4', '#D1D5DB'],
-                borderWidth: 0,
-            }]
-        },
+//         data: {
+//             datasets: [{
+//                 data: [consumo, 100 - consumo],
+//                 backgroundColor: ['#06B6D4', '#D1D5DB'],
+//                 borderWidth: 0,
+//             }]
+//         },
 
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            rotation: -90,
-            circumference: 180,
-            cutout: '75%',
+//         options: {
+//             responsive: true,
+//             maintainAspectRatio: false,
+//             rotation: -90,
+//             circumference: 180,
+//             cutout: '75%',
 
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    enabled: false
-                }
-            }
-        }
-    });
-}
+//             plugins: {
+//                 legend: {
+//                     display: false
+//                 },
+//                 tooltip: {
+//                     enabled: false
+//                 }
+//             }
+//         }
+//     });
+// }
 
 // Gráfico de linha dinâmico
 function atualizarGraficoLinha() {
@@ -238,9 +238,9 @@ function obterDados() {
     ];
 
     plotarGraficoPizza(dadosGrafico2);
-    GraficoConsumo('graph-cpu', 65);
-    GraficoConsumo('graph-ram', 70);
-    GraficoConsumo('graph-scan', 75)
+    // GraficoConsumo('graph-cpu', 65);
+    // GraficoConsumo('graph-ram', 70);
+    // GraficoConsumo('graph-scan', 75)
     atualizarGraficoLinha();
 }
 

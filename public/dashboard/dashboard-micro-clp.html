@@ -158,31 +158,21 @@
         <section class="kpi-container">
 
             <div class="kpi-box">
-                <p class="kpi-title">Consumo CPU</p>
-
-                <div class="kpi-chart">
-                    <canvas id="graph-cpu"></canvas>
-                    <p class="kpi-result" id="kpi_cpu">65%</p>
-                </div>
-
-                <p class="kpi-details danger">↑ 2% nas ultimas 24h</p>
+                <p class="kpi-title">Alertas do CLP</p>
+                <p class="kpi-result-big">30</p>
+                <p class="kpi-time">Ocorrências reais</p>
             </div>
 
             <div class="kpi-box">
-                <p class="kpi-title">Consumo Memória Ram</p>
-
-                <div class="kpi-chart">
-                    <canvas id="graph-ram"></canvas>
-                    <p class="kpi-result" id="kpi_ram">70%</p>
-                </div>
-
-                <p class="kpi-details danger">↑ 2% nas ultimas 24h</p>
+                <p class="kpi-title">Alertas da previsão</p>
+                <p class="kpi-result-big">10</p>
+                <p class="kpi-time">Riscos previstos</p>
             </div>
 
             <div class="kpi-box">
-                <p class="kpi-title">Scan Time </p>
-                <p class="kpi-result-big">120ms</p>
-                <p class="kpi-details danger">↑ 2% nas ultimas 24h</p>
+                <p class="kpi-title">Anomalias detectadas</p>
+                <p class="kpi-result-big">CPU e RAM</p>
+                <p class="kpi-time">Registros acima do limite previsto</p>
             </div>
 
             <div class="kpi-box">
@@ -281,7 +271,7 @@
                 </div>
                 <div class="content-value-indicator">
                     <div class="indicator-text">
-                        <h4>Erro médio do (MAE)</h4>
+                        <h4>Erro médio (MAE)</h4>
                         <p>1.1ms</p>
                     </div>
                     <div class="indicator-text">
@@ -307,16 +297,16 @@
                     </div>
                 </div>
                 <div>
-                    <button class="btn-ia"><i class="bi bi-chat-dots"></i></i><span>Abrir Assistente</span> <i
-                            class="bi bi-chevron-right arrow"></i></i></button>
+                    <button class="btn-ia" id="btn_ia"><i class="bi bi-chat-dots"></i></i><span>Abrir Assistente</span>
+                        <i class="bi bi-chevron-right arrow"></i></i></button>
                 </div>
             </div>
         </section>
 
-        <section class="container-chat-bot">
+        <section class="container-chat-bot" id="container_chat_bot">
             <div class="box-chat-bot">
                 <div class="header-chat-bot">
-                    <button class="btn-close-chat"><i class="bi bi-x"></i>Fechar chat</button>
+                    <button class="btn-close-chat" id="btn_close_chat"><i class="bi bi-x"></i>Fechar chat</button>
                 </div>
                 <div class="content-chat">
                     <div class="ia-message">
@@ -327,52 +317,10 @@
                     </div>
                     <div class="user-message">
                         <p>AAAAAAAAA AAAA AA</p>
-                    </div>
-                    <div class="ia-message">
-                        <div>
-                            <img src="../assets/icon/MIND .png" alt="Logo do bot da mind">
+                        <div class="img-card">
+                            <img src="../assets/imgs/fotosUsuarios/foto_padrao.png" alt="Foto do usuário" id="imgUser"
+                                onerror="this.onerror=null; this.src='../assets/imgs/fotosUsuarios/foto_padrao.png'">
                         </div>
-                        <p>AAAAAAAAA AAAA AA </p>
-                    </div>
-                    <div class="user-message">
-                        <p>AAAAAAAAA AAAA AA</p>
-                    </div>
-                    <div class="ia-message">
-                        <div>
-                            <img src="../assets/icon/MIND .png" alt="Logo do bot da mind">
-                        </div>
-                        <p>AAAAAAAAA AAAA AA </p>
-                    </div>
-                    <div class="user-message">
-                        <p>AAAAAAAAA AAAA AA</p>
-                    </div>
-                    <div class="ia-message">
-                        <div>
-                            <img src="../assets/icon/MIND .png" alt="Logo do bot da mind">
-                        </div>
-                        <p>AAAAAAAAA AAAA AA AAAA AAAAAAAAA AAAA AA AAAA AAAAAAAAA AAAA AA AAAA AAAAAAAAA AAAA AA AAAA
-                        </p>
-                    </div>
-                    <div class="ia-message">
-                        <div>
-                            <img src="../assets/icon/MIND .png" alt="Logo do bot da mind">
-                        </div>
-                        <p>AAAAAAAAA AAAA AA AAAA AAAAAAAAA AAAA AA AAAA AAAAAAAAA AAAA AA AAAA AAAAAAAAA AAAA AA AAAA
-                        </p>
-                    </div>
-                    <div class="ia-message">
-                        <div>
-                            <img src="../assets/icon/MIND .png" alt="Logo do bot da mind">
-                        </div>
-                        <p>AAAAAAAAA AAAA AA AAAA AAAAAAAAA AAAA AA AAAA AAAAAAAAA AAAA AA AAAA AAAAAAAAA AAAA AA AAAA
-                        </p>
-                    </div>
-                    <div class="ia-message">
-                        <div>
-                            <img src="../assets/icon/MIND .png" alt="Logo do bot da mind">
-                        </div>
-                        <p>AAAAAAAAA AAAA AA AAAA AAAAAAAAA AAAA AA AAAA AAAAAAAAA AAAA AA AAAA AAAAAAAAA AAAA AA AAAA
-                        </p>
                     </div>
                 </div>
 
@@ -396,6 +344,7 @@
 <script src="./../js/configuracoes.js"></script>
 <script src="./../js/sidebar.js"></script>
 <script src="./../js/dashboard-micro.js"></script>
+<script src="./../js/chat-bot.js"></script>
 
 <script>
 
