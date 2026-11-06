@@ -236,6 +236,9 @@
 }
 
 #input_editar_nome,
-#select_editar_cargo {
+#select_editar_cargo,
+#input_editar_nome_client,
+#input_editar_setor_client,
+#select_editar_status_client {
     color: rgba(255, 255, 255, 0.5);
 }

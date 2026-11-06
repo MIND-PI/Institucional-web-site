@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIND | Equipe</title>
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/aside.css">
+    <link rel="stylesheet" href="../css/gerenciamento-padrao.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+    <button class="menu-mobile" id="menuMobile" data-open="false" data-close="bi-list" data-icon-open="bi-x-lg">
+        <i class="bi bi-list"></i>
+    </button>
+    <aside class="sidebar" id="sidebar">
+        <!-- HEADER / LOGO DO HEADER -->
+        <header class="sidebar-header">
+            <div class="logo-img">
+                <img src="./../assets/icon/logoMind/mind_logo_branca.png" alt="logo MIND">
+            </div>
+            <div class="logo-text">
+                <h2 class="logo-title">MIND</h2>
+                <h5 class="logo-subtitle">OBSERVABILIDADE</h5>
+            </div>
+        </header>
+        <!-- INICIO DA NAV BAR -->
+        <nav class="sidebar-nav">
+            <section class="nav-section">
+                <!-- TODO: FAZER DIFERENÇA ENTRE FORNECEDOR E CLIENTE QUANDO SE CONECTA NO SISTEMA -->
+                <h4 class="nav-section-title" id="nav_title">FLUXO DO CLIENTE</h4>
+                <ul class="nav-list" id="nav_flow">
+                </ul>
+            </section>
+            <section class="nav-section">
+                <h4 class="nav-section-title">CONFIGURAÇÕES</h4>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a class="nav-link" id="btn_config">
+                            <i class="bi bi-gear"></i>
+                            Configuração de usuario
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://equipe-mind.atlassian.net/servicedesk/customer/portal/2" class="nav-link"
+                            target="_blank">
+                            <i class="bi bi-question-circle"></i>
+                            Ajuda
+                        </a>
+                    </li>
+                </ul>
+            </section>
+            <section class="nav-section">
+                <h4 class="nav-section-title">SAIR</h4>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a class="nav-link" id="btn_logout" href="./../login.html">
+                            <i class="bi bi-box-arrow-right"></i>
+                            LOGOUT
+                        </a>
+                    </li>
+                </ul>
+            </section>
+        </nav>
+        <!-- CARD DO USUARIO -->
+        <footer class="user-card">
+            <div class="img-card">
+                <img src="../assets/imgs/fotosUsuarios/foto_padrao.png" alt="Foto do usuário" id="imgUser"
+                    onerror="this.onerror=null; this.src='../assets/imgs/fotosUsuarios/foto_padrao.png'">
+            </div>
+            <div class="text-card">
+                <p id="nomeUsuario" class="text-user-name">Rogerio Andrade</p>
+                <p id="tipoUsuario" class="text-user-type">CLIENTE</p>
+            </div>
+        </footer>
+        <!-- MODAL DAS CONFIGURAÇÕES DO USUARIO -->
+        <div class="overlay_config" id="overlay_config">
+            <div class="modal_config">
+                <div class="modal_header">
+                    <h2>Configurações</h2>
+                    <button type="button" class="btn_fechar" id="btn_fechar_config">✖</button>
+                </div>
+
+                <form id="form_config" class="form-config">
+
+                    <div class="input_group file_group">
+                        <img src="../assets/imgs/fotosUsuarios/foto_padrao.png" alt="Preview da Foto"
+                            id="preview_foto_modal" class="preview-foto-modal">
+                        <div class="file_upload_wrapper">
+                            <label for="input_foto" class="btn_upload">Escolher nova foto</label>
+                            <input type="file" id="input_foto" name="foto_perfil" accept="image/*">
+                        </div>
+                    </div>
+
+                    <div class="input_group">
+                        <label for="input_nome">Nome de usuário</label>
+                        <input type="text" id="input_nome" name="nome" placeholder="Digite seu novo nome">
+                    </div>
+
+                    <div class="input_group">
+                        <label for="input_senha">Nova senha</label>
+                        <input type="password" id="input_senha" name="senha" placeholder="Deixe em branco para manter">
+                    </div>
+
+                    <button onclick="salvarConfiguracoes()" type="button" class="btn_salvar">Salvar Alterações</button>
+                </form>
+            </div>
+        </div>
+    </aside>
+    <main class="main">
+        <header class="header-main">
+            <h1 class="title-management">Gerenciamento de clientes</h1>
+            <p class="subtitle-management">Gerencie seus clientes.</p>
+        </header>
+
+        <!-- BUSCA + BOTÃO ADICIONAR -->
+        <section class="toolbar-management">
+            <div class="search-management">
+                <i class="bi bi-search"></i>
+                <input type="text" class="search-management-input" id="input_busca_client" placeholder="Buscar por nome">
+            </div>
+            <div class="btn-management-content">
+                <button type="button" class="btn-management" id="btn_management_client" title="Adicionar cliente">
+                   + Adicionar cliente 
+                </button>
+            </div>
+        </section>
+
+        <!-- TABELA DE CLIENTE -->
+        <section class="table-card-management">
+            <table class="table-management">
+                <thead>
+                    <tr>
+                        <th>EMPRESA</th>
+                        <th>DATA DE CADASTRO</th>
+                        <th>SETOR</th>
+                        <th>STATUS</th>
+                        <th class="management-col-actions">Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody id="table_management_client">
+                    <!-- linhas geradas pelo cliente.js -->
+                </tbody>
+            </table>
+
+            <footer class="table-footer-management">
+                <span id="total_client">0 clientes</span>
+            </footer>
+        </section>
+    </main>
+
+    <div class="overlay_config" id="overlay_edit_client">
+        <div class="modal_config">
+            <div class="modal_header">
+                <h2>Editar cliente</h2>
+                <button type="button" class="btn_fechar" id="btn_fechar_editar_client">✖</button>
+            </div>
+
+            <form id="form_editar_client" class="form-config">
+                <div class="input_group">
+                    <label for="input_editar_nome_client">Nome</label>
+                    <input type="text" id="input_editar_nome_client" placeholder="Nome do cliente">
+                </div>
+
+                <div class="input_group">
+                    <label for="input_editar_setor_client">Setor</label>
+                    <input type="text" id="input_editar_setor_client" placeholder="Setor">
+                </div>
+
+
+                <div class="input_group">
+                    <label for="select_editar_status_client">Status</label>
+                    <select id="select_editar_status_client" class="equipe-select">
+                        <option value="1">Ativo</option>
+                        <option value="0">Inativo</option>
+                    </select>
+                </div>
+
+                <p class="equipe-modal-erro" id="erro_editar_client"></p>
+
+                <button type="submit" class="btn_salvar" id="btn_save_edit_client">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="overlay_config" id="overlay_inativar_client">
+        <div class="modal_config">
+            <div class="modal_header">
+                <h2>Inativar cliente</h2>
+                <button type="button" class="btn_fechar" id="btn_fechar_inativar_client">✖</button>
+            </div>
+
+            <form id="form_inativar_client" class="form-config">
+                <div class="input_group">
+                    <label for="input_inativar_client">Nome</label>
+                    <input type="text" id="input_inativar_client" placeholder="Digite o nome do cliente para confirmação">
+                </div>
+
+                <p class="equipe-modal-erro" id="erro_inativar_client"></p>
+
+                <button type="submit" class="btn_salvar" id="btn_inativar_client">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="overlay_config" id="overlay_add_client">
+        <div class="modal_config">
+            <div class="modal_header">
+                <h2>Adicionar novo cliente</h2>
+                <button type="button" class="btn_fechar" id="btn_fechar_adicionar_client">✖</button>
+            </div>
+
+            <form id="form_adicionar_client" class="form-config">
+                <div class="input_group">
+                    <label for="input_adicionar_nome_client">Nome</label>
+                    <input type="text" id="input_adicionar_nome_client" placeholder="Nome do cliente">
+                </div>
+
+                <div class="input_group">
+                    <label for="input_adicionar_setor_client">Setor</label>
+                    <input type="text" id="input_adicionar_setor_client" placeholder="Setor">
+                </div>
+
+                <div class="input_group">
+                    <label for="input_adicionar_cnpj_client">CNPJ</label>
+                    <input type="text" id="input_adicionar_cnpj_client" placeholder="digite somente números" maxlength="14" inputmode="numeric">
+                </div>
+
+
+                <p class="equipe-modal-erro" id="erro_adicionar_client"></p>
+
+                <button type="submit" class="btn_salvar" id="btn_salvar_adicionar_client">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+
+
+    <script src="../js/sessao.js"></script>
+    <script src="../js/configuracoes.js"></script>
+    <script src="../js/sidebar.js"></script>
+    <script src="../js/cliente.js"></script>
+</body>
+
+</html>
