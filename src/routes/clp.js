@@ -8,8 +8,8 @@ router.get("/:idEmpresa", function (req, res){
 });
 
 //adicionar clp
-router.post("/adicionarClp", function (req,res){
-    clpController.adicionarClp(req, res);
-})
+// router.post("/adicionarClp", function (req,res){
+//     clpController.adicionarClp(req, res);
+// })
 
 module.exports = router;

@@ -89,40 +89,41 @@ document.getElementById("form_adicionar_clp").addEventListener("submit", functio
         return;
     }
 
-    fetch("", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          usuarioServer: sessionStorage.ID_USUARIO,
-          perfilServer: perfilId,
-          pesoServer: pesoVar,
-          alturaServer: alturaVar,
-          metaServer: metaVar
-        }),
-      })
-        .then(function (resposta) {
-          console.log("ESTOU NO THEN DO criarPlano()!");
 
-          if (resposta.ok) {
-            console.log(resposta);
-            limparFormulario();
+//     fetch("/clp/adicionarPerfil", {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({
+//           usuarioServer: sessionStorage.ID_USUARIO,
+//           perfilServer: perfilId,
+//           pesoServer: pesoVar,
+//           alturaServer: alturaVar,
+//           metaServer: metaVar
+//         }),
+//       })
+//         .then(function (resposta) {
+//           console.log("ESTOU NO THEN DO adicionarClp()!");
+
+//           if (resposta.ok) {
+//             console.log(resposta);
+//             limparFormulario();
 
             
-              setTimeout(function () {
-              window.location.href = "/dashboard/";
-            }, 1000);
+//               setTimeout(function () {
+//               window.location.href = "/dashboard/";
+//             }, 1000);
             
-          } else {
-            console.log("Houve um erro ao tentar criar o plano!");
-          }
-        })
-        .catch(function (erro) {
-          console.log(erro);
-        });
+//           } else {
+//             console.log("Houve um erro ao tentar adicionar o clp");
+//           }
+//         })
+//         .catch(function (erro) {
+//           console.log(erro);
+//         });
 
-    fecharModal("overlay_add_clp");
+     fecharModal("overlay_add_clp");
 });
 
 function abrirModalEditar() {

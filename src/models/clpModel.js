@@ -19,6 +19,23 @@ function listarClps(idEmpresa) {
     return database.executar(instrucaoSql);
 }
 
+function listarModelosDisponiveis(idEmpresa){
+    var instrucaoSql = `
+    SELECT
+    m.idmodelo,
+    m.nome
+    FROM modelo m
+    JOIN ativacao a ON a.idFornecedor = m.empresaId
+    WHERE a.idCliente = ${idEmpresa}
+    AND a.status = 1
+    AND m.status = 1
+    ORDER BY m.nome;
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
-    listarClps
+    listarClps,
+    listarModelosDisponiveis
 }
