@@ -158,6 +158,7 @@
 }
 
 #input_editar_nome,
-#select_editar_cargo {
+#select_editar_cargo, 
+#input_desligar_colaborador {
     color: rgba(255, 255, 255, 0.5);
 }

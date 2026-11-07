@@ -13,9 +13,9 @@ var membrosPorId = {};
 // membro que está aberto em algum modal
 var idMembroSelecionado = null;
 
-if (!idUsuario) {
-    window.location.href = "../login.html";
-}
+// if (!idUsuario) {
+//     window.location.href = "../login.html";
+// }
 
 // ---------- utilitários ----------
 

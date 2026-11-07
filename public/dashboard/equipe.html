@@ -81,7 +81,7 @@
             <div class="modal_config">
                 <div class="modal_header">
                     <h2>Configurações</h2>
-                    <button type="button" class="btn_fechar" id="btn_fechar_config">✖</button>
+                    <!-- <button type="button" class="btn_fechar" id="btn_fechar_config">✖</button> -->
                 </div>
 
                 <form id="form_config" class="form-config">
@@ -105,7 +105,11 @@
                         <input type="password" id="input_senha" name="senha" placeholder="Deixe em branco para manter">
                     </div>
 
-                    <button onclick="salvarConfiguracoes()" type="button" class="btn_salvar">Salvar Alterações</button>
+                    <div class="buttons">
+                        <button type="button" id="btn_fechar_config" class="pop-up-button border-red">CANCELAR</button>
+                        <button onclick="salvarConfiguracoes()" type="button" class="pop-up-button border-green">SALVAR</button>
+                    </div>
+                    <!-- <button onclick="salvarConfiguracoes()"  class="btn_salvar">Salvar</button> -->
                 </form>
             </div>
         </div>
@@ -162,7 +166,7 @@
         <div class="modal_config">
             <div class="modal_header">
                 <h2>Editar membro</h2>
-                <button type="button" class="btn_fechar" id="btn_fechar_editar">✖</button>
+                <!-- <button type="button" class="btn_fechar" id="btn_fechar_editar">✖</button> -->
             </div>
 
             <form id="form_editar_membro" class="form-config">
@@ -179,38 +183,25 @@
                     </select>
                 </div>
 
+                <div class="input_group">
+                    <label for="select_editar_nome">Desligar colaborador</label>
+                    <input type="text" id="input_desligar_colaborador" placeholder="Digite: Desligar">
+                </div>
+
                 <p class="equipe-modal-erro" id="erro_editar_membro"></p>
 
-                <button type="submit" class="btn_salvar">Salvar Alterações</button>
+                    <div class="buttons">
+                        <button type="button" id="btn_fechar_editar" class="pop-up-button border-red">CANCELAR</button>
+                        <button onclick="salvarConfiguracoes()" type="submit" class="pop-up-button border-green">SALVAR</button>
+                    </div>
+                <!-- <button type="submit" class="btn_salvar">Salvar Alterações</button> -->
             </form>
-        </div>
-    </div>
-
-    <!-- MODAL: CONFIRMAR REMOÇÃO -->
-    <div class="overlay_config" id="overlay_remover_membro">
-        <div class="modal_config">
-            <div class="modal_header">
-                <h2>Remover membro</h2>
-                <button type="button" class="btn_fechar" id="btn_fechar_remover">✖</button>
-            </div>
-
-            <p class="equipe-modal-texto">
-                Deseja realmente remover <strong id="nome_remover"></strong>?
-                Essa ação não pode ser desfeita.
-            </p>
-
-            <p class="equipe-modal-erro" id="erro_remover_membro"></p>
-
-            <div class="equipe-modal-acoes">
-                <button type="button" class="btn_salvar equipe-btn-cancelar" id="btn_cancelar_remover">Cancelar</button>
-                <button type="button" class="btn_salvar equipe-btn-perigo" id="btn_confirmar_remover">Remover</button>
-            </div>
         </div>
     </div>
 
     <script src="../js/sessao.js"></script>
     <script src="../js/configuracoes.js"></script>
-    <script src="../js/equipe.js"></script>
+     <script src="../js/equipe.js"></script>
     <script src="../js/sidebar.js"></script>
 </body>
 

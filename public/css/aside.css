@@ -22,6 +22,10 @@
     --color-border: #1E2B45;
 
     --sidebar-width: 23rem;
+
+
+    --box-border-radius: 1rem;
+    --border-radius: 5px;
 }
 
 /* -------------------------- */
@@ -221,15 +225,15 @@ body {
     background-color: var(--color-bg-secondary);
     border: 1px solid var(--color-border);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-    border-radius: 15px;
+    border-radius: var(--box-border-radius);
     padding: 30px;
     width: 90%;
     max-width: 400px;
-    color: var(--white);
+    color: var(--color-text-primary);
     transform: translateY(40px) scale(0.95);
     opacity: 0;
-    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-        opacity 0.4s ease-out;
+    /* transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), */
+        /* opacity 0.4s ease-out; */
 }
 
 .overlay_config.ativo .modal_config {
@@ -239,7 +243,7 @@ body {
 
 .modal_header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 25px;
     border-bottom: 1px solid var(--color-border);
@@ -260,6 +264,39 @@ body {
     opacity: 1;
 }
 
+.recursos-slt,.recursos-slt option, .parametro, .pop-up-button {
+    background-color: transparent;
+    border-color: var(--select-input-border);
+    border-radius: var(--border-radius);
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    /* margin: 0 20px ; */
+}
+
+.pop-up-button {
+    border-width: 1px;
+    border-style: solid;
+    min-width: 95px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.border-red {
+    border-color: var(--color-danger);
+}
+.border-green {
+    border-color: var(--color-positive);
+}
+.border-yellow {
+    border-color: var(--color-warning);
+}
+
 .input_group {
     display: flex;
     flex-direction: column;
@@ -276,6 +313,7 @@ body {
     font-family: 'Inter', sans-serif;
     font-size: 14px;
     color: var(--color-text-primary);
+    font-weight: 600;
 }
 
 .input_group input[type="text"],
@@ -285,6 +323,7 @@ body {
     border-radius: 8px;
     padding: 12px 15px;
     color: var(--color-text-primary);
+    font-weight: 600;
     font-family: 'Inter', sans-serif;
     outline: none;
     transition: all 0.5s;
@@ -354,7 +393,11 @@ body {
     margin-top: 10px;
 }
 
-.btn_salvar:hover {
+/* .btn_salvar:hover {
+    opacity: 0.8;
+    transition: all 0.5s;
+} */
+.pop-up-button:hover {
     opacity: 0.8;
     transition: all 0.5s;
 }
