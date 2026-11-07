@@ -250,7 +250,7 @@ body {
     padding-bottom: 15px;
 }
 
-.btn_fechar {
+/* .btn_fechar {
     background: none;
     border: none;
     color: var(--color-text-primary);
@@ -262,7 +262,7 @@ body {
 
 .btn_fechar:hover {
     opacity: 1;
-}
+} */
 
 .recursos-slt,.recursos-slt option, .parametro, .pop-up-button {
     background-color: transparent;
@@ -283,7 +283,7 @@ body {
     border-width: 1px;
     border-style: solid;
     min-width: 95px;
-    padding: 5px 10px;
+    padding: 7px 10px;
     cursor: pointer;
 }
 

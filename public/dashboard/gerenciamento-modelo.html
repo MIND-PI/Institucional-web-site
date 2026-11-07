@@ -162,7 +162,6 @@
         <div class="modal_config">
             <div class="modal_header">
                 <h2>Editar modelo</h2>
-                <!-- <button type="button" class="btn_fechar" id="btn_fechar_editar">✖</button> -->
             </div>
 
             <form id="form_editar_modelo" class="form-config">
@@ -181,7 +180,12 @@
 
                 <p class="equipe-modal-erro" id="erro_editar_modelo"></p>
 
-                <button type="submit" class="btn_salvar" id="btn_save_edit">Salvar Alterações</button>
+                    <div class="buttons">
+                        <button type="button" id="btn_fechar_editar" class="pop-up-button border-red">CANCELAR</button>
+                        <button type="submit" id="btn_save_edit" class="pop-up-button border-green">SALVAR</button>
+                    </div>
+
+                <!-- <button type="submit" class="btn_salvar" id="btn_save_edit">Salvar Alterações</button> -->
             </form>
         </div>
     </div>
@@ -190,7 +194,6 @@
         <div class="modal_config">
             <div class="modal_header">
                 <h2>Deletar modelo</h2>
-                <!-- <button type="button" class="btn_fechar" id="btn_fechar_remover">✖</button> -->
             </div>
 
             <form id="form_remover_modelo" class="form-config">
@@ -201,10 +204,15 @@
 
                 <p class="equipe-modal-erro" id="erro_remover_modelo"></p>
 
-                <button type="submit" class="btn_salvar" id="btn_remove">Salvar Alterações</button>
+                    <div class="buttons">
+                        <button type="button" id="btn_fechar_editar" class="pop-up-button border-green">CANCELAR</button>
+                        <button type="submit" id="btn_save_edit" class="pop-up-button border-red">DELETAR</button>
+                    </div>
+
+                <!-- <button type="submit" class="btn_salvar" id="btn_remove">Salvar Alterações</button> -->
             </form>
         </div>
-    </div>
+    </div> 
 
     <div class="overlay_config" id="overlay_add_model">
         <div class="modal_config">
@@ -221,7 +229,12 @@
 
                 <p class="equipe-modal-erro" id="erro_adicionar_modelo"></p>
 
-                <button type="submit" class="btn_salvar" id="btn_salvar_adicionar">Salvar Alterações</button>
+                    <div class="buttons">
+                        <button type="button" id="btn_fechar_editar" class="pop-up-button border-red">CANCELAR</button>
+                        <button type="submit" id="btn_save_edit" class="pop-up-button border-green">SALVAR</button>
+                    </div>
+
+                <!-- <button type="submit" class="btn_salvar" id="btn_salvar_adicionar">Salvar Alterações</button> -->
             </form>
         </div>
     </div>
