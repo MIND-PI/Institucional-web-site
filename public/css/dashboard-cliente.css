@@ -43,6 +43,18 @@ html {
     color: var(--color-positive);
 }
 
+.warning-bg {
+    background-color: var(--color-warning);
+}
+
+.danger-bg {
+    background-color: var(--color-danger);
+}
+
+.positve-bg {
+    background-color: var(--color-positive);
+}
+
 /* CONTEÚDO PRINCIPAL */
 main {
     padding: 2rem 1rem;
@@ -74,7 +86,6 @@ main {
 
 /* Box do status do clp */
 .status-box {
-    background-color: var(--color-positive);
     padding: 0.2rem 0.8rem;
     border-radius: 0.8rem;
 }
@@ -315,6 +326,7 @@ main {
 
 /* Cabeçalho do gráfico de pizza */
 .pizza-header {
+    margin-bottom: auto;
     width: 100%;
 }
 
@@ -328,6 +340,7 @@ main {
     border-bottom: 1px solid var(--color-border);
     width: 100%;
     padding-bottom: 0.8rem;
+    height: 100%;
 }
 
 /* Gráfico de pizza estilização para pegar largura inteira */

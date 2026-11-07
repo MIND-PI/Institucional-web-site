@@ -252,13 +252,84 @@ function obterDados() {
 // CHAMAS PARA A API
 // ============================
 
-function getCompanyPlc() {
-    
+async function getCompanyPlc() {
+    // Pegando id da empresa do session storage
+    let id_empresa = sessionStorage.getItem("ID_EMPRESA")
+
+    // Chamando a api 
+    let response = await fetch(`/clp/${id_empresa}`, {
+        method: "GET"
+    })
+
+    // Verificando se a resposta da api foi ok
+    if (!response.ok) {
+        console.log("Não foi possível achar os clps da empresa")
+        return
+    }
+
+    // Transformando a resposta em json
+    let json = await response.json()
+
+    return json
 }
 
-function getIndividualPlc() {
-    
+function renderClps(clps) {
+    let select_clps = document.getElementById("select_clps")
+
+    clps.forEach(clp => {
+        select_clps.innerHTML += `<option value="${clp.idClp}" class="filter-option">${clp.nome}</option>`
+    });
 }
+
+
+async function getIndividualPlc() {
+    // Pegando id do plc pelo select
+    let id_plc = select_clps.value
+
+
+    // Chamando a api 
+    let response = await fetch(`/clp/id-individual/${id_plc}`, {
+        method: "GET"
+    })
+
+    // Verificando se a resposta da api foi ok
+    if (!response.ok) {
+        console.log("Não foi possível achar o clp pelo id")
+        return
+    }
+
+    // Transformando a resposta em json
+    let json = await response.json()
+
+    return json
+}
+
+function renderClpInfo(plc) {
+    name_clp.innerHTML = plc.nome_clp
+    if (plc.status == 1) {
+        status_clp.innerHTML = "ativo"
+        document.getElementById("status_box").classList.add("positve-bg")
+    } else {
+        status_clp.innerHTML = "Inativo"
+        document.getElementById("status_box").classList.add("danger-bg")
+    }
+
+    name_model.innerHTML = plc.nome_modelo
+    addres_mac.innerHTML = plc.mac_address
+    department.innerHTML = plc.localizacao
+}
+
+async function loadClps() {
+    let clps = await getCompanyPlc()
+    renderClps(clps)
+    let individual_plc = await getIndividualPlc()
+    renderClpInfo(individual_plc[0])
+}
+
+// ============================
+// CHAMANDO FUNÇÕES DE CARREGAMENTO DE TELA
+// ============================
+
 
 
 // ============================
@@ -285,3 +356,4 @@ periodoSelect.addEventListener('change', function () {
 // Chamando função de obter dados
 // ============================
 obterDados()
+loadClps()
