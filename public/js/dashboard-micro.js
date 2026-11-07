@@ -319,17 +319,15 @@ function renderClpInfo(plc) {
     department.innerHTML = plc.localizacao
 }
 
+// ============================
+// CHAMANDO FUNÇÕES DE CARREGAMENTO DE TELA
+// ============================
 async function loadClps() {
     let clps = await getCompanyPlc()
     renderClps(clps)
     let individual_plc = await getIndividualPlc()
     renderClpInfo(individual_plc[0])
 }
-
-// ============================
-// CHAMANDO FUNÇÕES DE CARREGAMENTO DE TELA
-// ============================
-
 
 
 // ============================
