@@ -7,4 +7,9 @@ router.get("/:idEmpresa", function (req, res){
     clpController.listarClps(req, res);
 });
 
+//listar clp individualmente pelo id
+router.get("/id-individual/:idClp", function (req, res) {
+    clpController.listarClpPorId(req, res)    
+})
+
 module.exports = router;

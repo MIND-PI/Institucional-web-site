@@ -13,6 +13,30 @@ function listarClps(req, res) {
     }
 }
 
+function listarClpPorId(req, res) {
+
+    var idClp = req.params.idClp;
+
+    if (idClp == undefined) {
+        res.status(400).send("O id do clp está indefinido!");
+    } else {
+        clpModel.listarClpPorId(idClp)
+            .then(function (resultado) {
+
+                if (resultado.length == 0) {
+                    return res.status(404).json("O id não é valido para um clp");
+                }
+
+                res.json(resultado);
+            })
+            .catch(function (erro) {
+                console.log(erro);
+                res.status(500).json(erro.sqlMessage);
+            });
+    }
+}
+
 module.exports = {                                    
-    listarClps
+    listarClps,
+    listarClpPorId
 };

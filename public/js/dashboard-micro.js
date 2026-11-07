@@ -32,6 +32,10 @@ const dadosPorPeriodo = {
     ]
 };
 
+// ============================
+// CRIAÇÃO DOS GRÁFICOS
+// ============================
+
 const configGraficoLinha = {
     scanTime: { campo: 'alertasScanTime', nome: 'Scan Time', unidade: ' ms' },
     cpu: { campo: 'alertasCPU', nome: 'CPU', unidade: '%' },
@@ -243,6 +247,19 @@ function obterDados() {
     // GraficoConsumo('graph-scan', 75)
     atualizarGraficoLinha();
 }
+
+// ============================
+// CHAMAS PARA A API
+// ============================
+
+function getCompanyPlc() {
+    
+}
+
+function getIndividualPlc() {
+    
+}
+
 
 // ============================
 // EVENTOS SENDO OUVIDOS
