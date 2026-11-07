@@ -329,6 +329,12 @@ async function loadClps() {
     renderClpInfo(individual_plc[0])
 }
 
+// ============================
+// Chamando função de obter dados
+// ============================
+obterDados()
+loadClps()
+
 
 // ============================
 // EVENTOS SENDO OUVIDOS
@@ -350,8 +356,8 @@ periodoSelect.addEventListener('change', function () {
     }
 });
 
-// ============================
-// Chamando função de obter dados
-// ============================
-obterDados()
-loadClps()
+
+document.getElementById("select_clps").addEventListener("change", async () => {
+    let clp = await getIndividualPlc()    
+    renderClpInfo(clp[0])
+})
