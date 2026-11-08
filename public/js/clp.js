@@ -113,13 +113,35 @@ document.getElementById("form_adicionar_clp").addEventListener("submit", async f
     }
 })
 
-function abrirModalEditar() {
+function abrirModalEditar(linha){
     limparErros("overlay_edit_clp", "erro_editar_clp");
 
-    abrirModal("overlay_edit_clp");
+    // pega o id que o renderClps colocou na primeira linha da tabela
+    idClpParaEditar = linha.dataset.id;
+
+    // procura o CLP na lista que veio do banco
+
+    // JSON.parse pega a lista em formato de texto do sessionStorage (que só guarda texto)
+    // e retransforma pra uma lista normal (JSON)
+    const clps = JSON.parse(sessionStorage.getItem("CLPS_CADASTRADOS"))
+
+    // Se for igual, o clp que está na linha, retorna suas informações
+    const clp = clps.find(function (item) {
+        return item.idClp == idClpParaEditar;
+    })
+
+    // preenche os campos com os dados atuais
+    document.getElementById("select_editar_modelo").value = clp.modeloId;
+    document.getElementById("select_editar_status").value = clp.status;
+    document.getElementById("input_editar_localizacao").value = clp.localizacao;
+    document.getElementById("input_editar_apelido").value = clp.nome;
+
+    abrirModal("overlay_edit_clp")
 }
 
-document.getElementById("form_editar_clp").addEventListener("submit", function (evento) {
+// EDITAR CLP
+
+document.getElementById("form_editar_clp").addEventListener("submit", async function (evento){
     evento.preventDefault();
 
     const obrigatorios = ["select_editar_modelo", "input_editar_localizacao", "input_editar_apelido"];
@@ -127,12 +149,28 @@ document.getElementById("form_editar_clp").addEventListener("submit", function (
         return;
     }
 
-    // (API): fetch(`/clp/atualizar/${id}`, { method: "PUT", ... })
+    let response = await fetch(`/clp/atualizarClp/${idClpParaEditar}`, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            nomeServer: document.getElementById("input_editar_apelido").value.trim(),
+            localizacaoServer: document.getElementById("input_editar_localizacao").value.trim(),
+            statusServer: document.getElementById("select_editar_status").value,
+            modeloServer: document.getElementById("select_editar_modelo").value,
+            empresaServer: sessionStorage.getItem("ID_EMPRESA")
+        })
+    });
 
-    fecharModal("overlay_edit_clp");
+    if (response.ok) {
+        fecharModal("overlay_edit_clp");
+        loadClps();
+    } else {
+        document.getElementById("erro_editar_clp").innerText = "Não foi possível atualizar o CLP.";
+    }
 });
 
 let apelidoParaExcluir = "";
+let idClpParaEditar = null;
 
 function abrirModalRemover(linha) {
     apelidoParaExcluir = linha.children[2].innerText.trim();
@@ -209,13 +247,16 @@ document.getElementById("form_monitorar_clp").addEventListener("submit", functio
     fecharModal("overlay_monitor_clp");
 });
 
+
+// Reage a cliques que acontecem dentro da tabela e descobre o que o usuário clicou
 document.getElementById("table_clps").addEventListener("click", function (evento) {
     const linha = evento.target.closest("tr");
     if (!linha) return;
 
+    // .target descobre quem foi clicado
     if (evento.target.closest(".management-btn-monitor")) abrirModalMonitorar();
-    if (evento.target.closest(".management-btn-edit"))    abrirModalEditar();
     if (evento.target.closest(".management-btn-delete"))  abrirModalRemover(linha);
+    if (evento.target.closest(".management-btn-edit"))    abrirModalEditar(linha);
 });
 
 
@@ -237,6 +278,9 @@ async function getClps(){
 
     let json = await response.json()
     // Converte o texto em uma lista de objetos
+
+    //JSON.stringfy transforma o objeto em texto, pois o 
+    // sessionStorage só guarda texto
     sessionStorage.setItem("CLPS_CADASTRADOS", JSON.stringify(json))
     return json
 }
