@@ -35,7 +35,7 @@ function listarModelosDisponiveis(idEmpresa){
     return database.executar(instrucaoSql);
 }
 
-function adicionarClp(nome, localizacao, status, modeloId, empresaId) {
+function adicionarClp(nome, localizacao, status, modeloId, empresaId, medicoes) {
     var instrucaoSql = `
     INSERT INTO clp (nome, localizacao, status, modeloId, empresaId)
     VALUES ('${nome}', '${localizacao}', ${status}, ${modeloId}, ${empresaId});
@@ -45,9 +45,14 @@ function adicionarClp(nome, localizacao, status, modeloId, empresaId) {
     return database.executar(instrucaoSql).then(function (resultado) {
         var idNovo = resultado.insertId;
 
+        // uma linha para cada medição que o cliente escolheu
+        var valores = medicoes.map(function (m) {
+            return `(${idNovo}, ${m.tipoMedicaoId}, 1, ${m.parametro})`;
+        }).join(", ");
+
         var instrucaoMedicoes = `
         INSERT INTO clp_medicao (clpId, tipoMedicaoId, status, parametro)
-        VALUES (${idNovo}, 1, 1, NULL), (${idNovo}, 2, 1, 80), (${idNovo}, 4, 1, NULL);
+        VALUES ${valores};
         `;
         return database.executar(instrucaoMedicoes);
     });
@@ -105,6 +110,15 @@ function salvarMedicao(idClp, tipoMedicaoId, status, parametro) {
     return database.executar(instrucaoSql);
 }
 
+function listarTiposMedicao(){
+    var instrucaoSql = `
+    SELECT idTipoMedicao, nome, apelido, unidade_medida
+    FROM tipo_medicao
+    ORDER BY idTipoMedicao;
+    `;
+    return database.executar(instrucaoSql);
+}
+
 
 module.exports = {
     listarClps,
@@ -113,5 +127,6 @@ module.exports = {
     atualizarClp,
     listarMedicoes,
     clpPertenceEmpresa,
-    salvarMedicao
+    salvarMedicao,
+    listarTiposMedicao
 }
