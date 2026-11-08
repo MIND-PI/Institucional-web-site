@@ -501,13 +501,17 @@ function renderClps(clps){
         </tr>`
     }
 
-    total_clps.innerHTML = clps.length == 0 ? "Sem CLPs cadastrados" : `${clps.length} CLPs`
+    const buscando = document.getElementById("input_busca").value.trim() != "";
+    total_clps.innerHTML = clps.length == 0
+        ? (buscando ? "Nenhum CLP encontrado" : "Sem CLPs cadastrados")
+        : `${clps.length} CLPs`;
 }
 
 async function loadClps() {
     let clps = await getClps()
     console.log(clps)
     renderClps(clps)
+    document.getElementById("input_busca").dispatchEvent(new Event("input"))
 }
 
 // Lista os modelos disponíveis para o cliente selecionar qual ele deseja
@@ -542,6 +546,18 @@ async function loadModelos(){
     }
 }
 
+// BUSCA POR APELIDO
+document.getElementById("input_busca").addEventListener("input", function () {
+    const termo = this.value.trim().toLowerCase();
+
+    const clps = JSON.parse(sessionStorage.getItem("CLPS_CADASTRADOS")) || [];
+
+    const filtrados = clps.filter(function (clp) {
+        return clp.nome.toLowerCase().includes(termo);
+    });
+
+    renderClps(filtrados);
+});
 
 loadClps()
 loadModelos()
