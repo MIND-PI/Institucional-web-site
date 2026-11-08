@@ -35,7 +35,23 @@ function listarModelosDisponiveis(idEmpresa){
     return database.executar(instrucaoSql);
 }
 
+function adicionarClp(nome, localizacao, status, modeloId, empresaId){
+    var instrucaoSql = `
+    INSERT INTO clp (
+    nome,
+    localizacao,
+    status,
+    modeloId,
+    empresaId)
+    VALUES
+    ('${nome}', '${localizacao}', ${status}, ${modeloId}, ${empresaId});`
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     listarClps,
-    listarModelosDisponiveis
+    listarModelosDisponiveis,
+    adicionarClp
 }
