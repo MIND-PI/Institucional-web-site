@@ -74,24 +74,44 @@ document.querySelectorAll(".modal-clp input, .modal-clp select").forEach(functio
     });
 });
 
+
+// Adicionar CLP
 document.getElementById("btn_add_clp").addEventListener("click", function () {
     document.getElementById("form_adicionar_clp").reset();
     limparErros("overlay_add_clp", "erro_adicionar_clp");
     abrirModal("overlay_add_clp");
 });
 
-document.getElementById("form_adicionar_clp").addEventListener("submit", function (evento) {
+document.getElementById("form_adicionar_clp").addEventListener("submit", async function (evento){
     // preventDefault impede o navegador de recarregar a página ao enviar o formulário
     evento.preventDefault();
 
     const obrigatorios = ["select_adicionar_modelo", "input_adicionar_localizacao", "input_adicionar_apelido"];
-    if (!validarCampos(obrigatorios, "erro_adicionar_clp")) {
+    if(!validarCampos(obrigatorios, "erro_adicionar_clp")){
         return;
     }
 
+    let response = await fetch("/clp/adicionarClp", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            nomeServer: document.getElementById("input_adicionar_apelido").value.trim(),
+            localizacaoServer: document.getElementById("input_adicionar_localizacao").value.trim(),
+            statusServer: document.getElementById("select_adicionar_status").value,
+            modeloServer: document.getElementById("select_adicionar_modelo").value,
+            empresaServer: sessionStorage.getItem("ID_EMPRESA")
+        })
+    });
 
-     fecharModal("overlay_add_clp");
-});
+
+    if(response.ok){
+        fecharModal("overlay_add_clp");
+        loadClps();
+    }
+    else{
+        document.getElementById("erro_adicionar_clp").innerText = "Não foi possível adicionar o CLP."
+    }
+})
 
 function abrirModalEditar() {
     limparErros("overlay_edit_clp", "erro_editar_clp");

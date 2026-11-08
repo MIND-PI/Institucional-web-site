@@ -13,7 +13,7 @@ router.get("/listarModelosDisponiveis/:idEmpresa", function (req,res){
 });
 
 //adicionar clp
-router.post("/adicionarClps", function(req, res){
+router.post("/adicionarClp", function(req, res){
     clpController.adicionarClp(req,res);
 })
 
