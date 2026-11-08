@@ -42,8 +42,28 @@ function adicionarClp(req, res) {
     }
 }
 
+function atualizarClp(req, res) {
+    var idClp = req.params.idClp;
+    var nome = req.body.nomeServer;
+    var localizacao = req.body.localizacaoServer;
+    var status = req.body.statusServer;
+    var modeloId = req.body.modeloServer;
+    var empresaId = req.body.empresaServer;
+
+    if (idClp == undefined || isNaN(idClp)) {
+        res.status(400).send("O id do CLP está indefinido ou inválido!");
+    } else if (!nome || !localizacao || !modeloId || !empresaId || (status != 0 && status != 1)) {
+        res.status(400).send("Preencha todos os campos obrigatórios!");
+    } else {
+        clpModel.atualizarClp(idClp, nome, localizacao, status, modeloId, empresaId)
+            .then(function (resultado) { res.status(200).json(resultado); })
+            .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
+    }
+}
+
 module.exports = {                                    
     listarClps,
     listarModelosDisponiveis,
-    adicionarClp
+    adicionarClp,
+    atualizarClp
 };
