@@ -26,4 +26,8 @@ router.put("/salvarMedicoes/:idClp", function (req, res){
     clpController.salvarMedicoes(req, res);
 });
 
+router.get("/listarTiposMedicao", function (req, res) {
+    clpController.listarTiposMedicao(req, res);
+});
+
 module.exports = router;

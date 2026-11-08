@@ -113,6 +113,9 @@ document.getElementById("form_adicionar_clp").addEventListener("submit", async f
     }
 })
 
+let apelidoParaExcluir = "";
+let idClpParaEditar = null;
+
 function abrirModalEditar(linha){
     limparErros("overlay_edit_clp", "erro_editar_clp");
 
@@ -169,9 +172,6 @@ document.getElementById("form_editar_clp").addEventListener("submit", async func
     }
 });
 
-let apelidoParaExcluir = "";
-let idClpParaEditar = null;
-
 function abrirModalRemover(linha) {
     apelidoParaExcluir = linha.children[2].innerText.trim();
 
@@ -195,14 +195,72 @@ document.getElementById("form_remover_clp").addEventListener("submit", function 
         return;
     }
 
-    // (API): fetch(`/clp/deletar/${id}`, { method: "DELETE" })
-
     fecharModal("overlay_remove_clp");
 });
 
+// MONITORAMENTO
+let idClpParaMonitorar = null;
+let medicoesDoClp = [];
 
-function abrirModalMonitorar() {
+// CPU (1), RAM(2), SCAN TIME (5)
+const MEDICOES_OBRIGATORIAS = [1, 2, 5];
+
+async function getMedicoes(idClp){
+    let id_empresa = sessionStorage.getItem("ID_EMPRESA")
+
+    let response = await fetch(`/clp/listarMedicoes/${idClp}/${id_empresa}`, { method: "GET" })
+
+    if (!response.ok) {
+        console.log("Não foi possível encontrar as medições")
+        return []
+    }
+
+    return await response.json()
+}
+
+// Cria a linha com o que já está sendo monitorado
+function criarLinhaMonitorar(medicao, marcado) {
+    const obrigatoria = MEDICOES_OBRIGATORIAS.includes(medicao.idTipoMedicao);
+    const parametro = medicao.parametro ?? "";
+
+    return `<div class="linha-monitorar" data-tipo="${medicao.idTipoMedicao}">
+        <label>
+            <input type="checkbox" ${marcado ? "checked" : ""} ${obrigatoria ? "disabled" : ""}>
+            ${medicao.apelido}${obrigatoria ? '<span class="obrigatorio">*</span>' : ""}
+        </label>
+        <input type="text" class="parametro" placeholder="Limite (${medicao.unidade_medida})"
+               value="${parametro}" ${marcado ? "" : "disabled"}>
+    </div>`;
+}
+
+// monta a lista e o select a partir de medicoes do Clp
+function renderMonitorar(){
+    const lista = document.getElementById("lista_monitorar");
+    const select = document.getElementById("select_adicionar_recurso");
+
+    lista.innerHTML = "";
+    select.innerHTML = `<option value="" selected>Selecione</option>`;
+
+    for(let i = 0; i < medicoesDoClp.length; i++){
+        const m = medicoesDoClp[i];
+
+        if(m.monitorado == 1){
+            lista.insertAdjacentHTML("beforeend", criarLinhaMonitorar(m, true));
+        }
+        else{
+             select.innerHTML += `<option value="${m.idTipoMedicao}">${m.apelido}</option>`;
+        }
+    }
+}
+
+
+async function abrirModalMonitorar(linha) {
     limparErros("overlay_monitor_clp", "erro_monitorar_clp");
+
+    idClpParaMonitorar = linha.dataset.id;
+    medicoesDoClp = await getMedicoes(idClpParaMonitorar);
+    renderMonitorar();
+
     abrirModal("overlay_monitor_clp");
 }
 
@@ -214,22 +272,44 @@ document.getElementById("lista_monitorar").addEventListener("change", function (
     campo.classList.remove("invalido");
 });
 
-document.getElementById("form_monitorar_clp").addEventListener("submit", function (evento) {
+document.getElementById("select_adicionar_recurso").addEventListener("change", function (){
+    if(this.value == "") return;
+
+    const medicao = medicoesDoClp.find(function (m){
+        return m.idTipoMedicao == this.value;
+    }, this);
+
+    document.getElementById("lista_monitorar")
+        .insertAdjacentHTML("beforeend", criarLinhaMonitorar(medicao, true));
+
+    this.querySelector(`option[value="${this.value}"]`).remove();
+    this.value = "";
+})
+
+document.getElementById("form_monitorar_clp").addEventListener("submit", async function (evento) {
     evento.preventDefault();
 
     let valido = true;
     let marcados = 0;
+    let medicoes = [];
 
     document.querySelectorAll("#lista_monitorar .linha-monitorar").forEach(function (linha) {
-        if (!linha.querySelector('input[type="checkbox"]').checked) return;
-        marcados++;
-
+        const marcado = linha.querySelector('input[type="checkbox"]').checked;
         const campo = linha.querySelector(".parametro");
         const limite = campo.value.trim().replace(",", ".");
-        const numeroValido = limite != "" && !isNaN(limite) && Number(limite) >= 0;
 
-        campo.classList.toggle("invalido", !numeroValido);
-        if (!numeroValido) valido = false;
+        if (marcado) {
+            marcados++;
+            const numeroValido = limite != "" && !isNaN(limite) && Number(limite) >= 0;
+            campo.classList.toggle("invalido", !numeroValido);
+            if (!numeroValido) valido = false;
+        }
+
+        medicoes.push({
+            tipoMedicaoId: Number(linha.dataset.tipo),
+            status: marcado ? 1 : 0,
+            parametro: marcado ? Number(limite) : (limite == "" ? 0 : Number(limite))
+        });
     });
 
     if (marcados == 0) {
@@ -242,11 +322,21 @@ document.getElementById("form_monitorar_clp").addEventListener("submit", functio
         return;
     }
 
-    // (API): enviar os recursos e limites para o back-end
+    let response = await fetch(`/clp/salvarMedicoes/${idClpParaMonitorar}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            empresaServer: sessionStorage.getItem("ID_EMPRESA"),
+            medicoesServer: medicoes
+        })
+    });
 
-    fecharModal("overlay_monitor_clp");
+    if (response.ok) {
+        fecharModal("overlay_monitor_clp");
+    } else {
+        document.getElementById("erro_monitorar_clp").innerText = "Não foi possível salvar as medições.";
+    }
 });
-
 
 // Reage a cliques que acontecem dentro da tabela e descobre o que o usuário clicou
 document.getElementById("table_clps").addEventListener("click", function (evento) {
@@ -254,9 +344,9 @@ document.getElementById("table_clps").addEventListener("click", function (evento
     if (!linha) return;
 
     // .target descobre quem foi clicado
-    if (evento.target.closest(".management-btn-monitor")) abrirModalMonitorar();
     if (evento.target.closest(".management-btn-delete"))  abrirModalRemover(linha);
     if (evento.target.closest(".management-btn-edit"))    abrirModalEditar(linha);
+    if (evento.target.closest(".management-btn-monitor")) abrirModalMonitorar(linha);
 });
 
 
@@ -357,7 +447,7 @@ async function loadModelos(){
 
     for (let i = 0; i < modelos.length; i++){
         let option = `<option value="${modelos[i].idModelo}">${modelos[i].nome}</option>`
-        selectAdd.innerHTML = option
+        selectAdd.innerHTML += option
         selectEdit.innerHTML += option
     }
 }

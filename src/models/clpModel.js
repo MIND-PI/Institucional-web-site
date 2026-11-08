@@ -35,19 +35,22 @@ function listarModelosDisponiveis(idEmpresa){
     return database.executar(instrucaoSql);
 }
 
-function adicionarClp(nome, localizacao, status, modeloId, empresaId){
+function adicionarClp(nome, localizacao, status, modeloId, empresaId) {
     var instrucaoSql = `
-    INSERT INTO clp (
-    nome,
-    localizacao,
-    status,
-    modeloId,
-    empresaId)
-    VALUES
-    ('${nome}', '${localizacao}', ${status}, ${modeloId}, ${empresaId});`
-
+    INSERT INTO clp (nome, localizacao, status, modeloId, empresaId)
+    VALUES ('${nome}', '${localizacao}', ${status}, ${modeloId}, ${empresaId});
+    `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql);
+
+    return database.executar(instrucaoSql).then(function (resultado) {
+        var idNovo = resultado.insertId;
+
+        var instrucaoMedicoes = `
+        INSERT INTO clp_medicao (clpId, tipoMedicaoId, status, parametro)
+        VALUES (${idNovo}, 1, 1, NULL), (${idNovo}, 2, 1, 80), (${idNovo}, 4, 1, NULL);
+        `;
+        return database.executar(instrucaoMedicoes);
+    });
 }
 
 function atualizarClp(idClp, nome, localizacao, status, modeloId, empresaId) {
