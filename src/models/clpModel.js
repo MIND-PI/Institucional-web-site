@@ -67,5 +67,6 @@ function atualizarClp(idClp, nome, localizacao, status, modeloId, empresaId) {
 module.exports = {
     listarClps,
     listarModelosDisponiveis,
-    adicionarClp
+    adicionarClp,
+    atualizarClp
 }

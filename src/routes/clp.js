@@ -14,8 +14,8 @@ router.post("/adicionarClp", function(req, res){
     clpController.adicionarClp(req,res);
 })
 
-router.post("/atualizarClp/:idClp", function(req, res){
-    clpController.atualizarClpClp(req,res);
+router.put("/atualizarClp/:idClp", function(req, res){
+    clpController.atualizarClp(req,res);
 })
 
 module.exports = router;
