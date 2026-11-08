@@ -50,6 +50,20 @@ function adicionarClp(nome, localizacao, status, modeloId, empresaId){
     return database.executar(instrucaoSql);
 }
 
+function atualizarClp(idClp, nome, localizacao, status, modeloId, empresaId) {
+    var instrucaoSql = `
+    UPDATE clp
+    SET nome = '${nome}',
+        localizacao = '${localizacao}',
+        status = ${status},
+        modeloId = ${modeloId}
+    WHERE idClp = ${idClp}
+      AND empresaId = ${empresaId};
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     listarClps,
     listarModelosDisponiveis,
