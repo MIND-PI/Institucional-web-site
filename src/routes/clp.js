@@ -3,8 +3,13 @@ var router = express.Router();
 var clpController = require("../controllers/clpController");
 
 //listar clps da empresa
-router.get("/:idEmpresa", function (req, res){
+router.get("/listarClps/:idEmpresa", function (req, res){
     clpController.listarClps(req, res);
+});
+
+//listar modelos disponíveis
+router.get("/listarModelosDisponiveis/:idEmpresa", function (req,res){
+    clpController.listarModelosDisponiveis(req, res);
 });
 
 //adicionar clp
