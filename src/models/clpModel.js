@@ -64,21 +64,18 @@ function atualizarClp(idClp, nome, localizacao, status, modeloId, empresaId) {
     return database.executar(instrucaoSql);
 }
 
+// Traz todas as medições e mostra uma nova coluna monitorado
+// retorna 1 pra monitorado e 0 pra não monitorado
 function listarMedicoes(idClp, idEmpresa){
     var instrucaoSql = `
     SELECT
-        tm.idTipoMedicao,
-        tm.nome,
-        tm.apelido,
-        tm.unidade_medida,
-        cm.parametro,
-        IF(cm.status = 1, 1, 0) AS monitorado
-    FROM clp c
-    CROSS JOIN tipo_medicao tm
+        SELECT
+    tm.idTipoMedicao, tm.nome, tm.apelido, tm.unidade_medida,
+    cm.parametro,
+    IF(cm.status = 1, 1, 0) AS monitorado
+    FROM tipo_medicao tm
     LEFT JOIN clp_medicao cm
-        ON cm.clpId = c.idClp AND cm.tipoMedicaoId = tm.idTipoMedicao
-    WHERE c.idClp = ${idClp}
-      AND c.empresaId = ${idEmpresa}
+        ON cm.tipoMedicaoId = tm.idTipoMedicao AND cm.clpId = ${idClp}
     ORDER BY tm.idTipoMedicao;
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
@@ -93,6 +90,8 @@ function clpPertenceEmpresa(idClp, idEmpresa) {
     return database.executar(instrucaoSql);
 }
 
+// ON DUPLICATE KEY evita erro de duplicidade 
+// (evita que o usuário tente monitorar algo que já está sendo monitorado)
 function salvarMedicao(idClp, tipoMedicaoId, status, parametro) {
     var instrucaoSql = `
     INSERT INTO clp_medicao (clpId, tipoMedicaoId, status, parametro)

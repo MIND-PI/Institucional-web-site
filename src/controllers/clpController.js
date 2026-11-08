@@ -61,9 +61,58 @@ function atualizarClp(req, res) {
     }
 }
 
+function listarMedicoes(req, res) {
+    var idClp = req.params.idClp;
+    var idEmpresa = req.params.idEmpresa;
+
+    if (isNaN(idClp) || isNaN(idEmpresa)) {
+        res.status(400).send("Id do CLP ou da empresa inválido!");
+    } else {
+        clpModel.listarMedicoes(idClp, idEmpresa)
+            .then(function (resultado) { res.json(resultado); })
+            .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
+    }
+}
+
+function salvarMedicoes(req, res) {
+    var idClp = req.params.idClp;
+    var empresaId = req.body.empresaServer;
+    var medicoes = req.body.medicoesServer;
+
+    if (isNaN(idClp) || isNaN(empresaId) || !Array.isArray(medicoes) || medicoes.length == 0) {
+        res.status(400).send("Dados inválidos!");
+        return;
+    }
+
+    // garantimos que tudo que entra é número, porque o sql é montado com texto
+    var invalida = medicoes.some(function (m) {
+        return isNaN(m.tipoMedicaoId) || isNaN(m.parametro) || (m.status != 0 && m.status != 1);
+    });
+    if (invalida) {
+        res.status(400).send("Medição com dados inválidos!");
+        return;
+    }
+
+    clpModel.clpPertenceEmpresa(idClp, empresaId)
+        .then(function (resultado) {
+            if (resultado.length == 0) {
+                res.status(403).send("Esse CLP não pertence à sua empresa!");
+                return;
+            }
+
+            return Promise.all(medicoes.map(function (m) {
+                return clpModel.salvarMedicao(idClp, m.tipoMedicaoId, m.status, m.parametro);
+            })).then(function () { res.status(200).send("Medições salvas!"); });
+        })
+        .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
+}
+
 module.exports = {                                    
     listarClps,
     listarModelosDisponiveis,
     adicionarClp,
-    atualizarClp
+    atualizarClp,
+    listarMedicoes,
+    salvarMedicoes,
+    
 };
