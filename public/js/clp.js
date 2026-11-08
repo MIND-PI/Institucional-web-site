@@ -43,6 +43,12 @@ configurarFechamento("overlay_edit_clp",    ["btn_cancelar_editar"]);
 configurarFechamento("overlay_remove_clp",  ["btn_cancelar_remover"]);
 configurarFechamento("overlay_monitor_clp", ["btn_cancelar_monitorar", "btn_fechar_monitorar"]);
 
+["btn_cancelar_monitorar", "btn_fechar_monitorar"].forEach(function (id) {
+    document.getElementById(id).addEventListener("click", function () {
+        clpPendente = null;
+    });
+});
+
 // Marca os campos vazios com borda vermelha (classe .invalido)
 // e devolve true se todos estão preenchidos
 function validarCampos(ids, idErro) {
@@ -76,134 +82,78 @@ document.querySelectorAll(".modal-clp input, .modal-clp select").forEach(functio
 
 
 // Adicionar CLP
+let clpPendente = null; // dados do CLP esperando os limites
+
 document.getElementById("btn_add_clp").addEventListener("click", function () {
     document.getElementById("form_adicionar_clp").reset();
     limparErros("overlay_add_clp", "erro_adicionar_clp");
     abrirModal("overlay_add_clp");
 });
 
-document.getElementById("form_adicionar_clp").addEventListener("submit", async function (evento){
-    // preventDefault impede o navegador de recarregar a página ao enviar o formulário
+document.getElementById("form_adicionar_clp").addEventListener("submit", async function (evento) {
     evento.preventDefault();
 
     const obrigatorios = ["select_adicionar_modelo", "input_adicionar_localizacao", "input_adicionar_apelido"];
-    if(!validarCampos(obrigatorios, "erro_adicionar_clp")){
+    if (!validarCampos(obrigatorios, "erro_adicionar_clp")) {
         return;
     }
 
-    let response = await fetch("/clp/adicionarClp", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            nomeServer: document.getElementById("input_adicionar_apelido").value.trim(),
-            localizacaoServer: document.getElementById("input_adicionar_localizacao").value.trim(),
-            statusServer: document.getElementById("select_adicionar_status").value,
-            modeloServer: document.getElementById("select_adicionar_modelo").value,
-            empresaServer: sessionStorage.getItem("ID_EMPRESA")
-        })
-    });
+    // guarda, mas ainda não envia ao banco
+    clpPendente = {
+        nome: document.getElementById("input_adicionar_apelido").value.trim(),
+        localizacao: document.getElementById("input_adicionar_localizacao").value.trim(),
+        status: document.getElementById("select_adicionar_status").value,
+        modeloId: document.getElementById("select_adicionar_modelo").value
+    };
 
-
-    if(response.ok){
-        fecharModal("overlay_add_clp");
-        loadClps();
-    }
-    else{
-        document.getElementById("erro_adicionar_clp").innerText = "Não foi possível adicionar o CLP."
-    }
-})
-
-let apelidoParaExcluir = "";
-let idClpParaEditar = null;
-
-function abrirModalEditar(linha){
-    limparErros("overlay_edit_clp", "erro_editar_clp");
-
-    // pega o id que o renderClps colocou na primeira linha da tabela
-    idClpParaEditar = linha.dataset.id;
-
-    // procura o CLP na lista que veio do banco
-
-    // JSON.parse pega a lista em formato de texto do sessionStorage (que só guarda texto)
-    // e retransforma pra uma lista normal (JSON)
-    const clps = JSON.parse(sessionStorage.getItem("CLPS_CADASTRADOS"))
-
-    // Se for igual, o clp que está na linha, retorna suas informações
-    const clp = clps.find(function (item) {
-        return item.idClp == idClpParaEditar;
-    })
-
-    // preenche os campos com os dados atuais
-    document.getElementById("select_editar_modelo").value = clp.modeloId;
-    document.getElementById("select_editar_status").value = clp.status;
-    document.getElementById("input_editar_localizacao").value = clp.localizacao;
-    document.getElementById("input_editar_apelido").value = clp.nome;
-
-    abrirModal("overlay_edit_clp")
-}
-
-// EDITAR CLP
-
-document.getElementById("form_editar_clp").addEventListener("submit", async function (evento){
-    evento.preventDefault();
-
-    const obrigatorios = ["select_editar_modelo", "input_editar_localizacao", "input_editar_apelido"];
-    if (!validarCampos(obrigatorios, "erro_editar_clp")) {
-        return;
-    }
-
-    let response = await fetch(`/clp/atualizarClp/${idClpParaEditar}`, {
-        method: "PUT",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            nomeServer: document.getElementById("input_editar_apelido").value.trim(),
-            localizacaoServer: document.getElementById("input_editar_localizacao").value.trim(),
-            statusServer: document.getElementById("select_editar_status").value,
-            modeloServer: document.getElementById("select_editar_modelo").value,
-            empresaServer: sessionStorage.getItem("ID_EMPRESA")
-        })
-    });
-
-    if (response.ok) {
-        fecharModal("overlay_edit_clp");
-        loadClps();
-    } else {
-        document.getElementById("erro_editar_clp").innerText = "Não foi possível atualizar o CLP.";
-    }
-});
-
-function abrirModalRemover(linha) {
-    apelidoParaExcluir = linha.children[2].innerText.trim();
-
-    document.getElementById("nome_remover_clp").innerText = apelidoParaExcluir;
-
-    const input = document.getElementById("input_remover_clp");
-    input.value = "";
-    input.placeholder = apelidoParaExcluir;
-
-    limparErros("overlay_remove_clp", "erro_remover_clp");
-    abrirModal("overlay_remove_clp");
-}
-
-document.getElementById("form_remover_clp").addEventListener("submit", function (evento) {
-    evento.preventDefault();
-
-    const digitado = document.getElementById("input_remover_clp").value.trim();
-
-    if (digitado != apelidoParaExcluir) {
-        document.getElementById("erro_remover_clp").innerText = "O texto digitado precisa ser igual ao apelido do CLP.";
-        return;
-    }
-
-    fecharModal("overlay_remove_clp");
+    await abrirModalMonitorarNovo();
 });
 
 // MONITORAMENTO
+
 let idClpParaMonitorar = null;
 let medicoesDoClp = [];
-
 // CPU (1), RAM(2), SCAN TIME (5)
 const MEDICOES_OBRIGATORIAS = [1, 2, 5];
+
+async function abrirModalMonitorarNovo(){
+    limparErros("overlay_monitor_clp", "erro_monitorar_clp");
+
+    idClpParaMonitorar = null;
+    const tipos = await getTiposMedicao();
+
+    // os tipos de medição obrigatórios já entram como monitoradas
+    // mas o cliente tem que definir o limite
+    medicoesDoClp = tipos.map(function (t){
+        return {
+            ...t,
+            parametro: null,
+            monitorado: MEDICOES_OBRIGATORIAS.includes(t.idTipoMedicao) ? 1 : 0
+        };
+    });
+    renderMonitorar();
+
+    // limites vazios já começam vermelhos pra avisar o cliente que ele 
+    // tem que definir o limite
+    // se não o clp sequer é criado
+    document.querySelectorAll("#lista_monitorar .parametro").forEach(function (campo) {
+        campo.classList.add("invalido");
+    });
+
+    fecharModal("overlay_add_clp");
+    abrirModal("overlay_monitor_clp");
+}
+async function getTiposMedicao(){
+    let response = await fetch("/clp/listarTiposMedicao", { method: "GET" })
+
+    if(!response.ok){
+        console.log("Não foi possível encontrar os tipos de medição")
+        return []
+    }
+
+    return await response.json()
+}
+
 
 async function getMedicoes(idClp){
     let id_empresa = sessionStorage.getItem("ID_EMPRESA")
@@ -255,6 +205,7 @@ function renderMonitorar(){
 
 
 async function abrirModalMonitorar(linha) {
+    clpPendente = null;
     limparErros("overlay_monitor_clp", "erro_monitorar_clp");
 
     idClpParaMonitorar = linha.dataset.id;
@@ -270,6 +221,14 @@ document.getElementById("lista_monitorar").addEventListener("change", function (
     const campo = evento.target.closest(".linha-monitorar").querySelector(".parametro");
     campo.disabled = !evento.target.checked;
     campo.classList.remove("invalido");
+});
+
+document.getElementById("lista_monitorar").addEventListener("input", function (evento) {
+    if (!evento.target.classList.contains("parametro")) return;
+
+    const limite = evento.target.value.trim().replace(",", ".");
+    const ok = limite != "" && !isNaN(limite) && Number(limite) >= 0;
+    evento.target.classList.toggle("invalido", !ok);
 });
 
 document.getElementById("select_adicionar_recurso").addEventListener("change", function (){
@@ -322,6 +281,32 @@ document.getElementById("form_monitorar_clp").addEventListener("submit", async f
         return;
     }
 
+    // MODO CRIAÇÃO: veio do "Adicionar CLP"
+    if (clpPendente) {
+        let response = await fetch("/clp/adicionarClp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                nomeServer: clpPendente.nome,
+                localizacaoServer: clpPendente.localizacao,
+                statusServer: clpPendente.status,
+                modeloServer: clpPendente.modeloId,
+                empresaServer: sessionStorage.getItem("ID_EMPRESA"),
+                medicoesServer: medicoes.filter(function (m) { return m.status == 1; })
+            })
+        });
+
+        if (response.ok) {
+            clpPendente = null;
+            fecharModal("overlay_monitor_clp");
+            loadClps();
+        } else {
+            document.getElementById("erro_monitorar_clp").innerText = "Não foi possível adicionar o CLP.";
+        }
+        return;
+    }
+
+    // MODO EDIÇÃO: CLP que já existe
     let response = await fetch(`/clp/salvarMedicoes/${idClpParaMonitorar}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -338,6 +323,93 @@ document.getElementById("form_monitorar_clp").addEventListener("submit", async f
     }
 });
 
+let apelidoParaExcluir = "";
+let idClpParaEditar = null;
+
+
+// EDITAR CLP
+function abrirModalEditar(linha){
+    limparErros("overlay_edit_clp", "erro_editar_clp");
+
+    // pega o id que o renderClps colocou na primeira linha da tabela
+    idClpParaEditar = linha.dataset.id;
+
+    // procura o CLP na lista que veio do banco
+
+    // JSON.parse pega a lista em formato de texto do sessionStorage (que só guarda texto)
+    // e retransforma pra uma lista normal (JSON)
+    const clps = JSON.parse(sessionStorage.getItem("CLPS_CADASTRADOS"))
+
+    // Se for igual, o clp que está na linha, retorna suas informações
+    const clp = clps.find(function (item) {
+        return item.idClp == idClpParaEditar;
+    })
+
+    // preenche os campos com os dados atuais
+    document.getElementById("select_editar_modelo").value = clp.modeloId;
+    document.getElementById("select_editar_status").value = clp.status;
+    document.getElementById("input_editar_localizacao").value = clp.localizacao;
+    document.getElementById("input_editar_apelido").value = clp.nome;
+
+    abrirModal("overlay_edit_clp")
+}
+
+document.getElementById("form_editar_clp").addEventListener("submit", async function (evento){
+    evento.preventDefault();
+
+    const obrigatorios = ["select_editar_modelo", "input_editar_localizacao", "input_editar_apelido"];
+    if (!validarCampos(obrigatorios, "erro_editar_clp")) {
+        return;
+    }
+
+    let response = await fetch(`/clp/atualizarClp/${idClpParaEditar}`, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            nomeServer: document.getElementById("input_editar_apelido").value.trim(),
+            localizacaoServer: document.getElementById("input_editar_localizacao").value.trim(),
+            statusServer: document.getElementById("select_editar_status").value,
+            modeloServer: document.getElementById("select_editar_modelo").value,
+            empresaServer: sessionStorage.getItem("ID_EMPRESA")
+        })
+    });
+
+    if (response.ok) {
+        fecharModal("overlay_edit_clp");
+        loadClps();
+    } else {
+        document.getElementById("erro_editar_clp").innerText = "Não foi possível atualizar o CLP.";
+    }
+});
+
+// REMOVER CLP
+
+function abrirModalRemover(linha) {
+    apelidoParaExcluir = linha.children[2].innerText.trim();
+
+    document.getElementById("nome_remover_clp").innerText = apelidoParaExcluir;
+
+    const input = document.getElementById("input_remover_clp");
+    input.value = "";
+    input.placeholder = apelidoParaExcluir;
+
+    limparErros("overlay_remove_clp", "erro_remover_clp");
+    abrirModal("overlay_remove_clp");
+}
+
+document.getElementById("form_remover_clp").addEventListener("submit", function (evento) {
+    evento.preventDefault();
+
+    const digitado = document.getElementById("input_remover_clp").value.trim();
+
+    if (digitado != apelidoParaExcluir) {
+        document.getElementById("erro_remover_clp").innerText = "O texto digitado precisa ser igual ao apelido do CLP.";
+        return;
+    }
+
+    fecharModal("overlay_remove_clp");
+});
+
 // Reage a cliques que acontecem dentro da tabela e descobre o que o usuário clicou
 document.getElementById("table_clps").addEventListener("click", function (evento) {
     const linha = evento.target.closest("tr");
@@ -348,6 +420,7 @@ document.getElementById("table_clps").addEventListener("click", function (evento
     if (evento.target.closest(".management-btn-edit"))    abrirModalEditar(linha);
     if (evento.target.closest(".management-btn-monitor")) abrirModalMonitorar(linha);
 });
+
 
 
 // FETCHES DO BANCO

@@ -26,20 +26,49 @@ function listarModelosDisponiveis(req, res) {
     }
 }
 
+function listarTiposMedicao(req, res) {
+    clpModel.listarTiposMedicao()
+        .then(function (resultado) { res.json(resultado); })
+        .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
+}
+
 function adicionarClp(req, res) {
     var nome = req.body.nomeServer;
     var localizacao = req.body.localizacaoServer;
     var status = req.body.statusServer;
     var modeloId = req.body.modeloServer;
     var empresaId = req.body.empresaServer;
+    var medicoes = req.body.medicoesServer;
 
     if (!nome || !localizacao || !modeloId || !empresaId || (status != 0 && status != 1)) {
         res.status(400).send("Preencha todos os campos obrigatórios!");
-    } else {
-        clpModel.adicionarClp(nome, localizacao, status, modeloId, empresaId)
-            .then(function (resultado) { res.status(201).json(resultado); })
-            .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
+        return;
     }
+
+    if (!Array.isArray(medicoes) || medicoes.length == 0) {
+        res.status(400).send("Escolha o que o CLP vai monitorar!");
+        return;
+    }
+
+    // tudo que entra no SQL precisa ser número
+    var invalida = medicoes.some(function (m) {
+        return isNaN(m.tipoMedicaoId) || m.parametro === null || m.parametro === "" || isNaN(m.parametro);
+    });
+    if (invalida) {
+        res.status(400).send("Medição com dados inválidos!");
+        return;
+    }
+
+    // CPU (1), RAM (2) e Scan Time (5) são obrigatórias
+    var ids = medicoes.map(function (m) { return Number(m.tipoMedicaoId); });
+    if (![1, 2, 5].every(function (id) { return ids.includes(id); })) {
+        res.status(400).send("CPU, RAM e Scan Time são obrigatórios!");
+        return;
+    }
+
+    clpModel.adicionarClp(nome, localizacao, status, modeloId, empresaId, medicoes)
+        .then(function (resultado) { res.status(201).json(resultado); })
+        .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
 }
 
 function atualizarClp(req, res) {
@@ -107,6 +136,8 @@ function salvarMedicoes(req, res) {
         .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
 }
 
+
+
 module.exports = {                                    
     listarClps,
     listarModelosDisponiveis,
@@ -114,5 +145,6 @@ module.exports = {
     atualizarClp,
     listarMedicoes,
     salvarMedicoes,
+    listarTiposMedicao
     
 };
