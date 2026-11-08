@@ -74,13 +74,15 @@ function atualizarClp(idClp, nome, localizacao, status, modeloId, empresaId) {
 
 // Traz todas as medições e mostra uma nova coluna monitorado
 // retorna 1 pra monitorado e 0 pra não monitorado
-function listarMedicoes(idClp, idEmpresa){
+function listarMedicoes(idClp) {
     var instrucaoSql = `
     SELECT
-        SELECT
-    tm.idTipoMedicao, tm.nome, tm.apelido, tm.unidade_medida,
-    cm.parametro,
-    IF(cm.status = 1, 1, 0) AS monitorado
+        tm.idTipoMedicao,
+        tm.nome,
+        tm.apelido,
+        tm.unidade_medida,
+        cm.parametro,
+        IF(cm.status = 1, 1, 0) AS monitorado
     FROM tipo_medicao tm
     LEFT JOIN clp_medicao cm
         ON cm.tipoMedicaoId = tm.idTipoMedicao AND cm.clpId = ${idClp}

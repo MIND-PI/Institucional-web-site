@@ -160,12 +160,16 @@ async function getMedicoes(idClp){
 
     let response = await fetch(`/clp/listarMedicoes/${idClp}/${id_empresa}`, { method: "GET" })
 
+    console.log("listarMedicoes ->", response.status, response.url)
+
     if (!response.ok) {
-        console.log("Não foi possível encontrar as medições")
+        console.log("Resposta do servidor:", await response.text())
         return []
     }
 
-    return await response.json()
+    let json = await response.json()
+    console.log("medições recebidas:", json)
+    return json
 }
 
 // Cria a linha com o que já está sendo monitorado
