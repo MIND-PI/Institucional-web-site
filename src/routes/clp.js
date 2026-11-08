@@ -18,4 +18,12 @@ router.put("/atualizarClp/:idClp", function(req, res){
     clpController.atualizarClp(req,res);
 })
 
+router.get("/listarMedicoes/:idClp/:idEmpresa", function (req, res){
+    clpController.listarMedicoes(req, res);
+});
+
+router.put("/salvarMedicoes/:idClp", function (req, res){
+    clpController.salvarMedicoes(req, res);
+});
+
 module.exports = router;
