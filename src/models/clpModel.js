@@ -22,7 +22,7 @@ function listarClps(idEmpresa) {
 function listarModelosDisponiveis(idEmpresa){
     var instrucaoSql = `
     SELECT
-    m.idmodelo,
+    m.idmodelo AS idModelo,
     m.nome
     FROM modelo m
     JOIN ativacao a ON a.idFornecedor = m.empresaId

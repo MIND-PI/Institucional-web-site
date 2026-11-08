@@ -90,39 +90,6 @@ document.getElementById("form_adicionar_clp").addEventListener("submit", functio
     }
 
 
-//     fetch("/clp/adicionarPerfil", {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({
-//           usuarioServer: sessionStorage.ID_USUARIO,
-//           perfilServer: perfilId,
-//           pesoServer: pesoVar,
-//           alturaServer: alturaVar,
-//           metaServer: metaVar
-//         }),
-//       })
-//         .then(function (resposta) {
-//           console.log("ESTOU NO THEN DO adicionarClp()!");
-
-//           if (resposta.ok) {
-//             console.log(resposta);
-//             limparFormulario();
-
-            
-//               setTimeout(function () {
-//               window.location.href = "/dashboard/";
-//             }, 1000);
-            
-//           } else {
-//             console.log("Houve um erro ao tentar adicionar o clp");
-//           }
-//         })
-//         .catch(function (erro) {
-//           console.log(erro);
-//         });
-
      fecharModal("overlay_add_clp");
 });
 
@@ -238,7 +205,7 @@ async function getClps(){
     let id_empresa = sessionStorage.getItem("ID_EMPRESA")
 
     let response = await fetch(
-        `/clp/${id_empresa}`, {
+        `/clp/listarClps/${id_empresa}`, {
             method: "GET"
         }
     )
@@ -299,5 +266,38 @@ async function loadClps() {
     renderClps(clps)
 }
 
-loadClps()
+// Lista os modelos disponíveis para o cliente selecionar qual ele deseja
 
+async function getModelos() {
+    let id_empresa = sessionStorage.getItem("ID_EMPRESA")
+
+    let response = await fetch(`/clp/listarModelosDisponiveis/${id_empresa}`, { method: "GET" })
+
+    if (!response.ok) {
+        console.log("Não foi possível encontrar os modelos")
+        return []
+    }
+
+    return await response.json()
+}
+
+// Monta as <options> dos select de adicionar e editar
+async function loadModelos(){
+    let modelos = await getModelos()
+
+    let selectAdd = document.getElementById("select_adicionar_modelo")
+    let selectEdit = document.getElementById("select_editar_modelo")
+
+    selectAdd.innerHTML = `<option value="" disabled selected>Selecione</option>`
+    selectEdit.innerHTML = ""
+
+    for (let i = 0; i < modelos.length; i++){
+        let option = `<option value="${modelos[i].idModelo}">${modelos[i].nome}</option>`
+        selectAdd.innerHTML = option
+        selectEdit.innerHTML += option
+    }
+}
+
+
+loadClps()
+loadModelos()
