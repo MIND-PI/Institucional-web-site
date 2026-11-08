@@ -26,7 +26,24 @@ function listarModelosDisponiveis(req, res) {
     }
 }
 
+function adicionarClp(req, res) {
+    var nome = req.body.nomeServer;
+    var localizacao = req.body.localizacaoServer;
+    var status = req.body.statusServer;
+    var modeloId = req.body.modeloServer;
+    var empresaId = req.body.empresaServer;
+
+    if (!nome || !localizacao || !modeloId || !empresaId || (status != 0 && status != 1)) {
+        res.status(400).send("Preencha todos os campos obrigatórios!");
+    } else {
+        clpModel.adicionarClp(nome, localizacao, status, modeloId, empresaId)
+            .then(function (resultado) { res.status(201).json(resultado); })
+            .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
+    }
+}
+
 module.exports = {                                    
     listarClps,
-    listarModelosDisponiveis
+    listarModelosDisponiveis,
+    adicionarClp
 };
