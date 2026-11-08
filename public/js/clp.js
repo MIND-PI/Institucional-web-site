@@ -387,8 +387,10 @@ document.getElementById("form_editar_clp").addEventListener("submit", async func
 });
 
 // REMOVER CLP
+let idClpParaExcluir = null;
 
 function abrirModalRemover(linha) {
+    idClpParaExcluir = linha.dataset.id;
     apelidoParaExcluir = linha.children[2].innerText.trim();
 
     document.getElementById("nome_remover_clp").innerText = apelidoParaExcluir;
@@ -401,7 +403,7 @@ function abrirModalRemover(linha) {
     abrirModal("overlay_remove_clp");
 }
 
-document.getElementById("form_remover_clp").addEventListener("submit", function (evento) {
+document.getElementById("form_remover_clp").addEventListener("submit", async function (evento) {
     evento.preventDefault();
 
     const digitado = document.getElementById("input_remover_clp").value.trim();
@@ -411,7 +413,18 @@ document.getElementById("form_remover_clp").addEventListener("submit", function 
         return;
     }
 
-    fecharModal("overlay_remove_clp");
+    let id_empresa = sessionStorage.getItem("ID_EMPRESA");
+
+    let response = await fetch(`/clp/deletarClp/${idClpParaExcluir}/${id_empresa}`, {
+        method: "DELETE"
+    });
+
+    if (response.ok) {
+        fecharModal("overlay_remove_clp");
+        loadClps();
+    } else {
+        document.getElementById("erro_remover_clp").innerText = "Não foi possível excluir o CLP.";
+    }
 });
 
 // Reage a cliques que acontecem dentro da tabela e descobre o que o usuário clicou

@@ -136,6 +136,19 @@ function salvarMedicoes(req, res) {
         .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
 }
 
+function deletarClp(req, res) {
+    var idClp = req.params.idClp;
+    var empresaId = req.params.idEmpresa;
+
+    if (idClp == undefined || isNaN(idClp) || empresaId == undefined || isNaN(empresaId)) {
+        res.status(400).send("Id do CLP ou da empresa inválido!");
+    } else {
+        clpModel.deletarClp(idClp, empresaId)
+            .then(function (resultado) { res.status(200).json(resultado); })
+            .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
+    }
+}
+
 
 
 module.exports = {                                    
@@ -145,6 +158,7 @@ module.exports = {
     atualizarClp,
     listarMedicoes,
     salvarMedicoes,
-    listarTiposMedicao
+    listarTiposMedicao,
+    deletarClp
     
 };

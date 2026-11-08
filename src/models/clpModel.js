@@ -121,6 +121,22 @@ function listarTiposMedicao(){
     return database.executar(instrucaoSql);
 }
 
+function deletarClp(idClp, empresaId) {
+    var instrucaoMedicoes = `
+    DELETE FROM clp_medicao
+    WHERE clpId = ${idClp}
+      AND clpId IN (SELECT idClp FROM clp WHERE idClp = ${idClp} AND empresaId = ${empresaId});
+    `;
+    var instrucaoClp = `
+    DELETE FROM clp
+    WHERE idClp = ${idClp} AND empresaId = ${empresaId};
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucaoMedicoes + instrucaoClp);
+
+    return database.executar(instrucaoMedicoes).then(function () {
+        return database.executar(instrucaoClp);
+    });
+}
 
 module.exports = {
     listarClps,
@@ -130,5 +146,6 @@ module.exports = {
     listarMedicoes,
     clpPertenceEmpresa,
     salvarMedicao,
-    listarTiposMedicao
+    listarTiposMedicao,
+    deletarClp
 }

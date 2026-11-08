@@ -30,4 +30,8 @@ router.get("/listarTiposMedicao", function (req, res) {
     clpController.listarTiposMedicao(req, res);
 });
 
+router.delete("/deletarClp/:idClp/:idEmpresa", function (req, res){
+    clpController.deletarClp(req, res);
+});
+
 module.exports = router;
