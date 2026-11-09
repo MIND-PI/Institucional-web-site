@@ -24,6 +24,7 @@ async function getObject(key) {
     try {
 
         // Esse é a respose, ela envia um new getOjectCommand, ele precisa da key(Chave exata do json) e do bucket
+        // https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/javascript_s3_code_examples.html procurar pelo GetObject
         const response = await client.send(
             new GetObjectCommand({
                 Bucket: process.env.BUCKET_NAME_ETL,
@@ -58,6 +59,7 @@ async function getMostRecentObject(key) {
     const client = new S3Client({});
 
     // Esse é o comando utilizado para pegar todos os objetos com o prefixo colocado
+    // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/command/ListObjectsV2Command/
     const command = new ListObjectsV2Command({
         Bucket: process.env.BUCKET_NAME_ETL,
         Prefix: key
