@@ -151,10 +151,10 @@ function listarLocalizacoes(idEmpresa){
     return database.executar(instrucaoSql);
 }
 
-function adicionarLocalizacao(nome, empresaId){
+function adicionarLocalizacao(nome, idEmpresa){
     var instrucaoSql = `
     INSERT INTO localizacao (nome, empresaId)
-    VALUES ('${nome}', ${empresaId})
+    VALUES ('${nome}', ${idEmpresa})
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);

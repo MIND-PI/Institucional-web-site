@@ -149,6 +149,49 @@ function deletarClp(req, res) {
     }
 }
 
+function listarLocalizacoes(req, res){
+    var idEmpresa = req.params.idEmpresa;
+
+    if(idEmpresa == undefined || isNaN(idEmpresa)){
+        res.status(400).send("Id da empresa está inválido ou indefinido")
+    } else {
+        clpModel.listarLocalizacoes(idEmpresa)
+        .then(function (resultado){
+            res.json(resultado);
+        })
+        .catch(function (erro){
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+    }
+}
+
+function adicionarLocalizacao(req, res){
+    var idEmpresa = req.params.idEmpresa;
+    var nome = (req.body.nomeServer || "").trim().replace(/\s+/g, " ");
+
+    if(!nome || idEmpresa == undefined || isNaN(idEmpresa)){
+        res.status(400).send("Informe o nome da localização");
+        return;
+    }
+
+    clpModel.adicionarLocalizacao(nome, idEmpresa)
+    .then(function (resultado){
+        res.status(201).json(resultado);
+    })
+    .catch(function (erro){
+        console.log(erro);
+        // 1062 é chave duplicada (viola o UNIQUE da tabela localização)
+        if(erro.errno == 1062){
+            res.status(409).send("Essa localização já existe!");
+        }
+        else {
+            res.status(500).json(erro.sqlMessage);
+        }
+    });
+    
+}
+
 
 
 module.exports = {                                    
