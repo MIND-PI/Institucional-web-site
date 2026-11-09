@@ -1,4 +1,5 @@
 var clpModel = require("../models/clpModel");
+var getS3 = require("../services/getS3")
 
 function listarClps(req, res) {
 
@@ -36,7 +37,41 @@ function listarClpPorId(req, res) {
     }
 }
 
-module.exports = {                                    
+async function microAnalise(req, res) {
+    let idEmpresa = req.params.idEmpresa
+    let idClp = req.params.idClp
+
+    if (idEmpresa == null) {
+        res.status(400).send("O id da empresa está indefinido!");
+        return
+    }
+
+    if (idClp == null) {
+        res.status(400).send("O id do clp está indefinido!");
+        return
+    }
+
+    let actualDate = new Date()
+    let actualDateString = actualDate.toLocaleDateString("en-CA").replaceAll("/", "-")
+    let json_object = await getS3.getMostRecentObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/clp-micro/${actualDateString}`)
+
+    if (json_object == null) {
+        res.status(400).send("Não foi encontrado dados")
+        return
+    }
+
+    let object = await getS3.getObject(json_object["Key"])
+    
+    if (object == null) {
+        res.status(400).send("Não foi encontrado dados")
+        return
+    }
+
+    res.json(object)
+}
+
+module.exports = {
     listarClps,
-    listarClpPorId
+    listarClpPorId,
+    microAnalise
 };

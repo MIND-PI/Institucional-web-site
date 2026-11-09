@@ -12,4 +12,8 @@ router.get("/id-individual/:idClp", function (req, res) {
     clpController.listarClpPorId(req, res)    
 })
 
+router.get("/micro-analise/:idClp/:idEmpresa", function (req, res) {
+    clpController.microAnalise(req, res)
+})
+
 module.exports = router;
