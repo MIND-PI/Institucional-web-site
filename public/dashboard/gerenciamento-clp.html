@@ -81,7 +81,7 @@
             <div class="modal_config">
                 <div class="modal_header">
                     <h2>Configurações</h2>
-                    <button type="button" class="btn_fechar" id="btn_fechar_config">✖</button>
+                    <!-- <button type="button" class="btn_fechar" id="btn_fechar_config">✖</button> -->
                 </div>
 
                 <form id="form_config" class="form-config">
@@ -105,7 +105,12 @@
                         <input type="password" id="input_senha" name="senha" placeholder="Deixe em branco para manter">
                     </div>
 
-                    <button onclick="salvarConfiguracoes()" type="button" class="btn_salvar">Salvar Alterações</button>
+                    <div class="buttons">
+                        <button type="button" id="btn_fechar_config" class="pop-up-button border-red">CANCELAR</button>
+                        <button onclick="salvarConfiguracoes()" type="button" id="btn_save_edit" class="pop-up-button border-green">SALVAR</button>
+                    </div>
+
+                    <!-- <button onclick="salvarConfiguracoes()" type="button" class="btn_salvar">Salvar Alterações</button> -->
                 </form>
             </div>
         </div>
