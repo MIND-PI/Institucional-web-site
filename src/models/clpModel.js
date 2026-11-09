@@ -142,9 +142,19 @@ function deletarClp(idClp, empresaId) {
 
 function listarLocalizacoes(idEmpresa){
     var instrucaoSql = `
-    SELECT localizacao 
-    FROM clp 
-    WHERE empresaId = ${idEmpresa};
+    SELECT localizacao, nome
+    FROM localizacao
+    WHERE empresaId = ${idEmpresa}
+    ORDER BY nome;
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+function adicionarLocalizacao(nome, empresaId){
+    var instrucaoSql = `
+    INSERT INTO localizacao (nome, empresaId)
+    VALUES ('${nome}', ${empresaId})
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
@@ -160,5 +170,6 @@ module.exports = {
     salvarMedicao,
     listarTiposMedicao,
     deletarClp,
-    listarLocalizacoes
+    listarLocalizacoes,
+    adicionarLocalizacao
 }
