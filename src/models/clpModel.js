@@ -5,16 +5,18 @@ function listarClps(idEmpresa) {
     SELECT
     c.idClp,
     c.nome,
-    c.localizacao,
+    l.nome AS localizacao,
     c.status,
     c.modeloId,
     m.nome AS modelo,
     DATE_FORMAT(c.data_criacao, '%d/%m/%Y') AS data_criacao,
     DATE_FORMAT(c.data_atualizacao, '%d/%m/%Y') AS data_atualizacao
     FROM clp c
+    JOIN localizacao l 
+        ON c.localizacaoId = l.idLocalizacao 
+        AND c.empresaId = l.empresaId
     LEFT JOIN modelo m ON m.idModelo = c.modeloId
-    WHERE c.empresaId = ${idEmpresa};
-        `;
+    WHERE c.empresaId = ${idEmpresa};`;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
@@ -138,6 +140,16 @@ function deletarClp(idClp, empresaId) {
     });
 }
 
+function listarLocalizacoes(idEmpresa){
+    var instrucaoSql = `
+    SELECT localizacao 
+    FROM clp 
+    WHERE empresaId = ${idEmpresa};
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     listarClps,
     listarModelosDisponiveis,
@@ -147,5 +159,6 @@ module.exports = {
     clpPertenceEmpresa,
     salvarMedicao,
     listarTiposMedicao,
-    deletarClp
+    deletarClp,
+    listarLocalizacoes
 }
