@@ -190,7 +190,7 @@
                     <h2 class="title-graph">Desempenho do CLP</h2>
 
 
-                    <select id="graph-type" class="chart-select" onchange="atualizarGraficoLinha()">
+                    <select id="graph_type" class="chart-select">
                         <option value="scanTime">Scan Time</option>
                         <option value="cpu">Consumo da CPU</option>
                         <option value="ram">Consumo da RAM</option>
@@ -200,18 +200,18 @@
                 <div class="lines-kpi">
 
                     <div class="lines-text-box">
-                        <p id="peak-label">Pico Scan time</p>
-                        <p class="lines-metrics" id="valor-pico">38 ms</p>
+                        <p id="title_peak">Pico Scan time</p>
+                        <p class="lines-metrics" id="peak_label">38 ms</p>
                     </div>
 
                     <div class="lines-text-box">
-                        <p id="current-label">Atual Scan time</p>
-                        <p id="valor-atual">28 ms</p>
+                        <p id="title_current">Atual Scan time</p>
+                        <p id="current_label">28 ms</p>
                     </div>
 
                     <div class="lines-text-box">
-                        <p id="minimun-label">Mínimo Scan time</p>
-                        <p id="valor-minimo">30 ms</p>
+                        <p id="title_minimum">Mínimo Scan time</p>
+                        <p id="minimun_label">30 ms</p>
                     </div>
 
 
@@ -233,14 +233,14 @@
                         <canvas id="pizza" class="pizza-canvas"></canvas>
                     </div>
 
-                    <p class="warning">Atenção</p>
+                    <p class="warning" id="pizza_kpi">Atenção</p>
                 </div>
 
                 <div class="pizza-datas">
 
                     <div class="pizza-row">
                         <p class="pizza-text">Última atualização</p>
-                        <p class="pizza-text" id="last_update"><span id="time_now"></span></p>
+                        <p class="pizza-text" id="last_update"></p>
                     </div>
 
                     <div class="pizza-row">

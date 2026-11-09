@@ -43,6 +43,7 @@ const configGraficoLinha = {
 };
 
 let graficoLinha = null;
+let graficoPizza = null
 
 // ============================
 // Funções de gráfico
@@ -87,7 +88,7 @@ let graficoLinha = null;
 function atualizarGraficoLinha() {
 
     const periodo = document.getElementById('period-filter').value;
-    const tipo = document.getElementById('graph-type').value;
+    const tipo = document.getElementById('graph_type').value;
     const dados = dadosPorPeriodo[periodo];
     const config = configGraficoLinha[tipo];
     const horarios = [];
@@ -97,14 +98,6 @@ function atualizarGraficoLinha() {
         horarios.push(dados[i].horarios);
         valores.push(dados[i][config.campo]);
     }
-
-    document.getElementById('peak-label').textContent = 'Pico ' + config.nome;
-    document.getElementById('current-label').textContent = 'Atual ' + config.nome;
-    document.getElementById('minimun-label').textContent = 'Mínimo ' + config.nome;
-    document.getElementById('valor-pico').textContent = Math.max(...valores) + config.unidade;
-    document.getElementById('valor-atual').textContent = valores[valores.length - 1] + config.unidade;
-    document.getElementById('valor-minimo').textContent = Math.min(...valores) + config.unidade;
-
 
     if (graficoLinha != null) {
         graficoLinha.destroy();
@@ -166,11 +159,16 @@ function atualizarGraficoLinha() {
 
 
 // Gráfico de pizza - status do clp
-function plotarGraficoPizza(dados) {
+function plotarGraficoPizza(json_micro) {
+    let health_score = json_micro.health_score
+    let health_score_message = json_micro.health_score_status
 
-    const score = dados[0].healthScore;
-    const restante = 100 - score;
+    const restante = 100 - health_score;
     const ctx = document.getElementById('pizza').getContext('2d');
+
+    if (graficoPizza) {
+        graficoPizza.destroy()
+    }
 
     const pluginCentro = {
         id: 'textoCentro',
@@ -187,25 +185,25 @@ function plotarGraficoPizza(dados) {
             contexto.textBaseline = 'middle';
             contexto.fillStyle = '#FFFFFF';
 
-            contexto.font = 'bold 38px Geist';
-            contexto.fillText(score, x, y - 8);
+            contexto.font = 'bold 38px Poppins';
+            contexto.fillText(health_score, x, y);
 
-            contexto.font = '10px Geist';
-            contexto.fillText('HEALTH SCORE', x, y + 27);
+            contexto.font = '10px Poppins';
+            contexto.fillText('HEALTH SCORE', x, y + 25);
 
             contexto.restore();
         }
     };
 
-    new Chart(ctx, {
+    graficoPizza = new Chart(ctx, {
         type: 'doughnut',
 
         data: {
             labels: ['Saúde', 'Restante'],
 
             datasets: [{
-                data: [score, restante],
-                backgroundColor: ['#FFA500', 'transparent'],
+                data: [health_score, restante],
+                backgroundColor: [health_score < 40 ? "#EF4444" : health_score < 60 ? "#F59E0B" : "#22C55E", 'transparent'],
                 borderWidth: 0,
                 hoverOffset: 0
             }]
@@ -214,9 +212,8 @@ function plotarGraficoPizza(dados) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            cutout: '82%',
-            rotation: -30,
-            circumference: 340,
+            cutout: '85%',
+            circumference: 360,
 
             plugins: {
                 legend: {
@@ -230,26 +227,20 @@ function plotarGraficoPizza(dados) {
 
         plugins: [pluginCentro]
     });
+
+    const pizza_kpi = document.getElementById("pizza_kpi")
+    pizza_kpi.innerHTML = health_score_message
+    pizza_kpi.className = health_score < 40 ? "danger" : health_score < 60 ? "warning" : "positve"
 }
 
 // Chamandos os gráficos
 function obterDados() {
-
     const dadosGrafico1 = dadosPorPeriodo['24h'];
-
-    const dadosGrafico2 = [
-        { healthScore: 58 }
-    ];
-
-    plotarGraficoPizza(dadosGrafico2);
-    // GraficoConsumo('graph-cpu', 65);
-    // GraficoConsumo('graph-ram', 70);
-    // GraficoConsumo('graph-scan', 75)
     atualizarGraficoLinha();
 }
 
 // ============================
-// CHAMAS PARA A API
+// CHAMADAS PARA A API
 // ============================
 
 async function getCompanyPlc() {
@@ -271,14 +262,6 @@ async function getCompanyPlc() {
     let json = await response.json()
 
     return json
-}
-
-function renderClps(clps) {
-    let select_clps = document.getElementById("select_clps")
-
-    clps.forEach(clp => {
-        select_clps.innerHTML += `<option value="${clp.idClp}" class="filter-option">${clp.nome}</option>`
-    });
 }
 
 
@@ -304,7 +287,40 @@ async function getIndividualPlc() {
     return json
 }
 
-function renderClpInfo(plc) {
+async function getDataMicroPlc() {
+    // Pegando id do plc pelo select
+    let id_plc = select_clps.value
+    let id_empresa = sessionStorage.getItem("ID_EMPRESA")
+
+    // Chamando a api 
+    let response = await fetch(`/clp/micro-analise/${id_plc}/${id_empresa}`, {
+        method: "GET"
+    })
+
+    // Verificando se a resposta da api foi ok
+    if (!response.ok) {
+        console.log("Não foi possível achar o clp pelo id")
+        return
+    }
+
+    // Transformando a resposta em json
+    let json = await response.json()
+
+    return json
+}
+
+// ============================
+// CHAMANDO FUNÇÕES DE CARREGAMENTO DE TELA
+// ============================
+function renderClps(clps) {
+    let select_clps = document.getElementById("select_clps")
+
+    clps.forEach(clp => {
+        select_clps.innerHTML += `<option value="${clp.idClp}" class="filter-option">${clp.nome}</option>`
+    });
+}
+
+function renderClpInfo(plc, timestamp) {
     name_clp.innerHTML = plc.nome_clp
     if (plc.status == 1) {
         status_clp.innerHTML = "ativo"
@@ -317,16 +333,52 @@ function renderClpInfo(plc) {
     name_model.innerHTML = plc.nome_modelo
     addres_mac.innerHTML = plc.mac_address
     department.innerHTML = plc.localizacao
+    last_update.innerHTML = new Date(timestamp).toLocaleString('pt-BR')
 }
 
-// ============================
-// CHAMANDO FUNÇÕES DE CARREGAMENTO DE TELA
-// ============================
+function renderKpiPerformance(json, value) {
+    let peak
+    let minimun
+    let current
+    if (value == "ram") {
+        peak = json.pico_consumo_memoria_ram_porcentagem
+        minimun = json.minimo_consumo_memoria_ram_porcentagem
+        current = json.porcentagem_uso_ram
+
+        title_peak.innerHTML = "Pico RAM"
+        title_current.innerHTML = "Atual RAM"
+        title_minimum.innerHTML = "Mínimo RAM"
+    } else if (value == "cpu") {
+        peak = json.pico_porcentagem_uso_cpu
+        minimun = json.minimo_porcentagem_uso_cpu
+        current = json.porcentagem_uso_cpu
+
+        title_peak.innerHTML = "Pico CPU"
+        title_current.innerHTML = "Atual CPU"
+        title_minimum.innerHTML = "Mínimo CPU"
+    } else {
+        peak = json.scan_time_pico
+        minimun = json.scan_time_minimo
+        current = json.scan_time_atual
+
+        title_peak.innerHTML = "Pico Scan Time"
+        title_current.innerHTML = "Atual Scan Time"
+        title_minimum.innerHTML = "Mínimo Scan Time"
+    }
+
+    peak_label.innerHTML = peak
+    current_label.innerHTML = current
+    minimun_label.innerHTML = minimun
+}
+
 async function loadClps() {
     let clps = await getCompanyPlc()
     renderClps(clps)
     let individual_plc = await getIndividualPlc()
-    renderClpInfo(individual_plc[0])
+    let dataMicro = await getDataMicroPlc() 
+    renderClpInfo(individual_plc[0], dataMicro[0].timestamp)
+    renderKpiPerformance(dataMicro[0], graph_type.value)
+    plotarGraficoPizza(dataMicro[0])
 }
 
 // ============================
@@ -358,6 +410,15 @@ periodoSelect.addEventListener('change', function () {
 
 
 document.getElementById("select_clps").addEventListener("change", async () => {
-    let clp = await getIndividualPlc()    
+    let clp = await getIndividualPlc()
     renderClpInfo(clp[0])
+})
+
+
+let graph_type_value = document.getElementById("graph_type")
+
+graph_type_value.addEventListener("change", async () => {
+    atualizarGraficoLinha()
+    let microData = await getDataMicroPlc()
+    renderKpiPerformance(microData[0], graph_type_value.value)
 })
