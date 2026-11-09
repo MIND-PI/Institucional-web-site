@@ -847,3 +847,43 @@ main {
         min-height: 13rem;
     }
 }
+
+.graficos-inferiores {
+    align-items: stretch;
+    width: 100%;
+    gap: 1.5rem;
+}
+
+.graficos-inferiores .metrics-processes {
+    flex: 1;
+    max-width: none;
+    height: 28rem;
+}
+
+.graficos-inferiores .grafico-evolucao {
+    flex: 1.5;
+    max-width: none;
+    height: 28rem;
+}
+
+.graficos-inferiores .process-chart-container {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+}
+
+.graficos-inferiores .process-chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+@media (max-width: 1024px) {
+    .graficos-inferiores {
+        flex-direction: column;
+    }
+    .graficos-inferiores .metrics-processes,
+    .graficos-inferiores .grafico-evolucao {
+        width: 100%;
+        max-width: none;
+    }
+}
