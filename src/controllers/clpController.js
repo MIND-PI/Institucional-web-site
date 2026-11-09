@@ -202,6 +202,7 @@ module.exports = {
     listarMedicoes,
     salvarMedicoes,
     listarTiposMedicao,
-    deletarClp
-    
+    deletarClp,
+    adicionarLocalizacao,
+    listarLocalizacoes
 };
