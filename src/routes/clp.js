@@ -34,4 +34,12 @@ router.delete("/deletarClp/:idClp/:idEmpresa", function (req, res){
     clpController.deletarClp(req, res);
 });
 
+router.get("/listarLocalizacoes/:idEmpresa", function (req, res){
+    clpController.listarLocalizacoes(req, res);
+});
+
+router.post("/adicionarLocalizacao", function (req, res){
+    clpController.adicionarLocalizacao(req, res);
+});
+
 module.exports = router;
