@@ -51,22 +51,22 @@ async function microAnalise(req, res) {
         return
     }
 
-    let actualDate = new Date()
-    let actualDateString = actualDate.toLocaleDateString("en-CA").replaceAll("/", "-")
-    let json_object = await getS3.getMostRecentObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/clp-micro/${actualDateString}`)
+
+    let json_object = await getS3.getMostRecentObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/clp-micro/`)
 
     if (json_object == null) {
-        res.status(400).send("Não foi encontrado dados")
+        res.status(400).send("Não foi encontrado dados ao buscar arquivos com a data atual")
         return
     }
-
+    console.log(json_object)
     let object = await getS3.getObject(json_object["Key"])
     
     if (object == null) {
-        res.status(400).send("Não foi encontrado dados")
+        res.status(400).send("Não foi encontrado dados buscando o json específico")
         return
     }
-
+    
+    console.log(object)
     res.json(object)
 }
 
