@@ -94,7 +94,7 @@ document.getElementById("btn_add_clp").addEventListener("click", function () {
 document.getElementById("form_adicionar_clp").addEventListener("submit", async function (evento) {
     evento.preventDefault();
 
-    const obrigatorios = ["select_adicionar_modelo", "input_adicionar_localizacao", "input_adicionar_apelido"];
+    const obrigatorios = ["select_adicionar_modelo", "select_adicionar_localizacao", "input_adicionar_apelido"];
     if (!validarCampos(obrigatorios, "erro_adicionar_clp")) {
         return;
     }
@@ -102,7 +102,7 @@ document.getElementById("form_adicionar_clp").addEventListener("submit", async f
     // guarda, mas ainda não envia ao banco
     clpPendente = {
         nome: document.getElementById("input_adicionar_apelido").value.trim(),
-        localizacao: document.getElementById("input_adicionar_localizacao").value.trim(),
+        localizacaoId: document.getElementById("select_adicionar_localizacao").value.trim(),
         status: document.getElementById("select_adicionar_status").value,
         modeloId: document.getElementById("select_adicionar_modelo").value
     };
@@ -328,7 +328,7 @@ document.getElementById("form_monitorar_clp").addEventListener("submit", async f
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 nomeServer: clpPendente.nome,
-                localizacaoServer: clpPendente.localizacao,
+                localizacaoServer: clpPendente.localizacaoId,
                 statusServer: clpPendente.status,
                 modeloServer: clpPendente.modeloId,
                 empresaServer: sessionStorage.getItem("ID_EMPRESA"),
@@ -388,7 +388,7 @@ function abrirModalEditar(linha){
     // preenche os campos com os dados atuais
     document.getElementById("select_editar_modelo").value = clp.modeloId;
     document.getElementById("select_editar_status").value = clp.status;
-    document.getElementById("input_editar_localizacao").value = clp.localizacao;
+    document.getElementById("select_editar_localizacao").value = clp.localizacaoId;
     document.getElementById("input_editar_apelido").value = clp.nome;
 
     abrirModal("overlay_edit_clp")
@@ -397,7 +397,7 @@ function abrirModalEditar(linha){
 document.getElementById("form_editar_clp").addEventListener("submit", async function (evento){
     evento.preventDefault();
 
-    const obrigatorios = ["select_editar_modelo", "input_editar_localizacao", "input_editar_apelido"];
+    const obrigatorios = ["select_editar_modelo", "select_editar_localizacao", "input_editar_apelido"];
     if (!validarCampos(obrigatorios, "erro_editar_clp")) {
         return;
     }
@@ -407,7 +407,7 @@ document.getElementById("form_editar_clp").addEventListener("submit", async func
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
             nomeServer: document.getElementById("input_editar_apelido").value.trim(),
-            localizacaoServer: document.getElementById("input_editar_localizacao").value.trim(),
+            localizacaoServer: document.getElementById("select_editar_localizacao").value.trim(),
             statusServer: document.getElementById("select_editar_status").value,
             modeloServer: document.getElementById("select_editar_modelo").value,
             empresaServer: sessionStorage.getItem("ID_EMPRESA")

@@ -3,19 +3,14 @@ var database = require("../database/config");
 function listarClps(idEmpresa) {
   var instrucaoSql = `
     SELECT
-    c.idClp,
-    c.nome,
+    c.idClp, c.nome, c.status, c.modeloId, c.localizacaoId,
     l.nome AS localizacao,
-    c.status,
-    c.modeloId,
     m.nome AS modelo,
     DATE_FORMAT(c.data_criacao, '%d/%m/%Y') AS data_criacao,
     DATE_FORMAT(c.data_atualizacao, '%d/%m/%Y') AS data_atualizacao
     FROM clp c
-    JOIN localizacao l 
-        ON c.localizacaoId = l.idLocalizacao 
-        AND c.empresaId = l.empresaId
-    LEFT JOIN modelo m ON m.idModelo = c.modeloId
+    LEFT JOIN modelo m ON m.idmodelo = c.modeloId
+    LEFT JOIN localizacao l ON l.idLocalizacao = c.localizacaoId
     WHERE c.empresaId = ${idEmpresa};`;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
@@ -37,10 +32,10 @@ function listarModelosDisponiveis(idEmpresa){
     return database.executar(instrucaoSql);
 }
 
-function adicionarClp(nome, localizacao, status, modeloId, empresaId, medicoes) {
+function adicionarClp(nome, localizacaoId, status, modeloId, empresaId, medicoes) {
     var instrucaoSql = `
-    INSERT INTO clp (nome, localizacao, status, modeloId, empresaId)
-    VALUES ('${nome}', '${localizacao}', ${status}, ${modeloId}, ${empresaId});
+    INSERT INTO clp (nome, localizacaoId, status, modeloId, empresaId)
+    VALUES ('${nome}', '${localizacaoId}', ${status}, ${modeloId}, ${empresaId});
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
 
@@ -60,11 +55,11 @@ function adicionarClp(nome, localizacao, status, modeloId, empresaId, medicoes) 
     });
 }
 
-function atualizarClp(idClp, nome, localizacao, status, modeloId, empresaId) {
+function atualizarClp(idClp, nome, localizacaoId, status, modeloId, empresaId) {
     var instrucaoSql = `
     UPDATE clp
     SET nome = '${nome}',
-        localizacao = '${localizacao}',
+        localizacaoId = '${localizacaoId}',
         status = ${status},
         modeloId = ${modeloId}
     WHERE idClp = ${idClp}

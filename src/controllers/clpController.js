@@ -34,7 +34,7 @@ function listarTiposMedicao(req, res) {
 
 function adicionarClp(req, res) {
     var nome = req.body.nomeServer;
-    var localizacao = req.body.localizacaoServer;
+    var localizacaoId = req.body.localizacaoServer;
     var status = req.body.statusServer;
     var modeloId = req.body.modeloServer;
     var empresaId = req.body.empresaServer;
@@ -74,7 +74,7 @@ function adicionarClp(req, res) {
 function atualizarClp(req, res) {
     var idClp = req.params.idClp;
     var nome = req.body.nomeServer;
-    var localizacao = req.body.localizacaoServer;
+    var localizacaoId = req.body.localizacaoServer;
     var status = req.body.statusServer;
     var modeloId = req.body.modeloServer;
     var empresaId = req.body.empresaServer;
