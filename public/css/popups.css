@@ -340,3 +340,45 @@
 .management-btn-monitor i {
     color: var(--color-text-primary);
 }
+
+/* Linha de medição do modal de monitorar */
+.linha-monitorar label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.linha-monitorar input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 5px;
+    border: 2px solid #1d4ed8;
+    background: transparent;
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.linha-monitorar input[type="checkbox"]:checked {
+    background: #1d4ed8;
+}
+
+.linha-monitorar input[type="checkbox"]:checked::after {
+    content: "";
+    width: 0.35rem;
+    height: 0.7rem;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) translate(-1px, -1px);
+}
+
+.linha-monitorar input[type="checkbox"]:disabled {
+    cursor: not-allowed;
+    opacity: 1;
+}

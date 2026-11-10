@@ -94,7 +94,7 @@
 .table-management {
     width: 100%;
     border-collapse: collapse;
-    text-align: left;
+    text-align: center;
 }
 
 .table-management th,
@@ -108,12 +108,12 @@
     font-size: 0.7rem;
     font-weight: 600;
     text-transform: uppercase;
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary);
 }
 
 .table-management td {
     font-size: 0.9rem;
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary);
 }
 
 .table-management tbody tr:hover {
@@ -168,15 +168,17 @@
 
 /* STATUS */
 .management-status {
-    padding: 1rem;
-    height: 0.7rem;
-    width: 35%;
-    display: flex;
+    display: inline-flex;
+    padding: 0.2rem 0.8rem;
+    height: 1rem;
     justify-content: center;
     align-items: center;
     border-radius: 1rem;
     color: var(--color-text-primary);
-    font-weight: 800;
+    font-weight: 700;
+    font-size: 0.8rem;
+    line-height: 1.2;
+    white-space: nowrap;
 }
 
 .management-status.active {
