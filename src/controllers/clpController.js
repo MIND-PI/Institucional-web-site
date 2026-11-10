@@ -40,7 +40,7 @@ function adicionarClp(req, res) {
     var empresaId = req.body.empresaServer;
     var medicoes = req.body.medicoesServer;
 
-    if (!nome || !localizacao || !modeloId || !empresaId || (status != 0 && status != 1)) {
+    if (!nome || !localizacaoId || !modeloId || !empresaId || (status != 0 && status != 1)) {
         res.status(400).send("Preencha todos os campos obrigatórios!");
         return;
     }
@@ -66,7 +66,7 @@ function adicionarClp(req, res) {
         return;
     }
 
-    clpModel.adicionarClp(nome, localizacao, status, modeloId, empresaId, medicoes)
+    clpModel.adicionarClp(nome, localizacaoId, status, modeloId, empresaId, medicoes)
         .then(function (resultado) { res.status(201).json(resultado); })
         .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
 }
@@ -81,10 +81,10 @@ function atualizarClp(req, res) {
 
     if (idClp == undefined || isNaN(idClp)) {
         res.status(400).send("O id do CLP está indefinido ou inválido!");
-    } else if (!nome || !localizacao || !modeloId || !empresaId || (status != 0 && status != 1)) {
+    } else if (!nome || !localizacaoId || !modeloId || !empresaId || (status != 0 && status != 1)) {
         res.status(400).send("Preencha todos os campos obrigatórios!");
     } else {
-        clpModel.atualizarClp(idClp, nome, localizacao, status, modeloId, empresaId)
+        clpModel.atualizarClp(idClp, nome, localizacaoId, status, modeloId, empresaId)
             .then(function (resultado) { res.status(200).json(resultado); })
             .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
     }

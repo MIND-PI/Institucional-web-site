@@ -117,7 +117,7 @@ document.getElementById("btn_add_localizacao").addEventListener("click", functio
     abrirModal("overlay_add_localizacao");
 });
 
-document.getElementById("form_adicionar_localizao").addEventListener("submit", async function (evento){
+document.getElementById("form_adicionar_localizacao").addEventListener("submit", async function (evento){
     evento.preventDefault();
 
     if(!validarCampos(["input_nome_localizacao"], "erro_adicionar_localizacao")){
@@ -126,11 +126,11 @@ document.getElementById("form_adicionar_localizao").addEventListener("submit", a
 
     let id_empresa = sessionStorage.getItem("ID_EMPRESA");
 
-    let response = await fetch("/clp/adicionarLocalizacao", {
+    let response = await fetch(`/clp/adicionarLocalizacao/${id_empresa}`, {
         method: "POST",
         headers: {"Content-Type": "application/json" },
         body: JSON.stringify({
-            nomeServer: document.getElementById("input_nome_localizacao"),
+            nomeServer: document.getElementById("input_nome_localizacao").value
         })
     });
 
@@ -585,9 +585,9 @@ async function loadModelos(){
 async function getLocalizacoes(){
     let id_empresa = sessionStorage.getItem("ID_EMPRESA");
 
-    let response = await fetch(`/clp/listarLocalizacoes/:${id_empresa}`, { method: "GET"})
+    let response = await fetch(`/clp/listarLocalizacoes/${id_empresa}`, { method: "GET"})
 
-    if(response.ok){
+    if(!response.ok){
         console.log("Não foi possível encontrar as localizações")
         return[]
     }

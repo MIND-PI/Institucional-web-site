@@ -38,7 +38,7 @@ router.get("/listarLocalizacoes/:idEmpresa", function (req, res){
     clpController.listarLocalizacoes(req, res);
 });
 
-router.post("/adicionarLocalizacao", function (req, res){
+router.post("/adicionarLocalizacao/:idEmpresa", function (req, res){
     clpController.adicionarLocalizacao(req, res);
 });
 

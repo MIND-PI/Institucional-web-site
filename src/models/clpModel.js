@@ -137,7 +137,7 @@ function deletarClp(idClp, empresaId) {
 
 function listarLocalizacoes(idEmpresa){
     var instrucaoSql = `
-    SELECT localizacao, nome
+    SELECT idLocalizacao, nome
     FROM localizacao
     WHERE empresaId = ${idEmpresa}
     ORDER BY nome;
