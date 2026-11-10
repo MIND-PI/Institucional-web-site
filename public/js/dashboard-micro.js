@@ -248,7 +248,7 @@ async function getCompanyPlc() {
     let id_empresa = sessionStorage.getItem("ID_EMPRESA")
 
     // Chamando a api 
-    let response = await fetch(`/clp/${id_empresa}`, {
+    let response = await fetch(`/clp/listarClps/${id_empresa}`, {
         method: "GET"
     })
 
@@ -271,7 +271,7 @@ async function getIndividualPlc() {
 
 
     // Chamando a api 
-    let response = await fetch(`/clp/id-individual/${id_plc}`, {
+    let response = await fetch(`/clp/${id_plc}`, {
         method: "GET"
     })
 
