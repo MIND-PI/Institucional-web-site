@@ -230,23 +230,20 @@
             </div>
         </section>
 
-        
+
 
         <section class="graph-conteiner graficos-inferiores">
 
             <div class="metrics-box metrics-processes">
-
                 <div class="process-title">
-                    <p class="title-graph">Chamados por Tipo</p>
+                    <p class="title-graph">Predição de Chamados Pendentes</p>
                 </div>
 
                 <div class="process-chart-container">
-                    <canvas id="graficoChamadosTipo"></canvas>
+                    <canvas id="graficoPredicaoChamados"></canvas>
                 </div>
-
             </div>
 
-            <!-- GRÁFICO DE EVOLUÇÃO -->
             <div class="graph-box-lines grafico-evolucao">
 
                 <div class="lines-content">
@@ -277,7 +274,7 @@
     function obterDados() {
         GraficoTempoResolucao();
         GraficoChamadosPrioridade();
-        GraficoChamadosTipo();
+        GraficoPredicaoChamados();
         GraficoEvolucaoChamados();
     }
 
@@ -304,6 +301,26 @@
         }
     };
 
+    const dadosBacklogPorPeriodo = {
+        '24h': {
+            horarios: ['00h', '03h', '06h', '09h', '12h', '15h', '18h', '21h'],
+            pendentes: [20, 22, 21, 25, 27, 30, 29, 34]
+        },
+
+        '7d': {
+            horarios: ['02/11', '03/11', '04/11', '05/11', '06/11', '07/11', '08/11'],
+            pendentes: [20, 25, 23, 30, 35, 40, 48]
+        },
+
+        '30d': {
+            horarios: [
+                '01/11', '04/11', '07/11', '10/11', '13/11',
+                '16/11', '19/11', '22/11', '25/11', '28/11', '30/11'
+            ],
+            pendentes: [20, 23, 25, 24, 30, 32, 35, 38, 40, 44, 48]
+        }
+    };
+
     const periodoSelect = document.getElementById('period-filter');
     const btnEtl = document.getElementById('btn-etl');
 
@@ -321,7 +338,7 @@
         GraficoEvolucaoChamados();
     });
 
-    // CHAMADOS-JIRA
+    // DASHBOARDS CHAMADOS-JIRA
     function GraficoTempoResolucao() {
         const canvas = document.getElementById('graficoTempoResolucao');
         const prioridades = [
@@ -469,90 +486,7 @@
         });
     }
 
-    function GraficoChamadosTipo() {
 
-        const canvas = document.getElementById('graficoChamadosTipo');
-
-        const tipos = [
-            'CPU',
-            'RAM',
-            'Scantime',
-            'Latência'
-        ];
-
-        const quantidadeChamados = [28, 21, 17, 12];
-
-        new Chart(canvas, {
-            type: 'bar',
-
-            data: {
-                labels: tipos,
-
-                datasets: [{
-                    data: quantidadeChamados,
-                    backgroundColor: '#06B6D4',
-                    borderRadius: 5,
-                    borderSkipped: false,
-                    barThickness: 50
-                }]
-            },
-
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-
-                    tooltip: {
-                        callbacks: {
-                            label: (context) =>
-                                `${context.raw} chamados`
-                        }
-                    }
-                },
-
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        },
-
-                        border: {
-                            display: false
-                        },
-
-                        ticks: {
-                            color: '#FFFFFF',
-                            font: {
-                                family: 'Montserrat',
-                                size: 15
-                            }
-                        }
-                    },
-
-                    y: {
-                        beginAtZero: true,
-
-                        ticks: {
-                            color: '#94A3B8',
-                            stepSize: 10
-                        },
-
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.08)'
-                        },
-
-                        border: {
-                            display: false
-                        }
-                    }
-                }
-            }
-        });
-    }
 
 
     let graficoEvolucaoChamados = null;
@@ -671,7 +605,6 @@
                 }
             },
 
-            // EXIBE OS VALORES NO FINAL DE CADA LINHA
             plugins: [{
                 id: 'valoresFinais',
 
@@ -707,6 +640,110 @@
                     });
                 }
             }]
+        });
+    }
+
+    let graficoPredicaoChamados;
+
+    function GraficoPredicaoChamados() {
+
+        const ctx = document
+            .getElementById('graficoPredicaoChamados')
+            .getContext('2d');
+
+        if (graficoPredicaoChamados) {
+            graficoPredicaoChamados.destroy();
+        }
+
+        const horarios = [
+            '08h', '10h', '12h', '14h', '16h', '18h',
+            '20h', '22h', '00h', '02h', '04h', '06h'
+        ];
+
+        const historico = [
+            20, 23, 22, 27, 30, 32,
+            null, null, null, null, null, null
+        ];
+
+        const previsao = [
+            null, null, null, null, null, 32,
+            35, 39, 42, 44, 46, 48
+        ];
+
+        graficoPredicaoChamados = new Chart(ctx, {
+            type: 'line',
+
+            data: {
+                labels: horarios,
+
+                datasets: [
+                    {
+                        label: 'Histórico',
+                        data: historico,
+                        borderColor: '#3B82F6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.10)',
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        tension: 0.3,
+                        fill: false,
+                        spanGaps: false
+                    },
+                    {
+                        label: 'Previsão',
+                        data: previsao,
+                        borderColor: '#F97316',
+                        backgroundColor: 'rgba(249, 115, 22, 0.10)',
+                        borderWidth: 3,
+                        borderDash: [7, 5],
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        tension: 0.3,
+                        fill: false,
+                        spanGaps: false
+                    }
+                ]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return context.dataset.label + ': '
+                                    + context.parsed.y + ' chamados';
+                            }
+                        }
+                    }
+                },
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Quantidade de chamados'
+                        },
+                        ticks: {
+                            precision: 0
+                        }
+                    },
+
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Horário'
+                        }
+                    }
+                }
+            }
         });
     }
 </script>

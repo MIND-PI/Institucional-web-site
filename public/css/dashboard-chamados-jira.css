@@ -813,7 +813,7 @@ main {
 
     .metrics-bottom {
         display: grid;
-        grid-template-columns: 1fr 1fr ;
+        grid-template-columns: 1fr 1fr;
         gap: 1rem;
         padding: 0.5rem;
     }
@@ -854,20 +854,18 @@ main {
     gap: 1.5rem;
 }
 
-.graficos-inferiores .metrics-processes {
+
+.graficos-inferiores .metrics-processes,
+.graficos-inferiores .grafico-evolucao {
     flex: 1;
     max-width: none;
     height: 28rem;
-}
-
-.graficos-inferiores .grafico-evolucao {
-    flex: 1.5;
-    max-width: none;
-    height: 28rem;
+    min-width: 0;
 }
 
 .graficos-inferiores .process-chart-container {
     flex: 1;
+    width: 100%;
     min-height: 0;
     position: relative;
 }
@@ -881,6 +879,7 @@ main {
     .graficos-inferiores {
         flex-direction: column;
     }
+
     .graficos-inferiores .metrics-processes,
     .graficos-inferiores .grafico-evolucao {
         width: 100%;
