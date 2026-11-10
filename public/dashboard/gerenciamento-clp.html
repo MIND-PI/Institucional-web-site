@@ -303,6 +303,27 @@
         </div>
     </div>
 
+    <!-- ===== ADICIONAR LOCALIZAÇÃO ===== -->
+     <div class="overlay_config" id="overlay_add_localizacao">
+        <div class="modal_config modal-clp modal-clp-estreito">
+            <h2 class="modal-clp-titulo centro">Adicionar Localização</h2>
+
+            <form id="form_adicionar_localizacao" novalidate>
+                <div class="campo-clp">
+                    <label for="input_nome_localizacao">Nome do setor <span class="obrigatorio">*</span></label>
+                    <input type="text" id="input_nome_localizacao" placeholder="Ex.: Planta Industrial - Linha 03" maxlength="255">
+                </div>
+
+                <p class="equipe-modal-erro" id="erro_adicionar_localizacao"></p>
+
+                <div class="botoes-clp">
+                    <button type="button" class="btn-clp vermelho" id="btn_cancelar_localizacao">Cancelar</button>
+                    <button type="button" class="btn-clp verda" id="btn_confirmar_localizacao">Confirmar</button>
+                </div>
+            </form>
+        </div>
+     </div>
+
     <script src="../js/sessao.js"></script>
     <script src="../js/configuracoes.js"></script>
     <script src="../js/sidebar.js"></script>
