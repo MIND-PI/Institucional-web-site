@@ -162,7 +162,7 @@ function listarClpPorId(idClp) {
         m.nome nome_modelo,
         c.mac_address,
         c.status,
-        l.nome
+        l.nome localizacao
     FROM clp c
     JOIN modelo m ON m.idModelo = c.modeloId
     JOIN localizacao l ON l.idLocalizacao = c.localizacaoId
