@@ -136,7 +136,7 @@ document.getElementById("form_adicionar_localizao").addEventListener("submit", a
 
     if(response.ok){
         fecharModal("overlay_add_localizacao");
-        loadLocalizoes();
+        loadLocalizacoes();
     } else if(response.status == 409){
         document.getElementById("erro_adicionar_localizacao").innerText = "Essa localização já existe.";
     }
@@ -582,7 +582,34 @@ async function loadModelos(){
     }
 }
 
+async function getLocalizacoes(){
+    let id_empresa = sessionStorage.getItem("ID_EMPRESA");
 
+    let response = await fetch(`/clp/listarLocalizacoes/:${id_empresa}`, { method: "GET"})
+
+    if(response.ok){
+        console.log("Não foi possível encontrar as localizações")
+        return[]
+    }
+
+    return await response.json()
+}
+
+async function loadLocalizacoes(){
+    let locais = await getLocalizacoes()
+
+    let selectAdd = document.getElementById("select_adicionar_localizacao")
+    let selectEdit = document.getElementById("select_editar_localizacao")
+
+    selectAdd.innerHTML = `<option value="" disabled selected>Selecione</option>`
+    selectEdit.innerHTML = ""
+
+    for(let i = 0; i < locais.length; i++){
+        let option = `<option value="${locais[i].idLocalizacao}">${locais[i].nome}</option>`
+        selectAdd.innerHTML += option
+        selectEdit.innerHTML += option
+    }
+}
 
 // BUSCA POR APELIDO
 document.getElementById("input_busca").addEventListener("input", function () {
@@ -599,3 +626,4 @@ document.getElementById("input_busca").addEventListener("input", function () {
 
 loadClps()
 loadModelos()
+loadLocalizacoes()
