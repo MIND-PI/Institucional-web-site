@@ -42,6 +42,7 @@ configurarFechamento("overlay_add_clp",     ["btn_cancelar_adicionar"]);
 configurarFechamento("overlay_edit_clp",    ["btn_cancelar_editar"]);
 configurarFechamento("overlay_remove_clp",  ["btn_cancelar_remover"]);
 configurarFechamento("overlay_monitor_clp", ["btn_cancelar_monitorar", "btn_fechar_monitorar"]);
+configurarFechamento("overlay_add_localizacao",     ["btn_cancelar_localizacao"]);
 
 ["btn_cancelar_monitorar", "btn_fechar_monitorar"].forEach(function (id) {
     document.getElementById(id).addEventListener("click", function () {
@@ -107,6 +108,41 @@ document.getElementById("form_adicionar_clp").addEventListener("submit", async f
     };
 
     await abrirModalMonitorarNovo();
+});
+
+// ADICIONAR LOCALIZAÇÃO
+document.getElementById("btn_add_localizacao").addEventListener("click", function () {
+    document.getElementById("form_adicionar_localizacao").reset();
+    limparErros("overlay_add_localizacao", "erro_adicionar_localizacao");
+    abrirModal("overlay_add_localizacao");
+});
+
+document.getElementById("form_adicionar_localizao").addEventListener("submit", async function (evento){
+    evento.preventDefault();
+
+    if(!validarCampos(["input_nome_localizacao"], "erro_adicionar_localizacao")){
+        return;
+    }
+
+    let id_empresa = sessionStorage.getItem("ID_EMPRESA");
+
+    let response = await fetch("/clp/adicionarLocalizacao", {
+        method: "POST",
+        headers: {"Content-Type": "application/json" },
+        body: JSON.stringify({
+            nomeServer: document.getElementById("input_nome_localizacao"),
+        })
+    });
+
+    if(response.ok){
+        fecharModal("overlay_add_localizacao");
+        loadLocalizoes();
+    } else if(response.status == 409){
+        document.getElementById("erro_adicionar_localizacao").innerText = "Essa localização já existe.";
+    }
+    else {
+        document.getElementById("erro_adicionar_localizacao").innerText = "Não foi possível adicionar a localização.";
+    }
 });
 
 // MONITORAMENTO
@@ -545,6 +581,8 @@ async function loadModelos(){
         selectEdit.innerHTML += option
     }
 }
+
+
 
 // BUSCA POR APELIDO
 document.getElementById("input_busca").addEventListener("input", function () {
