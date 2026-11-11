@@ -160,15 +160,22 @@
 
     var form = document.getElementById("cadastroForm");
 
-    form.addEventListener("submit", function(evento) {
+    // Quando chega pelo link do email, a URL traz o id do fornecedor (?id_empresa=NN).
+    // Sem o link (por exemplo, um funcionário usando só o código), fica undefined.
+    var idFornecedorUrl = new URLSearchParams(window.location.search).get("id_empresa");
+    var idFornecedor = (idFornecedorUrl !== null && /^\d+$/.test(idFornecedorUrl))
+        ? Number(idFornecedorUrl)
+        : undefined;
+
+    form.addEventListener("submit", function (evento) {
 
         evento.preventDefault();
 
-        var nome = document.getElementById("nome").value;
-        var email = document.getElementById("email").value;
+        var nome = document.getElementById("nome").value.trim();
+        var email = document.getElementById("email").value.trim();
         var senha = document.getElementById("senha").value;
         var confirmacao_senha = document.getElementById("confirmacao_senha").value;
-        var codigoativacao = document.getElementById("codigoativacao").value;
+        var codigoativacao = document.getElementById("codigoativacao").value.trim();
 
         if (
             nome == "" ||
@@ -181,7 +188,6 @@
             return;
         }
 
-
         if (senha.length < 8) {
             alert("A senha precisa ter pelo menos 8 caracteres.");
             return;
@@ -192,8 +198,8 @@
             return;
         }
 
-
-        fetch("http://localhost:3333/usuarios/cadastrar", {
+        // Caminho relativo: funciona no localhost e na EC2
+        fetch("/usuarios/cadastrar", {
 
             method: "POST",
 
@@ -202,43 +208,43 @@
             },
 
             body: JSON.stringify({
-
                 nomeServer: nome,
                 emailServer: email,
                 senhaServer: senha,
                 confirmacao_senhaServer: confirmacao_senha,
                 codigoServer: codigoativacao,
+                idFornecedorServer: idFornecedor
             })
 
         })
 
-        .then(function(resposta) {
+            .then(function (resposta) {
 
-            if (!resposta.ok) {
-                return resposta.text().then(function(erro) {
-                    throw new Error(erro);
-                });
-            }
+                if (!resposta.ok) {
+                    return resposta.text().then(function (erro) {
+                        throw new Error(erro);
+                    });
+                }
 
-            return resposta.json();
+                return resposta.json();
 
-        })
+            })
 
-        .then(function() {
+            .then(function () {
 
-            alert("Cadastro realizado com sucesso!");
+                alert("Cadastro realizado com sucesso!");
 
-            window.location.href = "./login.html";
+                window.location.href = "./login.html";
 
-        })
+            })
 
-        .catch(function(erro) {
+            .catch(function (erro) {
 
-            console.log(erro);
+                console.log(erro);
 
-            alert(erro.message);
+                alert(erro.message);
 
-        });
+            });
 
     });
 

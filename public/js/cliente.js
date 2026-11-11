@@ -61,7 +61,7 @@
         let nome = input_adicionar_nome_client.value
         let setor = input_adicionar_setor_client.value
         let cnpj = input_adicionar_cnpj_client.value
-        
+        let email = input_adicionar_email_client.value
         
         if (!nome || nome.trim().length === 0) {
             erro_adicionar_client.innerHTML = "O nome precisa estar preenchido"
@@ -76,7 +76,13 @@
         }
 
         if (!cnpj || cnpj.length !== 14) {
-            erro_adicionar_client.innerHTML = "O cnpj precisa estar preenchido"
+            erro_adicionar_client.innerHTML = "O CNPJ precisa estar preenchido"
+            event.preventDefault()
+            return
+        }
+
+        if (!email || !email.includes("@")) {
+            erro_adicionar_client.innerHTML = "O email precisa estar preenchido"
             event.preventDefault()
             return
         }
@@ -89,7 +95,8 @@
             body: JSON.stringify({
                 "nome_fantasia": nome,
                 "setor": setor,
-                "cnpj": cnpj
+                "cnpj": cnpj,
+                "email":email
             })
         })
 

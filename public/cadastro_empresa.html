@@ -130,143 +130,135 @@
 
     <script>
 
-        var form = document.getElementById("cadastroForm");
-        var etapaAtual = 1;
+    var form = document.getElementById("cadastroForm");
+    var etapaAtual = 1;
 
-        function mostrarEtapa(numero) {
-            etapaAtual = numero;
+    function mostrarEtapa(numero) {
+        etapaAtual = numero;
 
-            document.getElementById("etapa1").classList.toggle("ativa", numero == 1);
-            document.getElementById("etapa2").classList.toggle("ativa", numero == 2);
+        document.getElementById("etapa1").classList.toggle("ativa", numero == 1);
+        document.getElementById("etapa2").classList.toggle("ativa", numero == 2);
 
-            document.getElementById("bolinha2").classList.toggle("ativo", numero == 2);
+        document.getElementById("bolinha2").classList.toggle("ativo", numero == 2);
 
-            document.getElementById("btnVoltar").style.display = numero == 2 ? "block" : "none";
+        document.getElementById("btnVoltar").style.display = numero == 2 ? "block" : "none";
+    }
+
+    function validarEtapa1() {
+        var nomeFantasia = document.getElementById("nome_fantasia").value.trim();
+        var razaoSocial = document.getElementById("razao_social").value.trim();
+        var cnpj = document.getElementById("cnpj").value.replace(/\D/g, "");
+
+        if (nomeFantasia == "" || razaoSocial == "" || cnpj == "") {
+            alert("Preencha todos os campos.");
+            return false;
         }
 
-
-
-        function validarEtapa1() {
-            var nomeFantasia = document.getElementById("nome_fantasia").value.trim();
-            var razaoSocial = document.getElementById("razao_social").value.trim();
-            var cnpj = document.getElementById("cnpj").value.replace(/\D/g, "");
-
-            if (nomeFantasia == "" || razaoSocial == "" || cnpj == "") {
-                alert("Preencha todos os campos.");
-                return false;
-            }
-
-            if (cnpj.length != 14) {
-                alert("O CNPJ precisa ter 14 números.");
-                return false;
-            }
-
-            return true;
+        if (cnpj.length != 14) {
+            alert("O CNPJ precisa ter 14 números.");
+            return false;
         }
 
-        document.getElementById("btnContinuar").addEventListener("click", function () {
+        return true;
+    }
+
+    document.getElementById("btnContinuar").addEventListener("click", function () {
+        if (validarEtapa1()) {
+            mostrarEtapa(2);
+        }
+    });
+
+    document.getElementById("btnVoltar").addEventListener("click", function () {
+        mostrarEtapa(1);
+    });
+
+    form.addEventListener("submit", function (evento) {
+
+        evento.preventDefault();
+
+        // Enter no passo 1 avança em vez de enviar
+        if (etapaAtual == 1) {
             if (validarEtapa1()) {
                 mostrarEtapa(2);
             }
-        });
+            return;
+        }
 
-        document.getElementById("btnVoltar").addEventListener("click", function () {
-            mostrarEtapa(1);
-        });
+        var nomeFantasia = document.getElementById("nome_fantasia").value.trim();
+        var razaoSocial = document.getElementById("razao_social").value.trim();
+        var cnpj = document.getElementById("cnpj").value.replace(/\D/g, "");
 
+        var nome = document.getElementById("nome").value;
+        var email = document.getElementById("email").value;
+        var senha = document.getElementById("senha").value;
+        var confirmacao_senha = document.getElementById("confirmacao_senha").value;
 
-        form.addEventListener("submit", function (evento) {
+        if (nome == "" || email == "" || senha == "" || confirmacao_senha == "") {
+            alert("Preencha todos os campos.");
+            return;
+        }
 
-            evento.preventDefault();
+        if (senha.length < 8) {
+            alert("A senha precisa ter pelo menos 8 caracteres.");
+            return;
+        }
 
-            // Enter no passo 1 avança em vez de enviar
-            if (etapaAtual == 1) {
-                if (validarEtapa1()) {
-                    mostrarEtapa(2);
+        if (senha != confirmacao_senha) {
+            alert("A senha e a confirmação de senha tem que ser iguais.");
+            return;
+        }
+
+        fetch("/usuarios/cadastrarEmpresa", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                nomeFantasiaServer: nomeFantasia,
+                razaoSocialServer: razaoSocial,
+                cnpjServer: cnpj,
+
+                nomeServer: nome,
+                emailServer: email,
+                senhaServer: senha
+            })
+
+        })
+
+            .then(function (resposta) {
+
+                if (!resposta.ok) {
+                    return resposta.text().then(function (erro) {
+                        throw new Error(erro);
+                    });
                 }
-                return;
-            }
 
-            var nomeFantasia = document.getElementById("nome_fantasia").value.trim();
-            var razaoSocial = document.getElementById("razao_social").value.trim();
-            var cnpj = document.getElementById("cnpj").value.replace(/\D/g, "");
-            var codigoativacao = document.getElementById("codigoativacao").value.trim();
-
-            var nome = document.getElementById("nome").value;
-            var email = document.getElementById("email").value;
-            var senha = document.getElementById("senha").value;
-            var confirmacao_senha = document.getElementById("confirmacao_senha").value;
-
-            if (nome == "" || email == "" || senha == "" || confirmacao_senha == "") {
-                alert("Preencha todos os campos.");
-                return;
-            }
-
-            if (senha.length < 8) {
-                alert("A senha precisa ter pelo menos 8 caracteres.");
-                return;
-            }
-
-            if (senha != confirmacao_senha) {
-                alert("A senha e a confirmação de senha tem que ser iguais.");
-                return;
-            }
-
-
-            fetch("http://localhost:3333/usuarios/cadastrar", {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-
-                    nomeFantasiaServer: nomeFantasia,
-                    razaoSocialServer: razaoSocial,
-                    cnpjServer: cnpj,
-
-                    nomeServer: nome,
-                    emailServer: email,
-                    senhaServer: senha,
-                    confirmacao_senhaServer: confirmacao_senha,
-                    codigoServer: codigoativacao
-                })
+                return resposta.json();
 
             })
 
-                .then(function (resposta) {
+            .then(function () {
 
-                    if (!resposta.ok) {
-                        return resposta.text().then(function (erro) {
-                            throw new Error(erro);
-                        });
-                    }
+                alert("Cadastro realizado com sucesso!");
 
-                    return resposta.json();
+                window.location.href = "./login.html";
 
-                })
+            })
 
-                .then(function () {
+            .catch(function (erro) {
 
-                    alert("Cadastro realizado com sucesso!");
+                console.log(erro);
 
-                    window.location.href = "./login.html";
+                alert(erro.message);
 
-                })
+            });
 
-                .catch(function (erro) {
+    });
 
-                    console.log(erro);
-
-                    alert(erro.message);
-
-                });
-
-        });
-
-    </script>
+</script>
 
 </body>
 
