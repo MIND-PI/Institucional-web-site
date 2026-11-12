@@ -1,7 +1,7 @@
 const { GetObjectCommand, S3Client, NoSuchKey, S3ServiceException, paginateListObjectsV2, ListObjectsV2Command } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
-const s3 = require("../config/s3");
+const client = require("../config/s3");
 
 async function getUrlS3(key) {
     // Criação de comando, pega um novo objeto do bucket s3
@@ -12,15 +12,13 @@ async function getUrlS3(key) {
     });
 
     // Cria url pelo cliente s3 e o comando, essa url expira em 3600 segundos, 1 hora
-    const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+    const url = await getSignedUrl(client, command, { expiresIn: 3600 });
 
     return url;
 }
 
 // Utilizar para pegar o json em especifico
 async function getObject(key) {
-    const client = new S3Client({});
-
     try {
 
         // Esse é a respose, ela envia um new getOjectCommand, ele precisa da key(Chave exata do json) e do bucket
@@ -56,8 +54,6 @@ async function getObject(key) {
 
 // Pegar a key do objeto mais recente
 async function getMostRecentObject(key) {
-    const client = new S3Client({});
-
     // Esse é o comando utilizado para pegar todos os objetos com o prefixo colocado
     // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/command/ListObjectsV2Command/
     const command = new ListObjectsV2Command({

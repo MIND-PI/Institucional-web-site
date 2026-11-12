@@ -249,6 +249,82 @@ function adicionarLocalizacao(req, res) {
 
 }
 
+async function performanceAnalise(req, res) {
+    let idEmpresa = req.params.idEmpresa
+    let idClp = req.params.idClp
+
+    if (idEmpresa == null) {
+        res.status(400).send("O id da empresa está indefinido!");
+        return
+    }
+
+    if (idClp == null) {
+        res.status(400).send("O id do clp está indefinido!");
+        return
+    }
+
+    let object = await getS3.getObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/scan-cpu-performance/ultimo-resultado.json`)
+
+    if (object == null) {
+        res.status(400).send("Não foi encontrado dados buscando o json específico")
+        return
+    }
+
+    console.log(object)
+    res.json(object)
+}
+
+
+async function predicaoAnalise(req, res) {
+    let idEmpresa = req.params.idEmpresa
+    let idClp = req.params.idClp
+
+    if (idEmpresa == null) {
+        res.status(400).send("O id da empresa está indefinido!");
+        return
+    }
+
+    if (idClp == null) {
+        res.status(400).send("O id do clp está indefinido!");
+        return
+    }
+
+    let object = await getS3.getObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/prediction-performance/ultimo-resultado.json`)
+
+    if (object == null) {
+        res.status(400).send("Não foi encontrado dados buscando o json específico")
+        return
+    }
+
+    console.log(object)
+    res.json(object)
+}
+
+async function predicaoMetrica(req, res) {
+    let idEmpresa = req.params.idEmpresa
+    let idClp = req.params.idClp
+
+    if (idEmpresa == null) {
+        res.status(400).send("O id da empresa está indefinido!");
+        return
+    }
+
+    if (idClp == null) {
+        res.status(400).send("O id do clp está indefinido!");
+        return
+    }
+
+    let object = await getS3.getObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/prediction-metrics/ultimo-resultado.json`)
+
+    if (object == null) {
+        res.status(400).send("Não foi encontrado dados buscando o json específico")
+        return
+    }
+
+    console.log(object)
+    res.json(object)
+}
+
 
 
 module.exports = {
@@ -263,5 +339,8 @@ module.exports = {
     adicionarLocalizacao,
     listarLocalizacoes,
     listarClpPorId,
-    microAnalise
+    microAnalise,
+    performanceAnalise,
+    predicaoAnalise,
+    predicaoMetrica
 };

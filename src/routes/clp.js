@@ -51,4 +51,17 @@ router.post("/adicionarLocalizacao/:idEmpresa", function (req, res){
     clpController.adicionarLocalizacao(req, res);
 });
 
+router.get("/performance-analise/:idClp/:idEmpresa", function (req, res) {
+    clpController.performanceAnalise(req, res)
+})
+
+router.get("/predicao-analise/:idClp/:idEmpresa", function (req, res) {
+    clpController.predicaoAnalise(req, res)
+})
+
+router.get("/predicao-metrica/:idClp/:idEmpresa", function (req, res) {
+    clpController.predicaoMetrica(req, res)
+})
+
+
 module.exports = router;
