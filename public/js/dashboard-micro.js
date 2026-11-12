@@ -366,6 +366,10 @@ function renderKpiPerformance(json, value) {
         title_minimum.innerHTML = "Mínimo Scan Time"
     }
 
+    peak = peak < 10 ? `0${peak}` : peak
+    minimun = minimun < 10 ? `0${minimun}` : minimun
+    current = current < 10 ? `0${current}` : current
+    
     peak_label.innerHTML = peak
     current_label.innerHTML = current
     minimun_label.innerHTML = minimun
@@ -375,7 +379,7 @@ async function loadClps() {
     let clps = await getCompanyPlc()
     renderClps(clps)
     let individual_plc = await getIndividualPlc()
-    let dataMicro = await getDataMicroPlc() 
+    let dataMicro = await getDataMicroPlc()
     renderClpInfo(individual_plc[0], dataMicro[0].timestamp)
     renderKpiPerformance(dataMicro[0], graph_type.value)
     plotarGraficoPizza(dataMicro[0])
