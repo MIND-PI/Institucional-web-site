@@ -278,7 +278,7 @@ async function getIndividualPlc() {
     // Verificando se a resposta da api foi ok
     if (!response.ok) {
         console.log("Não foi possível achar o clp pelo id")
-        return
+        return {}
     }
 
     // Transformando a resposta em json
@@ -300,7 +300,7 @@ async function getDataMicroPlc() {
     // Verificando se a resposta da api foi ok
     if (!response.ok) {
         console.log("Não foi possível achar o clp pelo id")
-        return
+        return {}
     }
 
     // Transformando a resposta em json
@@ -309,6 +309,72 @@ async function getDataMicroPlc() {
     return json
 }
 
+async function getPerformanceAnalyse() {
+    // Pegando id do plc pelo select
+    let id_plc = select_clps.value
+    let id_empresa = sessionStorage.getItem("ID_EMPRESA")
+
+    // Chamando a api 
+    let response = await fetch(`/clp/performance-analise/${id_plc}/${id_empresa}`, {
+        method: "GET"
+    })
+
+    // Verificando se a resposta da api foi ok
+    if (!response.ok) {
+        console.log("Não foi possível achar o clp pelo id")
+        return {}
+    }
+
+    // Transformando a resposta em json
+    let json = await response.json()
+
+    return json
+}
+
+async function getPredictionAnalyse() {
+    // Pegando id do plc pelo select
+    let id_plc = select_clps.value
+    let id_empresa = sessionStorage.getItem("ID_EMPRESA")
+
+    // Chamando a api 
+    let response = await fetch(`/clp/predicao-analise/${id_plc}/${id_empresa}`, {
+        method: "GET"
+    })
+
+    // Verificando se a resposta da api foi ok
+    if (!response.ok) {
+        console.log("Não foi possível achar o clp pelo id")
+        return {}
+    }
+
+    // Transformando a resposta em json
+    let json = await response.json()
+
+    return json
+}
+
+
+async function getMetricAnalyse() {
+    // Pegando id do plc pelo select
+    let id_plc = select_clps.value
+    let id_empresa = sessionStorage.getItem("ID_EMPRESA")
+
+    // Chamando a api 
+    let response = await fetch(`/clp/predicao-metrica/${id_plc}/${id_empresa}`, {
+        method: "GET"
+    })
+
+    // Verificando se a resposta da api foi ok
+    if (!response.ok) {
+        console.log("Não foi possível achar o clp pelo id")
+        return
+    }
+
+    // Transformando a resposta em json
+    let json = await response.json()
+
+    return json
+}
 // ============================
 // CHAMANDO FUNÇÕES DE CARREGAMENTO DE TELA
 // ============================
@@ -321,22 +387,36 @@ function renderClps(clps) {
 }
 
 function renderClpInfo(plc, timestamp) {
+    let status_box = document.getElementById("status_box")
     name_clp.innerHTML = plc.nome_clp
+
+    status_box.classList.remove("danger-bg")
+    status_box.classList.remove("positve-bg")
+
     if (plc.status == 1) {
         status_clp.innerHTML = "ativo"
-        document.getElementById("status_box").classList.add("positve-bg")
+        status_box.classList.add("positve-bg")
     } else {
         status_clp.innerHTML = "Inativo"
-        document.getElementById("status_box").classList.add("danger-bg")
+        status_box.classList.add("danger-bg")
     }
 
+    timestamp = timestamp ? new Date(timestamp).toLocaleString('pt-BR') : "Sem data"
     name_model.innerHTML = plc.nome_modelo
     addres_mac.innerHTML = plc.mac_address
     department.innerHTML = plc.localizacao
-    last_update.innerHTML = new Date(timestamp).toLocaleString('pt-BR')
+    last_update.innerHTML = timestamp
 }
 
 function renderKpiPerformance(json, value) {
+
+    if (!json) {
+        peak_label.innerHTML = "Sem dados"
+        current_label.innerHTML = "Sem dados"
+        minimun_label.innerHTML = "Sem dados"
+        return
+    }
+
     let peak
     let minimun
     let current
@@ -369,7 +449,7 @@ function renderKpiPerformance(json, value) {
     peak = peak < 10 ? `0${peak}` : peak
     minimun = minimun < 10 ? `0${minimun}` : minimun
     current = current < 10 ? `0${current}` : current
-    
+
     peak_label.innerHTML = peak
     current_label.innerHTML = current
     minimun_label.innerHTML = minimun
@@ -415,7 +495,12 @@ periodoSelect.addEventListener('change', function () {
 
 document.getElementById("select_clps").addEventListener("change", async () => {
     let clp = await getIndividualPlc()
-    renderClpInfo(clp[0])
+    let dataMicro = await getDataMicroPlc()
+    let timestamp = dataMicro.length > 0 ? dataMicro[0].timestamp : null
+    let dataMicroJson = dataMicro.length > 0 ? dataMicro[0] : null
+
+    renderClpInfo(clp[0], timestamp)
+    renderKpiPerformance(dataMicroJson, graph_type.value)
 })
 
 

@@ -267,6 +267,7 @@ async function performanceAnalise(req, res) {
 
     if (object == null) {
         res.status(400).send("Não foi encontrado dados buscando o json específico")
+        res.json({})
         return
     }
 
@@ -293,6 +294,7 @@ async function predicaoAnalise(req, res) {
 
     if (object == null) {
         res.status(400).send("Não foi encontrado dados buscando o json específico")
+        res.json({})
         return
     }
 
@@ -317,7 +319,8 @@ async function predicaoMetrica(req, res) {
     let object = await getS3.getObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/prediction-metrics/ultimo-resultado.json`)
 
     if (object == null) {
-        res.status(400).send("Não foi encontrado dados buscando o json específico")
+        res.status(400).json({message: "Não foi possivel fazer a requisição"})
+        res.json({})
         return
     }
 
