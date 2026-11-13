@@ -223,8 +223,8 @@ main {
 .kpi-time {
     width: 100%;
     text-align: right;
-    color: var(--color-text-secondary);
-    font-size: 0.8rem;
+    color: var(--color-text-primary);
+    font-size: 0.9rem;
 }
 
 
@@ -359,6 +359,14 @@ main {
     max-width: 100%;
 }
 
+#pizza_kpi {
+    font-weight: bold;
+}
+
+.title_kpi_performanc {
+    font-weight: bold;
+}
+
 /* Estilização padrão da box com os textos */
 .pizza-datas {
     width: 100%;
@@ -375,7 +383,7 @@ main {
 
 /* Estilização dos textos do status do clp */
 .pizza-text {
-    font-size: 0.75rem;
+    font-size: 0.9rem;
     color: var(--color-text-primary);
 }
 

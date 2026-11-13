@@ -188,7 +188,7 @@ function plotarGraficoPizza(json_micro) {
             contexto.font = 'bold 38px Poppins';
             contexto.fillText(health_score, x, y);
 
-            contexto.font = '10px Poppins';
+            contexto.font = 'bold 10px Poppins';
             contexto.fillText('HEALTH SCORE', x, y + 25);
 
             contexto.restore();
