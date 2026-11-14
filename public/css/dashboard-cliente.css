@@ -431,6 +431,7 @@ main {
     gap: 0.5rem;
     width: 33%;
     text-align: center;
+    justify-content: space-between;
 }
 
 .indicator-text p {
