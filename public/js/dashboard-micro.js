@@ -3,7 +3,7 @@
 // ============================
 
 const configGraficoLinha = {
-    scanTime: { campo: 'scan_time_ms', nome: 'Scan Time', unidade: ' ms' },
+    scanTime: { campo: 'scan_time_ms', nome: 'Scan Time', unidade: 'ms' },
     cpu: { campo: 'porcentagem_uso_cpu', nome: 'CPU', unidade: '%' },
     ram: { campo: 'porcentagem_uso_ram', nome: 'RAM', unidade: '%' }
 };
@@ -14,8 +14,6 @@ let graficoPizza = null
 // ============================
 // Funções de gráfico
 // ============================
-
-
 
 // Gráfico de linha dinâmico
 
@@ -29,9 +27,22 @@ function atualizarGraficoLinha(performance, predict) {
     let labels = []
     let valores_performance = []
     let valores_predict = []
+    let horarios_completos = []
+    let ultimo_horario = null
 
     dados_performance.forEach(item => {
-        labels.push("")
+        let data = new Date(item.timestamp.replace(' ', 'T'))
+        let label = ""
+
+        let horario_atual = data.getHours() * 60 + data.getMinutes()
+
+        if (data.getMinutes() % 15 == 0 && horario_atual != ultimo_horario) {
+            label = data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+            ultimo_horario = horario_atual
+        }
+
+        horarios_completos.push(data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }))
+        labels.push(label)
         valores_performance.push(Number(item[config.campo]))
         valores_predict.push(null)
     })
@@ -43,24 +54,22 @@ function atualizarGraficoLinha(performance, predict) {
     labels[ultimo] = ultima_captura.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
     valores_predict[ultimo] = valores_performance[ultimo]
 
-    // Horários futuros a cada 15 minutos
     predict.forEach((item, index) => {
         let minutos = index + 1
         let horario = ""
+        let futuro = new Date(ultima_captura)
+        futuro.setMinutes(futuro.getMinutes() + minutos)
 
-        // Mostrando o horário só a cada 15 minutos
         if (minutos % 60 == 0) {
-            let futuro = new Date(ultima_captura)
-            futuro.setMinutes(futuro.getMinutes() + minutos)
             horario = futuro.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
         }
 
+        horarios_completos.push(futuro.toLocaleTimeString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }))
         labels.push(horario)
         valores_performance.push(null)
         valores_predict.push(Number(item[config.campo]))
     })
 
-    // Destruir gráfico anterior
     if (graficoLinha != null) {
         graficoLinha.destroy();
     }
@@ -83,7 +92,7 @@ function atualizarGraficoLinha(performance, predict) {
                     borderColor: '#06B6D4',
                     backgroundColor: '#06B6D4',
                     borderWidth: 2,
-                    pointRadius: 3,
+                    pointRadius: 0,
                     tension: 0.3
                 },
 
@@ -96,7 +105,7 @@ function atualizarGraficoLinha(performance, predict) {
                     backgroundColor: '#FFF',
                     borderWidth: 2,
                     borderDash: [6, 5],
-                    pointRadius: 3,
+                    pointRadius: 0,
                     tension: 0.3
                 }
 
@@ -113,6 +122,13 @@ function atualizarGraficoLinha(performance, predict) {
                     display: true,
                     labels: {
                         color: '#94A3B8'
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function (itens) {
+                            return horarios_completos[itens[0].dataIndex]
+                        }
                     }
                 }
             },
@@ -432,9 +448,9 @@ function renderKpiPerformance(json, value) {
     minimun = minimun < 10 ? `0${minimun}` : minimun
     current = current < 10 ? `0${current}` : current
 
-    peak_label.innerHTML = peak
-    current_label.innerHTML = current
-    minimun_label.innerHTML = minimun
+    peak_label.innerHTML = `${peak}${configGraficoLinha[value]["unidade"]}`
+    current_label.innerHTML = `${current}${configGraficoLinha[value]["unidade"]}`
+    minimun_label.innerHTML = `${minimun}${configGraficoLinha[value]["unidade"]}`
 }
 
 function renderMetrics(metric, value) {
@@ -445,6 +461,8 @@ function renderMetrics(metric, value) {
         return
     }
 
+    let uni
+
     if (value == "cpu") {
         metric = metric[0]
     } else if (value == "ram") {
@@ -453,9 +471,9 @@ function renderMetrics(metric, value) {
         metric = metric[1]
     }
 
-    metric_mae.innerHTML = metric.mae
-    metric_rmse.innerHTML = metric.rmse
-    metric_r2.innerHTML = metric.r2
+    metric_mae.innerHTML = `${metric.mae}${configGraficoLinha[value]["unidade"]}`
+    metric_rmse.innerHTML = `${metric.rmse}${configGraficoLinha[value]["unidade"]}`
+    metric_r2.innerHTML = `${metric.r2 * 100}%`
 }
 
 async function loadClps() {
