@@ -1,45 +1,11 @@
 // ============================
-// Dados mokados
-// ============================
-
-const dadosPorPeriodo = {
-    '24h': [
-        { horarios: '00:00', alertasCPU: 55, alertasScanTime: 10, alertasRAM: 60 },
-        { horarios: '03:00', alertasCPU: 62, alertasScanTime: 11, alertasRAM: 63 },
-        { horarios: '06:00', alertasCPU: 65, alertasScanTime: 9, alertasRAM: 66 },
-        { horarios: '09:00', alertasCPU: 58, alertasScanTime: 8, alertasRAM: 64 },
-        { horarios: '12:00', alertasCPU: 60, alertasScanTime: 18, alertasRAM: 68 },
-        { horarios: '15:00', alertasCPU: 72, alertasScanTime: 17, alertasRAM: 74 },
-        { horarios: '18:00', alertasCPU: 57, alertasScanTime: 12, alertasRAM: 70 },
-        { horarios: '21:00', alertasCPU: 67, alertasScanTime: 10, alertasRAM: 69 }
-    ],
-    '7d': [
-        { horarios: '18/10', alertasCPU: 58, alertasScanTime: 12, alertasRAM: 63 },
-        { horarios: '19/10', alertasCPU: 61, alertasScanTime: 14, alertasRAM: 65 },
-        { horarios: '20/10', alertasCPU: 66, alertasScanTime: 11, alertasRAM: 68 },
-        { horarios: '21/10', alertasCPU: 59, alertasScanTime: 16, alertasRAM: 64 },
-        { horarios: '22/10', alertasCPU: 70, alertasScanTime: 15, alertasRAM: 72 },
-        { horarios: '23/10', alertasCPU: 63, alertasScanTime: 13, alertasRAM: 69 },
-        { horarios: '24/10', alertasCPU: 65, alertasScanTime: 12, alertasRAM: 70 }
-    ],
-    '30d': [
-        { horarios: '25/09', alertasCPU: 54, alertasScanTime: 10, alertasRAM: 60 },
-        { horarios: '30/09', alertasCPU: 60, alertasScanTime: 13, alertasRAM: 64 },
-        { horarios: '05/10', alertasCPU: 68, alertasScanTime: 17, alertasRAM: 71 },
-        { horarios: '10/10', alertasCPU: 57, alertasScanTime: 11, alertasRAM: 66 },
-        { horarios: '15/10', alertasCPU: 64, alertasScanTime: 14, alertasRAM: 68 },
-        { horarios: '20/10', alertasCPU: 66, alertasScanTime: 12, alertasRAM: 70 }
-    ]
-};
-
-// ============================
 // CRIAÇÃO DOS GRÁFICOS
 // ============================
 
 const configGraficoLinha = {
-    scanTime: { campo: 'alertasScanTime', nome: 'Scan Time', unidade: ' ms' },
-    cpu: { campo: 'alertasCPU', nome: 'CPU', unidade: '%' },
-    ram: { campo: 'alertasRAM', nome: 'RAM', unidade: '%' }
+    scanTime: { campo: 'scan_time_ms', nome: 'Scan Time', unidade: ' ms' },
+    cpu: { campo: 'porcentagem_uso_cpu', nome: 'CPU', unidade: '%' },
+    ram: { campo: 'porcentagem_uso_ram', nome: 'RAM', unidade: '%' }
 };
 
 let graficoLinha = null;
@@ -49,56 +15,52 @@ let graficoPizza = null
 // Funções de gráfico
 // ============================
 
-// Gráfico de doughnut
-// function GraficoConsumo(idCanvas, consumo) {
 
-//     const ctx = document.getElementById(idCanvas);
-
-//     new Chart(ctx, {
-//         type: 'doughnut',
-
-//         data: {
-//             datasets: [{
-//                 data: [consumo, 100 - consumo],
-//                 backgroundColor: ['#06B6D4', '#D1D5DB'],
-//                 borderWidth: 0,
-//             }]
-//         },
-
-//         options: {
-//             responsive: true,
-//             maintainAspectRatio: false,
-//             rotation: -90,
-//             circumference: 180,
-//             cutout: '75%',
-
-//             plugins: {
-//                 legend: {
-//                     display: false
-//                 },
-//                 tooltip: {
-//                     enabled: false
-//                 }
-//             }
-//         }
-//     });
-// }
 
 // Gráfico de linha dinâmico
-function atualizarGraficoLinha() {
 
-    const periodo = document.getElementById('period-filter').value;
-    const tipo = document.getElementById('graph_type').value;
-    const dados = dadosPorPeriodo[periodo];
-    const config = configGraficoLinha[tipo];
-    const horarios = [];
-    const valores = [];
+function atualizarGraficoLinha(performance, predict) {
 
-    for (let i = 0; i < dados.length; i++) {
-        horarios.push(dados[i].horarios);
-        valores.push(dados[i][config.campo]);
-    }
+    const tipo = document.getElementById('graph_type').value
+    const config = configGraficoLinha[tipo]
 
+    const dados_performance = [...performance].reverse()
+
+    let labels = []
+    let valores_performance = []
+    let valores_predict = []
+
+    dados_performance.forEach(item => {
+        labels.push("")
+        valores_performance.push(Number(item[config.campo]))
+        valores_predict.push(null)
+    })
+
+
+    let ultimo = dados_performance.length - 1
+    let ultima_captura = new Date(dados_performance[ultimo].timestamp.replace(' ', 'T'))
+
+    labels[ultimo] = ultima_captura.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+    valores_predict[ultimo] = valores_performance[ultimo]
+
+    // Horários futuros a cada 15 minutos
+    predict.forEach((item, index) => {
+        let minutos = index + 1
+        let horario = ""
+
+        // Mostrando o horário só a cada 15 minutos
+        if (minutos % 60 == 0) {
+            let futuro = new Date(ultima_captura)
+            futuro.setMinutes(futuro.getMinutes() + minutos)
+            horario = futuro.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+        }
+
+        labels.push(horario)
+        valores_performance.push(null)
+        valores_predict.push(Number(item[config.campo]))
+    })
+
+    // Destruir gráfico anterior
     if (graficoLinha != null) {
         graficoLinha.destroy();
     }
@@ -106,56 +68,82 @@ function atualizarGraficoLinha() {
     const ctx = document.getElementById('line-chart').getContext('2d');
 
     graficoLinha = new Chart(ctx, {
+
         type: 'line',
 
         data: {
-            labels: horarios,
-            datasets: [{
-                label: config.nome,
-                data: valores,
-                borderColor: '#06B6D4',
-                backgroundColor: '#06B6D4',
-                pointBackgroundColor: (ctx) => {
-                    return ctx.dataIndex >= 5 ? '#FFF' : '#06B6D4';
+            labels: labels,
+
+            datasets: [
+
+                {
+                    label: 'Performance',
+                    data: valores_performance,
+
+                    borderColor: '#06B6D4',
+                    backgroundColor: '#06B6D4',
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    tension: 0.3
                 },
 
-                pointBorderColor: (ctx) => {
-                    return ctx.dataIndex >= 5 ? '#FFF' : '#06B6D4';
-                },
-                segment: {
-                    borderColor: (ctx) => {
-                        return ctx.p0DataIndex >= 5
-                            ? '#FFF'
-                            : '#06B6D4';
-                    },
-                    borderDash: (ctx) =>
-                        ctx.p0DataIndex >= 5 ? [6, 6] : [],
-                },
-            },
+                {
+                    label: 'Predição',
+
+                    data: valores_predict,
+
+                    borderColor: '#FFF',
+                    backgroundColor: '#FFF',
+                    borderWidth: 2,
+                    borderDash: [6, 5],
+                    pointRadius: 3,
+                    tension: 0.3
+                }
+
             ]
         },
 
         options: {
+
             responsive: true,
             maintainAspectRatio: false,
 
             plugins: {
-                legend: { display: false }
+                legend: {
+                    display: true,
+                    labels: {
+                        color: '#94A3B8'
+                    }
+                }
             },
 
             scales: {
+
                 x: {
-                    ticks: { color: '#94A3B8' },
-                    grid: { display: false }
+                    ticks: {
+                        color: '#94A3B8',
+                        autoSkip: false,
+                        maxRotation: 0
+                    },
+                    grid: {
+                        display: false
+                    }
                 },
+
                 y: {
-                    ticks: { color: '#94A3B8' },
-                    grid: { color: 'rgba(255, 255, 255, 0.08)' }
+                    ticks: {
+                        color: '#94A3B8'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.08)'
+                    }
                 }
+
             }
         }
     });
 }
+
 
 
 // Gráfico de pizza - status do clp
@@ -231,12 +219,6 @@ function plotarGraficoPizza(json_micro) {
     const pizza_kpi = document.getElementById("pizza_kpi")
     pizza_kpi.innerHTML = health_score_message
     pizza_kpi.className = health_score < 40 ? "danger" : health_score < 60 ? "warning" : "positve"
-}
-
-// Chamandos os gráficos
-function obterDados() {
-    const dadosGrafico1 = dadosPorPeriodo['24h'];
-    atualizarGraficoLinha();
 }
 
 // ============================
@@ -455,20 +437,46 @@ function renderKpiPerformance(json, value) {
     minimun_label.innerHTML = minimun
 }
 
+function renderMetrics(metric, value) {
+    if (!metric) {
+        metric_mae.innerHTML = "Sem dados"
+        metric_rmse.innerHTML = "Sem dados"
+        metric_r2.innerHTML = "Sem dados"
+        return
+    }
+
+    if (value == "cpu") {
+        metric = metric[0]
+    } else if (value == "ram") {
+        metric = metric[2]
+    } else {
+        metric = metric[1]
+    }
+
+    metric_mae.innerHTML = metric.mae
+    metric_rmse.innerHTML = metric.rmse
+    metric_r2.innerHTML = metric.r2
+}
+
 async function loadClps() {
     let clps = await getCompanyPlc()
     renderClps(clps)
     let individual_plc = await getIndividualPlc()
     let dataMicro = await getDataMicroPlc()
+    let metrics = await getMetricAnalyse()
+    let data_performance = await getPerformanceAnalyse()
+    let data_predict = await getPredictionAnalyse()
+
     renderClpInfo(individual_plc[0], dataMicro[0].timestamp)
     renderKpiPerformance(dataMicro[0], graph_type.value)
     plotarGraficoPizza(dataMicro[0])
+    renderMetrics(metrics, graph_type.value)
+    atualizarGraficoLinha(data_performance, data_predict)
 }
 
 // ============================
 // Chamando função de obter dados
 // ============================
-obterDados()
 loadClps()
 
 
@@ -492,7 +500,6 @@ periodoSelect.addEventListener('change', function () {
     }
 });
 
-
 document.getElementById("select_clps").addEventListener("change", async () => {
     let clp = await getIndividualPlc()
     let dataMicro = await getDataMicroPlc()
@@ -503,11 +510,17 @@ document.getElementById("select_clps").addEventListener("change", async () => {
     renderKpiPerformance(dataMicroJson, graph_type.value)
 })
 
-
 let graph_type_value = document.getElementById("graph_type")
 
 graph_type_value.addEventListener("change", async () => {
-    atualizarGraficoLinha()
+    let data_performance = await getPerformanceAnalyse()
+    let data_predict = await getPredictionAnalyse()
+
+    atualizarGraficoLinha(data_performance, data_predict)
     let microData = await getDataMicroPlc()
     renderKpiPerformance(microData[0], graph_type_value.value)
+
+    let metrics = await getMetricAnalyse()
+
+    renderMetrics(metrics, graph_type.value)
 })
