@@ -207,7 +207,6 @@ main {
 
 /* Estilização do conteúdo das kpi sem gráfico */
 .kpi-result-big {
-    color: var(--color-text-primary);
     margin: auto 0;
     font-size: 1.8rem;
     font-weight: bold;
