@@ -18,6 +18,11 @@ let graficoPizza = null
 // Gráfico de linha dinâmico
 
 function atualizarGraficoLinha(performance, predict) {
+    console.log(performance, predict.length)
+    if (performance.length <= 0 && predict.length <= 0 || !performance && !predict) {
+        graficoLinha.destroy();
+        return
+    }
 
     const tipo = document.getElementById('graph_type').value
     const config = configGraficoLinha[tipo]
@@ -164,15 +169,27 @@ function atualizarGraficoLinha(performance, predict) {
 
 // Gráfico de pizza - status do clp
 function plotarGraficoPizza(json_micro) {
-    let health_score = json_micro.health_score
-    let health_score_message = json_micro.health_score_status
-
-    const restante = 100 - health_score;
-    const ctx = document.getElementById('pizza').getContext('2d');
+    const pizza_kpi = document.getElementById("pizza_kpi")
 
     if (graficoPizza) {
         graficoPizza.destroy()
     }
+
+    if (!json_micro) {
+        pizza_kpi.innerHTML = "Sem dados"
+        pizza_kpi.className = ""
+        return
+    }
+
+    let health_score = json_micro?.health_score
+    let health_score_message = json_micro?.health_score_status
+
+    const restante = 100 - health_score;
+    const ctx = document.getElementById('pizza').getContext('2d');
+
+
+
+
 
     const pluginCentro = {
         id: 'textoCentro',
@@ -232,7 +249,6 @@ function plotarGraficoPizza(json_micro) {
         plugins: [pluginCentro]
     });
 
-    const pizza_kpi = document.getElementById("pizza_kpi")
     pizza_kpi.innerHTML = health_score_message
     pizza_kpi.className = health_score < 40 ? "danger" : health_score < 60 ? "warning" : "positve"
 }
@@ -320,7 +336,7 @@ async function getPerformanceAnalyse() {
     // Verificando se a resposta da api foi ok
     if (!response.ok) {
         console.log("Não foi possível achar o clp pelo id")
-        return {}
+        return []
     }
 
     // Transformando a resposta em json
@@ -342,7 +358,7 @@ async function getPredictionAnalyse() {
     // Verificando se a resposta da api foi ok
     if (!response.ok) {
         console.log("Não foi possível achar o clp pelo id")
-        return {}
+        return []
     }
 
     // Transformando a resposta em json
@@ -365,7 +381,7 @@ async function getMetricAnalyse() {
     // Verificando se a resposta da api foi ok
     if (!response.ok) {
         console.log("Não foi possível achar o clp pelo id")
-        return
+        return []
     }
 
     // Transformando a resposta em json
@@ -407,7 +423,6 @@ function renderClpInfo(plc, timestamp) {
 }
 
 function renderKpiPerformance(json, value) {
-
     if (!json) {
         peak_label.innerHTML = "Sem dados"
         current_label.innerHTML = "Sem dados"
@@ -454,7 +469,7 @@ function renderKpiPerformance(json, value) {
 }
 
 function renderMetrics(metric, value) {
-    if (!metric) {
+    if (metric.length <= 0) {
         metric_mae.innerHTML = "Sem dados"
         metric_rmse.innerHTML = "Sem dados"
         metric_r2.innerHTML = "Sem dados"
@@ -496,6 +511,13 @@ function renderKeyKpis(plc) {
     let anomalies_kpi = document.getElementById("anomalies_detected")
     let risk_kpi = document.getElementById("prevision_risk")
     anomalies_kpi.classList.remove("danger", "positve")
+    risk_kpi.classList.remove("danger", "positve")
+
+    if (!plc) {
+        anomalies_kpi.innerHTML = "Sem dados"
+        risk_kpi.innerHTML = "Sem dados"
+        return
+    }
 
     if (plc?.acima_limite?.length > 0) {
         anomalies_kpi.innerHTML = joinWords(plc.acima_limite)
@@ -512,7 +534,7 @@ function renderKeyKpis(plc) {
         risk_kpi.innerHTML = "Sem risco"
         risk_kpi.classList.add("positve")
     }
-   
+
 }
 
 async function loadClps() {
@@ -561,11 +583,19 @@ periodoSelect.addEventListener('change', function () {
 document.getElementById("select_clps").addEventListener("change", async () => {
     let clp = await getIndividualPlc()
     let dataMicro = await getDataMicroPlc()
+    let data_performance = await getPerformanceAnalyse()
+    let data_predict = await getPredictionAnalyse()
+    let metrics = await getMetricAnalyse()
+
     let timestamp = dataMicro.length > 0 ? dataMicro[0].timestamp : null
     let dataMicroJson = dataMicro.length > 0 ? dataMicro[0] : null
 
     renderClpInfo(clp[0], timestamp)
     renderKpiPerformance(dataMicroJson, graph_type.value)
+    renderKeyKpis(dataMicroJson)
+    atualizarGraficoLinha(data_performance, data_predict)
+    plotarGraficoPizza(dataMicroJson)
+    renderMetrics(metrics, graph_type.value)
 })
 
 let graph_type_value = document.getElementById("graph_type")
@@ -574,11 +604,13 @@ graph_type_value.addEventListener("change", async () => {
     let data_performance = await getPerformanceAnalyse()
     let data_predict = await getPredictionAnalyse()
 
-    atualizarGraficoLinha(data_performance, data_predict)
     let microData = await getDataMicroPlc()
-    renderKpiPerformance(microData[0], graph_type_value.value)
+    let dataMicroJson = microData.length > 0 ? microData[0] : null
+
+    renderKpiPerformance(dataMicroJson, graph_type_value.value)
 
     let metrics = await getMetricAnalyse()
 
     renderMetrics(metrics, graph_type.value)
+    atualizarGraficoLinha(data_performance, data_predict)
 })
