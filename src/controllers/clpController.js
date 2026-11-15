@@ -42,32 +42,21 @@ async function microAnalise(req, res) {
     let idClp = req.params.idClp
 
     if (idEmpresa == null) {
-        res.status(400).send("O id da empresa está indefinido!");
-        return
+        return res.status(400).json({ erro: "O id da empresa está indefinido!" })
     }
 
     if (idClp == null) {
-        res.status(400).send("O id do clp está indefinido!");
-        return
+        return res.status(400).json({ erro: "O id do clp está indefinido!" })
     }
 
-
-    let json_object = await getS3.getMostRecentObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/clp-micro/`)
-
-    if (json_object == null) {
-        res.status(400).send("Não foi encontrado dados ao buscar arquivos com a data atual")
-        return
-    }
-    console.log(json_object)
-    let object = await getS3.getObject(json_object["Key"])
+    let object = await getS3.getObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/clp-micro/ultimo-resultado.json`)
 
     if (object == null) {
-        res.status(400).send("Não foi encontrado dados buscando o json específico")
-        return
+        return res.status(404).json({ erro: "Não foram encontrados dados para este CLP" })
     }
 
     console.log(object)
-    res.json(object)
+    return res.status(200).json(object)
 }
 
 function listarModelosDisponiveis(req, res) {
@@ -254,25 +243,21 @@ async function performanceAnalise(req, res) {
     let idClp = req.params.idClp
 
     if (idEmpresa == null) {
-        res.status(400).send("O id da empresa está indefinido!");
-        return
+        return res.status(400).json({ erro: "O id da empresa está indefinido!" })
     }
 
     if (idClp == null) {
-        res.status(400).send("O id do clp está indefinido!");
-        return
+        return res.status(400).json({ erro: "O id do clp está indefinido!" })
     }
 
     let object = await getS3.getObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/scan-cpu-performance/ultimo-resultado.json`)
 
     if (object == null) {
-        res.status(400).send("Não foi encontrado dados buscando o json específico")
-        res.json({})
-        return
+        return res.status(404).json({ erro: "Não foram encontrados dados para este CLP" })
     }
 
     console.log(object)
-    res.json(object)
+    return res.status(200).json(object)
 }
 
 
@@ -281,25 +266,22 @@ async function predicaoAnalise(req, res) {
     let idClp = req.params.idClp
 
     if (idEmpresa == null) {
-        res.status(400).send("O id da empresa está indefinido!");
-        return
+        return res.status(400).json({ erro: "O id da empresa está indefinido!" })
+
     }
 
     if (idClp == null) {
-        res.status(400).send("O id do clp está indefinido!");
-        return
+        return res.status(400).json({ erro: "O id do clp está indefinido!" })
     }
 
     let object = await getS3.getObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/prediction-performance/ultimo-resultado.json`)
 
     if (object == null) {
-        res.status(400).send("Não foi encontrado dados buscando o json específico")
-        res.json({})
-        return
+        return res.status(404).json({ erro: "Não foram encontradas métricas para este CLP" })
     }
 
     console.log(object)
-    res.json(object)
+    return res.status(200).json(object)
 }
 
 async function predicaoMetrica(req, res) {
@@ -307,25 +289,21 @@ async function predicaoMetrica(req, res) {
     let idClp = req.params.idClp
 
     if (idEmpresa == null) {
-        res.status(400).send("O id da empresa está indefinido!");
-        return
+        return res.status(400).json({ erro: "O id do clp está indefinido!" })
     }
 
     if (idClp == null) {
-        res.status(400).send("O id do clp está indefinido!");
-        return
+        return res.status(400).json({ erro: "O id do clp está indefinido!" })
     }
 
     let object = await getS3.getObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/prediction-metrics/ultimo-resultado.json`)
 
     if (object == null) {
-        res.status(400).json({message: "Não foi possivel fazer a requisição"})
-        res.json({})
-        return
+        return res.status(404).json({ erro: "Não foram encontradas métricas para este CLP" })
     }
 
     console.log(object)
-    res.json(object)
+    return res.status(200).json(object)
 }
 
 
