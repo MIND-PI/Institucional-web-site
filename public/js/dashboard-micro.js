@@ -476,6 +476,45 @@ function renderMetrics(metric, value) {
     metric_r2.innerHTML = `${metric.r2 * 100}%`
 }
 
+function joinWords(words) {
+    let text = ""
+
+    words.forEach((word, index) => {
+        if (index == 0) {
+            text = word
+        } else if (index == words.length - 1) {
+            text += " e " + word
+        } else {
+            text += ", " + word
+        }
+    })
+
+    return text
+}
+
+function renderKeyKpis(plc) {
+    let anomalies_kpi = document.getElementById("anomalies_detected")
+    let risk_kpi = document.getElementById("prevision_risk")
+    anomalies_kpi.classList.remove("danger", "positve")
+
+    if (plc?.acima_limite?.length > 0) {
+        anomalies_kpi.innerHTML = joinWords(plc.acima_limite)
+        anomalies_kpi.classList.add("danger")
+    } else {
+        anomalies_kpi.innerHTML = "Sem anomalias"
+        anomalies_kpi.classList.add("positve")
+    }
+
+    if (plc?.risco_predicao) {
+        risk_kpi.innerHTML = "Risco"
+        risk_kpi.classList.add("danger")
+    } else {
+        risk_kpi.innerHTML = "Sem risco"
+        risk_kpi.classList.add("positve")
+    }
+   
+}
+
 async function loadClps() {
     let clps = await getCompanyPlc()
     renderClps(clps)
@@ -490,6 +529,7 @@ async function loadClps() {
     plotarGraficoPizza(dataMicro[0])
     renderMetrics(metrics, graph_type.value)
     atualizarGraficoLinha(data_performance, data_predict)
+    renderKeyKpis(dataMicro[0])
 }
 
 // ============================
