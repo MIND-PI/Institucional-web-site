@@ -1,4 +1,25 @@
 // ============================
+// FUNÇÕES AUXILIARES
+// ============================
+
+function joinWords(words) {
+    let text = ""
+
+    words.forEach((word, index) => {
+        if (index == 0) {
+            text = word
+        } else if (index == words.length - 1) {
+            text += " e " + word
+        } else {
+            text += ", " + word
+        }
+    })
+
+    return text
+}
+
+
+// ============================
 // CRIAÇÃO DOS GRÁFICOS
 // ============================
 
@@ -18,7 +39,6 @@ let graficoPizza = null
 // Gráfico de linha dinâmico
 
 function atualizarGraficoLinha(performance, predict) {
-    console.log(performance, predict.length)
     if (performance.length <= 0 && predict.length <= 0 || !performance && !predict) {
         graficoLinha.destroy();
         return
@@ -187,10 +207,6 @@ function plotarGraficoPizza(json_micro) {
     const restante = 100 - health_score;
     const ctx = document.getElementById('pizza').getContext('2d');
 
-
-
-
-
     const pluginCentro = {
         id: 'textoCentro',
 
@@ -301,13 +317,13 @@ async function getIndividualPlc() {
     return json
 }
 
-async function getDataMicroPlc() {
+async function getDataMicroPlc(period) {
     // Pegando id do plc pelo select
     let id_plc = select_clps.value
     let id_empresa = sessionStorage.getItem("ID_EMPRESA")
 
     // Chamando a api 
-    let response = await fetch(`/clp/micro-analise/${id_plc}/${id_empresa}`, {
+    let response = await fetch(`/clp/micro-analise/${id_plc}/${id_empresa}/${period}`, {
         method: "GET"
     })
 
@@ -323,13 +339,13 @@ async function getDataMicroPlc() {
     return json
 }
 
-async function getPerformanceAnalyse() {
+async function getPerformanceAnalyse(period) {
     // Pegando id do plc pelo select
     let id_plc = select_clps.value
     let id_empresa = sessionStorage.getItem("ID_EMPRESA")
 
     // Chamando a api 
-    let response = await fetch(`/clp/performance-analise/${id_plc}/${id_empresa}`, {
+    let response = await fetch(`/clp/performance-analise/${id_plc}/${id_empresa}/${period}`, {
         method: "GET"
     })
 
@@ -345,7 +361,11 @@ async function getPerformanceAnalyse() {
     return json
 }
 
-async function getPredictionAnalyse() {
+async function getPredictionAnalyse(period) {
+    if (period != 24) {
+        return []
+    }
+
     // Pegando id do plc pelo select
     let id_plc = select_clps.value
     let id_empresa = sessionStorage.getItem("ID_EMPRESA")
@@ -368,7 +388,12 @@ async function getPredictionAnalyse() {
 }
 
 
-async function getMetricAnalyse() {
+async function getMetricAnalyse(period) {
+
+    if (period != 24) {
+        return []
+    }
+
     // Pegando id do plc pelo select
     let id_plc = select_clps.value
     let id_empresa = sessionStorage.getItem("ID_EMPRESA")
@@ -491,22 +516,6 @@ function renderMetrics(metric, value) {
     metric_r2.innerHTML = `${metric.r2 * 100}%`
 }
 
-function joinWords(words) {
-    let text = ""
-
-    words.forEach((word, index) => {
-        if (index == 0) {
-            text = word
-        } else if (index == words.length - 1) {
-            text += " e " + word
-        } else {
-            text += ", " + word
-        }
-    })
-
-    return text
-}
-
 function renderKeyKpis(plc) {
     let anomalies_kpi = document.getElementById("anomalies_detected")
     let risk_kpi = document.getElementById("prevision_risk")
@@ -538,13 +547,15 @@ function renderKeyKpis(plc) {
 }
 
 async function loadClps() {
+    let period = period_filter.value
     let clps = await getCompanyPlc()
     renderClps(clps)
+
     let individual_plc = await getIndividualPlc()
-    let dataMicro = await getDataMicroPlc()
-    let metrics = await getMetricAnalyse()
-    let data_performance = await getPerformanceAnalyse()
-    let data_predict = await getPredictionAnalyse()
+    let dataMicro = await getDataMicroPlc(period)
+    let metrics = await getMetricAnalyse(period)
+    let data_performance = await getPerformanceAnalyse(period)
+    let data_predict = await getPredictionAnalyse(period)
 
     renderClpInfo(individual_plc[0], dataMicro[0].timestamp)
     renderKpiPerformance(dataMicro[0], graph_type.value)
@@ -552,6 +563,26 @@ async function loadClps() {
     renderMetrics(metrics, graph_type.value)
     atualizarGraficoLinha(data_performance, data_predict)
     renderKeyKpis(dataMicro[0])
+}
+
+async function loadData() {
+    let period = period_filter.value
+    let clp = await getIndividualPlc()
+    let dataMicro = await getDataMicroPlc(period)
+    let data_performance = await getPerformanceAnalyse(period)
+
+    let data_predict = await getPredictionAnalyse(period)
+    let metrics = await getMetricAnalyse(period)
+
+    let timestamp = dataMicro.length > 0 ? dataMicro[0].timestamp : null
+    let dataMicroJson = dataMicro.length > 0 ? dataMicro[0] : null
+    console.log(period)
+    renderClpInfo(clp[0], timestamp)
+    renderKpiPerformance(dataMicroJson, graph_type.value)
+    renderKeyKpis(dataMicroJson)
+    atualizarGraficoLinha(data_performance, data_predict)
+    plotarGraficoPizza(dataMicroJson)
+    renderMetrics(metrics, graph_type.value)
 }
 
 // ============================
@@ -564,52 +595,39 @@ loadClps()
 // EVENTOS SENDO OUVIDOS
 // ============================
 
-const periodoSelect = document.getElementById('period-filter');
+const periodoSelect = document.getElementById('period_filter');
 const btnEtl = document.getElementById('btn-etl');
 
 let periodoAplicado = periodoSelect.value;
 
 periodoSelect.addEventListener('change', function () {
-    if (periodoSelect.value != '24h') {
+    if (periodoSelect.value != 24) {
         btnEtl.style.display = 'block';
         btnEtl.style.opacity = 1
+        loadData()
     } else {
         btnEtl.style.display = 'none';
-
         btnEtl.style.opacity = 0
     }
 });
 
-document.getElementById("select_clps").addEventListener("change", async () => {
-    let clp = await getIndividualPlc()
-    let dataMicro = await getDataMicroPlc()
-    let data_performance = await getPerformanceAnalyse()
-    let data_predict = await getPredictionAnalyse()
-    let metrics = await getMetricAnalyse()
-
-    let timestamp = dataMicro.length > 0 ? dataMicro[0].timestamp : null
-    let dataMicroJson = dataMicro.length > 0 ? dataMicro[0] : null
-
-    renderClpInfo(clp[0], timestamp)
-    renderKpiPerformance(dataMicroJson, graph_type.value)
-    renderKeyKpis(dataMicroJson)
-    atualizarGraficoLinha(data_performance, data_predict)
-    plotarGraficoPizza(dataMicroJson)
-    renderMetrics(metrics, graph_type.value)
+document.getElementById("select_clps").addEventListener("change", () => {
+    loadData()
 })
 
 let graph_type_value = document.getElementById("graph_type")
 
 graph_type_value.addEventListener("change", async () => {
-    let data_performance = await getPerformanceAnalyse()
-    let data_predict = await getPredictionAnalyse()
+    let period = period_filter.value
+    let data_performance = await getPerformanceAnalyse(period)
+    let data_predict = await getPredictionAnalyse(period)
 
-    let microData = await getDataMicroPlc()
+    let microData = await getDataMicroPlc(period)
     let dataMicroJson = microData.length > 0 ? microData[0] : null
 
     renderKpiPerformance(dataMicroJson, graph_type_value.value)
 
-    let metrics = await getMetricAnalyse()
+    let metrics = await getMetricAnalyse(period)
 
     renderMetrics(metrics, graph_type.value)
     atualizarGraficoLinha(data_performance, data_predict)
