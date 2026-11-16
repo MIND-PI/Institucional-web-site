@@ -1,15 +1,22 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MIND | Dashboard</title>
+
     <link rel="stylesheet" href="./../css/reset.css">
     <link rel="stylesheet" href="./../css/aside.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="./../css/dashboard-chamados-jira.css">
+
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Plugin necessário para criar heatmaps -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1"></script>
 </head>
 
 <body onload="obterDados()">
@@ -17,27 +24,29 @@
     <button class="menu-mobile" id="menuMobile" data-open="false" data-close="bi-list" data-icon-open="bi-x-lg">
         <i class="bi bi-list"></i>
     </button>
+
     <aside class="sidebar" id="sidebar">
-        <!-- HEADER / LOGO DO HEADER -->
+
         <header class="sidebar-header">
             <div class="logo-img">
                 <img src="./../assets/icon/logoMind/mind_logo_branca.png" alt="logo MIND">
             </div>
+
             <div class="logo-text">
                 <h2 class="logo-title">MIND</h2>
                 <h5 class="logo-subtitle">OBSERVABILIDADE</h5>
             </div>
         </header>
-        <!-- INICIO DA NAV BAR -->
+
         <nav class="sidebar-nav">
             <section class="nav-section">
-                <!-- TODO: FAZER DIFERENÇA ENTRE FORNECEDOR E CLIENTE QUANDO SE CONECTA NO SISTEMA -->
                 <h4 class="nav-section-title" id="nav_title">FLUXO DO CLIENTE</h4>
-                <ul class="nav-list" id="nav_flow">
-                </ul>
+                <ul class="nav-list" id="nav_flow"></ul>
             </section>
+
             <section class="nav-section">
                 <h4 class="nav-section-title">CONFIGURAÇÕES</h4>
+
                 <ul class="nav-list">
                     <li class="nav-item">
                         <a class="nav-link" id="btn_config">
@@ -45,6 +54,7 @@
                             Configuração de usuario
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="https://equipe-mind.atlassian.net/servicedesk/customer/portal/2" class="nav-link"
                             target="_blank">
@@ -54,6 +64,7 @@
                     </li>
                 </ul>
             </section>
+
             <section class="nav-section">
                 <h4 class="nav-section-title">SAIR</h4>
                 <ul class="nav-list">
@@ -66,18 +77,19 @@
                 </ul>
             </section>
         </nav>
-        <!-- CARD DO USUARIO -->
+
         <footer class="user-card">
             <div class="img-card">
                 <img src="../assets/imgs/fotosUsuarios/foto_padrao.png" alt="Foto do usuário" id="imgUser"
                     onerror="this.onerror=null; this.src='../assets/imgs/fotosUsuarios/foto_padrao.png'">
             </div>
+
             <div class="text-card">
                 <p id="nomeUsuario" class="text-user-name">Rogerio Andrade</p>
                 <p id="tipoUsuario" class="text-user-type">CLIENTE</p>
             </div>
         </footer>
-        <!-- MODAL DAS CONFIGURAÇÕES DO USUARIO -->
+
         <div class="overlay_config" id="overlay_config">
             <div class="modal_config">
                 <div class="modal_header">
@@ -90,6 +102,7 @@
                     <div class="input_group file_group">
                         <img src="./assets/imgs/fotosUsuarios/foto_padrao.png" alt="Preview da Foto"
                             id="preview_foto_modal" class="preview-foto-modal">
+
                         <div class="file_upload_wrapper">
                             <label for="input_foto" class="btn_upload">Escolher nova foto</label>
                             <input type="file" id="input_foto" name="foto_perfil" accept="image/*">
@@ -106,13 +119,18 @@
                         <input type="password" id="input_senha" name="senha" placeholder="Deixe em branco para manter">
                     </div>
 
-                    <button onclick="salvarConfiguracoes()" type="button" class="btn_salvar">Salvar Alterações</button>
+                    <button onclick="salvarConfiguracoes()" type="button" class="btn_salvar">
+                        Salvar Alterações
+                    </button>
                 </form>
             </div>
         </div>
+
     </aside>
+
     <main>
-        <!-- COLOCAR CONTEÚDO PRINCIPAL -->
+
+        <!-- CABEÇALHO -->
         <header class="header-main">
 
             <div class="box-title">
@@ -127,9 +145,9 @@
                     </button>
                 </div>
 
-
                 <div class="filter-box">
                     <p class="filter-text">Periodo</p>
+
                     <select id="period-filter" class="filter-input">
                         <option value="24h" class="filter-option">Últimas 24h</option>
                         <option value="7d" class="filter-option">Últimos 7 dias</option>
@@ -140,25 +158,23 @@
                 <div class="filter-box">
                     <i class="bi bi-arrow-clockwise"></i>
                 </div>
+
             </div>
-
-
         </header>
 
+        <!-- KPIs -->
         <section class="kpi-conteiner">
 
             <div class="kpi-box">
-                <p class="kpi-title">Qtd. chamados abertos</p>
-
-                <p class="kpi-result-big">32</p>
-
-                <p class="kpi-details">↑ 2% nas ultimas 24h</p>
+                <p class="kpi-title">CLP com mais ocorrencias</p>
+                <p class="kpi-result-big">CLP-MAQ-03</p>
+                <p class="kpi-details">5 ocorrencias registradas</p>
             </div>
 
             <div class="kpi-box">
-                <p class="kpi-title">Chamados críticos</p>
-                <p class="kpi-result-big">8</p>
-                <p class="kpi-details">↑ 2% período anterior</p>
+                <p class="kpi-title">Recurso mais afetado</p>
+                <p class="kpi-result-big">CPU</p>
+                <p class="kpi-details">6 chamados referentes a CPU</p>
             </div>
 
             <div class="kpi-box">
@@ -169,12 +185,13 @@
 
         </section>
 
+        <!-- GRAFICOS SUPERIORES -->
         <section class="graph-conteiner">
 
             <div class="graph-box-lines">
 
                 <div class="lines-content">
-                    <p class="title-graph">Tempo de Resolução por Prioridade</p>
+                    <p class="title-graph">Ocorrencias por recurso</p>
                 </div>
 
                 <div class="line-chart-wrapper">
@@ -183,75 +200,31 @@
 
             </div>
 
-            <div class="graph-box-pizza">
+            <div class="graph-box-lines">
 
-                <div class="pizza-content">
-                    <p class="title-graph">Chamados por Prioridade</p>
+                <div class="lines-content">
+                    <p class="title-graph">Ocorrencias por CLP</p>
                 </div>
 
-                <div class="pizza-chart-container">
-                    <div class="pizza-chart">
-                        <canvas id="graficoPrioridade" class="pizza-canvas"></canvas>
-                    </div>
-                </div>
-
-                <div class="pizza-datas">
-
-                    <div class="pizza-row">
-                        <p class="pizza-text">
-                            <span style="color: #EF4444;">●</span> Crítica
-                        </p>
-                        <p class="pizza-text">8 chamados</p>
-                    </div>
-
-                    <div class="pizza-row">
-                        <p class="pizza-text">
-                            <span style="color: #F97316;">●</span> Alta
-                        </p>
-                        <p class="pizza-text">12 chamados</p>
-                    </div>
-
-                    <div class="pizza-row">
-                        <p class="pizza-text">
-                            <span style="color: #EAB308;">●</span> Média
-                        </p>
-                        <p class="pizza-text">7 chamados</p>
-                    </div>
-
-                    <div class="pizza-row">
-                        <p class="pizza-text">
-                            <span style="color: #06B6D4;">●</span> Baixa
-                        </p>
-                        <p class="pizza-text">5 chamados</p>
-                    </div>
-
+                <div class="line-chart-wrapper">
+                    <canvas id="graficoClpsMaisChamados"></canvas>
                 </div>
 
             </div>
+
         </section>
 
-
-
+        <!-- HEATMAP -->
         <section class="graph-conteiner graficos-inferiores">
-
-            <div class="metrics-box metrics-processes">
-                <div class="process-title">
-                    <p class="title-graph">Predição de Chamados Pendentes</p>
-                </div>
-
-                <div class="process-chart-container">
-                    <canvas id="graficoPredicaoChamados"></canvas>
-                </div>
-            </div>
 
             <div class="graph-box-lines grafico-evolucao">
 
                 <div class="lines-content">
-                    <p class="title-graph">Evolução dos Chamados ao Longo do Tempo</p>
+                    <p class="title-graph">Recorrência de Anomalias por CLP e Recurso</p>
                 </div>
 
                 <div class="line-chart-wrapper">
-                    <canvas id="graficoEvolucaoChamados"></canvas>
+                    <canvas id="graficoHeatmap"></canvas>
                 </div>
 
             </div>
@@ -259,72 +232,26 @@
         </section>
 
     </main>
+
 </body>
 
 </html>
+
 <script src="./../js/sessao.js"></script>
 <script src="./../js/configuracoes.js"></script>
 <script src="./../js/sidebar.js"></script>
 
 <script>
-    const agora = new Date();
-    const dia = agora.toLocaleString('pt-BR');
-    // time_now.innerHTML = dia
 
-    function obterDados() {
-        GraficoTempoResolucao();
-        GraficoChamadosPrioridade();
-        GraficoPredicaoChamados();
-        GraficoEvolucaoChamados();
-    }
-
-    const dadosEvolucaoPorPeriodo = {
-        '24h': {
-            horarios: ['00h', '03h', '06h', '09h', '12h', '15h', '18h', '21h'],
-            abertos: [12, 18, 15, 25, 20, 32, 28, 35],
-            resolvidos: [8, 12, 13, 18, 17, 24, 22, 29]
-        },
-
-        '7d': {
-            horarios: ['02/11', '03/11', '04/11', '05/11', '06/11', '07/11', '08/11'],
-            abertos: [25, 38, 45, 42, 52, 48, 42],
-            resolvidos: [22, 30, 35, 33, 42, 37, 38]
-        },
-
-        '30d': {
-            horarios: [
-                '01/11', '04/11', '07/11', '10/11', '13/11',
-                '16/11', '19/11', '22/11', '25/11', '28/11', '30/11'
-            ],
-            abertos: [32, 39, 45, 42, 52, 48, 52, 39, 38, 32, 38],
-            resolvidos: [23, 29, 35, 33, 42, 37, 42, 31, 38, 32, 38]
-        }
-    };
-
-    const dadosBacklogPorPeriodo = {
-        '24h': {
-            horarios: ['00h', '03h', '06h', '09h', '12h', '15h', '18h', '21h'],
-            pendentes: [20, 22, 21, 25, 27, 30, 29, 34]
-        },
-
-        '7d': {
-            horarios: ['02/11', '03/11', '04/11', '05/11', '06/11', '07/11', '08/11'],
-            pendentes: [20, 25, 23, 30, 35, 40, 48]
-        },
-
-        '30d': {
-            horarios: [
-                '01/11', '04/11', '07/11', '10/11', '13/11',
-                '16/11', '19/11', '22/11', '25/11', '28/11', '30/11'
-            ],
-            pendentes: [20, 23, 25, 24, 30, 32, 35, 38, 40, 44, 48]
-        }
-    };
-
+    // FILTRO DE PERÍODO
     const periodoSelect = document.getElementById('period-filter');
     const btnEtl = document.getElementById('btn-etl');
 
-    let periodoAplicado = periodoSelect.value;
+    function obterDados() {
+        GraficoTempoResolucao();
+        GraficoHeatmap();
+        GraficoClpsMaisChamados();
+    }
 
     periodoSelect.addEventListener('change', function () {
         if (periodoSelect.value != '24h') {
@@ -335,38 +262,35 @@
             btnEtl.style.opacity = 0;
         }
 
-        GraficoEvolucaoChamados();
+        GraficoHeatmap();
+        GraficoClpsMaisChamados();
     });
 
-    // DASHBOARDS CHAMADOS-JIRA
+
+    // DASHBOARD - OCORRÊNCIAS POR RECURSO
     function GraficoTempoResolucao() {
+
         const canvas = document.getElementById('graficoTempoResolucao');
-        const prioridades = [
-            'Crítica',
-            'Alta',
-            'Média',
-            'Baixa'
+
+        const recursos = [
+            'CPU',
+            'RAM',
+            'Scantime'
         ];
 
-        const temposResolucao = [5.5, 4.2, 2.8, 1.5];
+        const qtdChamados = [5, 4, 2];
 
         new Chart(canvas, {
             type: 'bar',
 
             data: {
-                labels: prioridades,
+                labels: recursos,
 
                 datasets: [{
-                    label: 'Tempo médio de resolução (horas)',
-                    data: temposResolucao,
+                    label: 'Chamados por Recursos',
+                    data: qtdChamados,
 
-                    backgroundColor: [
-                        '#EF4444',
-                        '#F97316',
-                        '#EAB308',
-                        '#06B6D4'
-                    ],
-
+                    backgroundColor: '#06B6D4',
                     borderRadius: 5,
                     borderSkipped: false
                 }]
@@ -409,7 +333,7 @@
 
                         title: {
                             display: true,
-                            text: 'Tempo (horas)',
+                            text: 'Quantidade',
                             color: '#94A3B8'
                         },
 
@@ -431,167 +355,397 @@
     }
 
 
-    function GraficoChamadosPrioridade() {
+    // DADOS DO HEATMAP
+    // Valores ilustrativos para a prototipação.
+    // Cada número representa a quantidade de ocorrências.
 
-        const canvas = document.getElementById('graficoPrioridade');
+    const dadosHeatmapPorPeriodo = {
 
-        const prioridades = [
-            'Crítica',
-            'Alta',
-            'Média',
-            'Baixa'
-        ];
+        '24h': {
+            clps: [
+                'CLP-MAQ-01',
+                'CLP-MAQ-02',
+                'CLP-MAQ-03',
+                'CLP-MAQ-04',
+                'CLP-MAQ-05'
+            ],
 
-        const quantidadeChamados = [8, 12, 7, 5];
+            recursos: [
+                'CPU',
+                'RAM',
+                'SWAP',
+                'Scan time',
+                'Ping'
+            ],
 
-        new Chart(canvas, {
-            type: 'doughnut',
+            valores: [
+                [3, 1, 0, 1, 0],
+                [0, 2, 1, 1, 0],
+                [5, 2, 1, 0, 1],
+                [0, 0, 0, 2, 1],
+                [1, 1, 0, 0, 0]
+            ]
+        },
+
+        '7d': {
+            clps: [
+                'CLP-MAQ-01',
+                'CLP-MAQ-02',
+                'CLP-MAQ-03',
+                'CLP-MAQ-04',
+                'CLP-MAQ-05'
+            ],
+
+            recursos: [
+                'CPU',
+                'RAM',
+                'SWAP',
+                'Scan time',
+                'Ping'
+            ],
+
+            valores: [
+                [8, 2, 1, 2, 0],
+                [1, 7, 2, 3, 2],
+                [15, 4, 2, 2, 1],
+                [0, 1, 0, 6, 3],
+                [3, 2, 1, 1, 0]
+            ]
+        },
+
+        '30d': {
+            clps: [
+                'CLP-MAQ-01',
+                'CLP-MAQ-02',
+                'CLP-MAQ-03',
+                'CLP-MAQ-04',
+                'CLP-MAQ-05'
+            ],
+
+            recursos: [
+                'CPU',
+                'RAM',
+                'SWAP',
+                'Scan time',
+                'Ping'
+            ],
+
+            valores: [
+                [18, 5, 3, 4, 2],
+                [4, 15, 6, 8, 5],
+                [28, 9, 5, 7, 3],
+                [2, 4, 1, 14, 8],
+                [9, 6, 3, 3, 2]
+            ]
+        }
+    };
+
+
+    // HEATMAP - RECORRÊNCIA POR CLP E RECURSO
+
+    let graficoHeatmap = null;
+
+    // Plugin personalizado para exibir os valores dentro das células
+    const pluginValoresHeatmap = {
+        id: 'valoresHeatmap',
+
+        afterDatasetsDraw(chart) {
+            const { ctx } = chart;
+
+            chart.data.datasets.forEach((dataset, datasetIndex) => {
+                const meta = chart.getDatasetMeta(datasetIndex);
+
+                meta.data.forEach((element, index) => {
+                    const valor = dataset.data[index].v;
+                    const { x, y } = element.getCenterPoint();
+
+                    ctx.save();
+
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.font = 'bold 12px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+
+                    ctx.fillText(valor, x, y);
+
+                    ctx.restore();
+                });
+            });
+        }
+    };
+
+    function GraficoHeatmap() {
+
+        const periodo = periodoSelect.value;
+        const dados = dadosHeatmapPorPeriodo[periodo];
+
+        const canvas = document.getElementById('graficoHeatmap');
+
+        if (graficoHeatmap !== null) {
+            graficoHeatmap.destroy();
+        }
+
+        // Transforma a matriz em pontos para o Chart.js
+        const pontos = [];
+
+        dados.clps.forEach((clp, indiceClp) => {
+
+            dados.recursos.forEach((recurso, indiceRecurso) => {
+
+                pontos.push({
+                    x: recurso,
+                    y: clp,
+                    v: dados.valores[indiceClp][indiceRecurso]
+                });
+
+            });
+
+        });
+
+        graficoHeatmap = new Chart(canvas, {
+
+            type: 'matrix',
 
             data: {
-                labels: prioridades,
-
                 datasets: [{
-                    data: quantidadeChamados,
 
-                    backgroundColor: [
-                        '#EF4444',
-                        '#F97316',
-                        '#EAB308',
-                        '#06B6D4'
-                    ],
+                    label: 'Ocorrências',
 
-                    borderWidth: 0,
-                    hoverOffset: 5
+                    data: pontos,
+
+                    backgroundColor: (context) => {
+
+                        const valor = context.dataset.data[context.dataIndex].v;
+
+                        if (valor === 0) {
+                            return '#1E293B';
+                        }
+
+                        if (valor <= 3) {
+                            return '#0E7490';
+                        }
+
+                        if (valor <= 7) {
+                            return '#D97706';
+                        }
+
+                        return '#DC2626';
+                    },
+
+                    borderColor: '#0F172A',
+                    borderWidth: 2,
+                    borderRadius: 5,
+
+                    width: (context) => {
+
+                        const area = context.chart.chartArea;
+
+                        if (!area) return 30;
+
+                        return (area.width / dados.recursos.length) - 4;
+                    },
+
+                    height: (context) => {
+
+                        const area = context.chart.chartArea;
+
+                        if (!area) return 20;
+
+                        return (area.height / dados.clps.length) - 4;
+                    }
+
                 }]
             },
 
             options: {
+
                 responsive: true,
                 maintainAspectRatio: false,
-                cutout: '65%',
 
                 plugins: {
+
                     legend: {
                         display: false
                     },
 
                     tooltip: {
+
                         callbacks: {
-                            label: (context) =>
-                                `${context.label}: ${context.raw} chamados`
+
+                            title: (items) => {
+                                const ponto = items[0].raw;
+                                return ponto.y;
+                            },
+
+                            label: (context) => {
+
+                                const ponto = context.raw;
+
+                                return `${ponto.x}: ${ponto.v} ocorrências`;
+                            }
+
                         }
                     }
-                }
-            }
-        });
-    }
 
-
-
-
-    let graficoEvolucaoChamados = null;
-
-    function GraficoEvolucaoChamados() {
-
-        const periodo = document.getElementById('period-filter').value;
-        const dados = dadosEvolucaoPorPeriodo[periodo];
-
-        const canvas = document.getElementById('graficoEvolucaoChamados');
-
-        if (graficoEvolucaoChamados !== null) {
-            graficoEvolucaoChamados.destroy();
-        }
-
-        graficoEvolucaoChamados = new Chart(canvas, {
-            type: 'line',
-
-            data: {
-                labels: dados.horarios,
-
-                datasets: [
-                    {
-                        label: 'Chamados Abertos',
-                        data: dados.abertos,
-
-                        borderColor: '#3B82F6',
-                        backgroundColor: '#3B82F6',
-
-                        borderWidth: 3,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#3B82F6',
-                        pointBorderColor: '#FFFFFF',
-                        pointBorderWidth: 1,
-
-                        tension: 0.35
-                    },
-                    {
-                        label: 'Chamados Resolvidos',
-                        data: dados.resolvidos,
-
-                        borderColor: '#10B981',
-                        backgroundColor: '#10B981',
-
-                        borderWidth: 3,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#10B981',
-                        pointBorderColor: '#FFFFFF',
-                        pointBorderWidth: 1,
-
-                        tension: 0.35
-                    }
-                ]
-            },
-
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-
-                interaction: {
-                    intersect: false,
-                    mode: 'index'
-                },
-
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-
-                        labels: {
-                            color: '#FFFFFF',
-                            usePointStyle: true,
-                            padding: 20
-                        }
-                    },
-
-                    tooltip: {
-                        callbacks: {
-                            label: (context) =>
-                                `${context.dataset.label}: ${context.raw} chamados`
-                        }
-                    }
                 },
 
                 scales: {
+
                     x: {
+
+                        type: 'category',
+
+                        labels: dados.recursos,
+
+                        offset: true,
+
                         ticks: {
-                            color: '#94A3B8'
+                            color: '#FFFFFF',
+                            font: {
+                                size: 12
+                            }
                         },
 
                         grid: {
-                            color: 'rgba(255, 255, 255, 0.05)'
+                            display: false
                         },
 
                         border: {
                             display: false
                         }
+
                     },
 
                     y: {
+
+                        type: 'category',
+
+                        labels: dados.clps,
+
+                        offset: true,
+
+                        reverse: true,
+
+                        ticks: {
+                            color: '#FFFFFF',
+                            font: {
+                                size: 12
+                            }
+                        },
+
+                        grid: {
+                            display: false
+                        },
+
+                        border: {
+                            display: false
+                        }
+
+                    }
+
+                }
+
+            },
+
+            // Registra o plugin que desenha os números no centro das células
+            plugins: [pluginValoresHeatmap]
+
+        });
+
+    }
+
+
+    // GRÁFICO DE OCORRÊNCIAS POR CLP
+
+    let graficoClpsMaisChamados = null;
+
+    function GraficoClpsMaisChamados() {
+
+        const canvas = document.getElementById('graficoClpsMaisChamados');
+
+        if (graficoClpsMaisChamados !== null) {
+            graficoClpsMaisChamados.destroy();
+        }
+
+        // Dados ilustrativos para a prototipação
+        const dadosClps = [
+            { clp: 'CLP-MAQ-03', ocorrencias: 15 },
+            { clp: 'CLP-MAQ-01', ocorrencias: 12 },
+            { clp: 'CLP-MAQ-05', ocorrencias: 9 },
+            { clp: 'CLP-MAQ-02', ocorrencias: 6 },
+            { clp: 'CLP-MAQ-04', ocorrencias: 3 }
+        ];
+
+        // Ordena os equipamentos do maior para o menor
+        dadosClps.sort((a, b) => a.ocorrencias - b.ocorrencias);
+
+        graficoClpsMaisChamados = new Chart(canvas, {
+
+            type: 'bar',
+
+            data: {
+
+                labels: dadosClps.map(item => item.clp),
+
+                datasets: [{
+
+                    label: 'Ocorrências',
+
+                    data: dadosClps.map(item => item.ocorrencias),
+
+                    backgroundColor: '#06B6D4',
+                    borderRadius: 5,
+                    borderSkipped: false,
+
+                    barPercentage: 0.65,
+                    categoryPercentage: 0.75
+
+                }]
+
+            },
+
+            options: {
+
+                indexAxis: 'y',
+
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    },
+
+                    tooltip: {
+
+                        callbacks: {
+
+                            label: (context) =>
+                                `${context.raw} ocorrências`
+
+                        }
+
+                    }
+
+                },
+
+                scales: {
+
+                    x: {
+
                         beginAtZero: true,
+
+                        title: {
+                            display: true,
+                            text: 'Quantidade de ocorrências',
+                            color: '#94A3B8'
+                        },
 
                         ticks: {
                             color: '#94A3B8',
-                            stepSize: 10
+                            precision: 0,
+                            stepSize: 1
                         },
 
                         grid: {
@@ -601,149 +755,31 @@
                         border: {
                             display: false
                         }
-                    }
-                }
-            },
 
-            plugins: [{
-                id: 'valoresFinais',
-
-                afterDatasetsDraw(chart) {
-                    const { ctx } = chart;
-
-                    chart.data.datasets.forEach((dataset, index) => {
-                        const meta = chart.getDatasetMeta(index);
-                        const ultimoPonto = meta.data[meta.data.length - 1];
-
-                        if (!ultimoPonto) return;
-
-                        const valor = dataset.data[dataset.data.length - 1];
-
-                        const x = ultimoPonto.x + 12;
-                        const y = ultimoPonto.y;
-
-                        ctx.save();
-
-                        ctx.fillStyle = dataset.borderColor;
-                        ctx.beginPath();
-                        ctx.roundRect(x, y - 12, 32, 24, 5);
-                        ctx.fill();
-
-                        ctx.fillStyle = '#FFFFFF';
-                        ctx.font = 'bold 13px Montserrat, sans-serif';
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-
-                        ctx.fillText(valor, x + 16, y);
-
-                        ctx.restore();
-                    });
-                }
-            }]
-        });
-    }
-
-    let graficoPredicaoChamados;
-
-    function GraficoPredicaoChamados() {
-
-        const ctx = document
-            .getElementById('graficoPredicaoChamados')
-            .getContext('2d');
-
-        if (graficoPredicaoChamados) {
-            graficoPredicaoChamados.destroy();
-        }
-
-        const horarios = [
-            '08h', '10h', '12h', '14h', '16h', '18h',
-            '20h', '22h', '00h', '02h', '04h', '06h'
-        ];
-
-        const historico = [
-            20, 23, 22, 27, 30, 32,
-            null, null, null, null, null, null
-        ];
-
-        const previsao = [
-            null, null, null, null, null, 32,
-            35, 39, 42, 44, 46, 48
-        ];
-
-        graficoPredicaoChamados = new Chart(ctx, {
-            type: 'line',
-
-            data: {
-                labels: horarios,
-
-                datasets: [
-                    {
-                        label: 'Histórico',
-                        data: historico,
-                        borderColor: '#3B82F6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.10)',
-                        borderWidth: 3,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        tension: 0.3,
-                        fill: false,
-                        spanGaps: false
-                    },
-                    {
-                        label: 'Previsão',
-                        data: previsao,
-                        borderColor: '#F97316',
-                        backgroundColor: 'rgba(249, 115, 22, 0.10)',
-                        borderWidth: 3,
-                        borderDash: [7, 5],
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        tension: 0.3,
-                        fill: false,
-                        spanGaps: false
-                    }
-                ]
-            },
-
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-
-                plugins: {
-                    legend: {
-                        position: 'top'
                     },
 
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                return context.dataset.label + ': '
-                                    + context.parsed.y + ' chamados';
-                            }
-                        }
-                    }
-                },
-
-                scales: {
                     y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Quantidade de chamados'
-                        },
-                        ticks: {
-                            precision: 0
-                        }
-                    },
 
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Horário'
+                        ticks: {
+                            color: '#FFFFFF'
+                        },
+
+                        grid: {
+                            display: false
+                        },
+
+                        border: {
+                            display: false
                         }
+
                     }
+
                 }
+
             }
+
         });
+
     }
+
 </script>
