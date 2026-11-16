@@ -40,6 +40,7 @@ function listarClpPorId(req, res) {
 async function microAnalise(req, res) {
     let idEmpresa = req.params.idEmpresa
     let idClp = req.params.idClp
+    let period = req.params.period
 
     if (idEmpresa == null) {
         return res.status(400).json({ erro: "O id da empresa está indefinido!" })
@@ -49,7 +50,15 @@ async function microAnalise(req, res) {
         return res.status(400).json({ erro: "O id do clp está indefinido!" })
     }
 
-    let object = await getS3.getObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/clp-micro/ultimo-resultado.json`)
+    if (period == 30) {
+        period = "/30-dias"
+    } else if (period == 7) {
+        period = "/7-dias"
+    } else {
+        period = ""
+    }
+
+    let object = await getS3.getObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/clp-micro${period}/ultimo-resultado.json`)
 
     if (object == null) {
         return res.status(404).json({ erro: "Não foram encontrados dados para este CLP" })
@@ -241,6 +250,7 @@ function adicionarLocalizacao(req, res) {
 async function performanceAnalise(req, res) {
     let idEmpresa = req.params.idEmpresa
     let idClp = req.params.idClp
+    let period = req.params.period
 
     if (idEmpresa == null) {
         return res.status(400).json({ erro: "O id da empresa está indefinido!" })
@@ -250,7 +260,16 @@ async function performanceAnalise(req, res) {
         return res.status(400).json({ erro: "O id do clp está indefinido!" })
     }
 
-    let object = await getS3.getObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/scan-cpu-performance/ultimo-resultado.json`)
+    if (period == 30) {
+        period = "/30-dias"
+    } else if (period == 7) {
+        period = "/7-dias"
+    } else {
+        period = ""
+    }
+
+
+    let object = await getS3.getObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/scan-cpu-performance${period}/ultimo-resultado.json`)
 
     if (object == null) {
         return res.status(404).json({ erro: "Não foram encontrados dados para este CLP" })

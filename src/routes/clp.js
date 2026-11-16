@@ -11,7 +11,7 @@ router.get("/:idClp", function (req, res) {
     clpController.listarClpPorId(req, res)    
 })
 
-router.get("/micro-analise/:idClp/:idEmpresa", function (req, res) {
+router.get("/micro-analise/:idClp/:idEmpresa/:period", function (req, res) {
     clpController.microAnalise(req, res)
 })
 
@@ -51,7 +51,7 @@ router.post("/adicionarLocalizacao/:idEmpresa", function (req, res){
     clpController.adicionarLocalizacao(req, res);
 });
 
-router.get("/performance-analise/:idClp/:idEmpresa", function (req, res) {
+router.get("/performance-analise/:idClp/:idEmpresa/:period", function (req, res) {
     clpController.performanceAnalise(req, res)
 })
 
