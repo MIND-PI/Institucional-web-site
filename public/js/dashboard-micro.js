@@ -24,9 +24,9 @@ function joinWords(words) {
 // ============================
 
 const configGraficoLinha = {
-    scanTime: { campo: 'scan_time_ms', nome: 'Scan Time', unidade: 'ms' },
-    cpu: { campo: 'porcentagem_uso_cpu', nome: 'CPU', unidade: '%' },
-    ram: { campo: 'porcentagem_uso_ram', nome: 'RAM', unidade: '%' }
+    scanTime: { campo: 'scan_time_ms', nome: 'Scan Time', unidade: 'ms', pico: "scan_time_pico", minimo: "scan_time_minimo", atual: "scan_time_atual" },
+    cpu: { campo: 'porcentagem_uso_cpu', nome: 'CPU', unidade: '%', pico: 'pico_porcentagem_uso_cpu', minimo: "minimo_porcentagem_uso_cpu", atual: "porcentagem_uso_cpu" },
+    ram: { campo: 'porcentagem_uso_ram', nome: 'RAM', unidade: '%', pico: 'pico_consumo_memoria_ram_porcentagem', minimo: 'minimo_consumo_memoria_ram_porcentagem', atual: "porcentagem_uso_ram" }
 };
 
 let graficoLinha = null;
@@ -37,33 +37,52 @@ let graficoPizza = null
 // ============================
 
 // Gráfico de linha dinâmico
-
 function atualizarGraficoLinha(performance, predict) {
-    if (performance.length <= 0 && predict.length <= 0 || !performance && !predict) {
-        graficoLinha.destroy();
+    // Sem dados: limpa o gráfico (antes quebrava se graficoLinha fosse null)
+    if (!performance || performance.length === 0) {
+        if (graficoLinha) {
+            graficoLinha.destroy()
+            graficoLinha = null
+        }
         return
     }
 
     const tipo = document.getElementById('graph_type').value
     const config = configGraficoLinha[tipo]
+    const periodo = Number(period_filter.value)
 
-    const dados_performance = [...performance].reverse()
+    const dados = [...performance].reverse()
 
+    const serie = periodo === 24
+        ? montarSerie24h(dados, predict, config)
+        : montarSerieDiaria(dados, config)
+
+    desenharGraficoLinha(serie, config)
+}
+
+
+// 24 horas
+function montarSerie24h(dados, predict, config) {
     let labels = []
     let valores_performance = []
     let valores_predict = []
     let horarios_completos = []
-    let ultimo_horario = null
 
-    dados_performance.forEach(item => {
+    // tempo total do gráfico, para espalhar uns 6 rótulos
+    let primeira_captura = new Date(dados[0].timestamp.replace(' ', 'T'))
+    let ultima_captura = new Date(dados[dados.length - 1].timestamp.replace(' ', 'T'))
+    let total_minutos = (ultima_captura - primeira_captura) / 60000
+    let passo = total_minutos / 6
+
+    let ultima_label = null
+
+    dados.forEach(item => {
         let data = new Date(item.timestamp.replace(' ', 'T'))
         let label = ""
 
-        let horario_atual = data.getHours() * 60 + data.getMinutes()
-
-        if (data.getMinutes() % 15 == 0 && horario_atual != ultimo_horario) {
+        if (ultima_label == null || (data - ultima_label) / 60000 >= passo) {
             label = data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-            ultimo_horario = horario_atual
+            ultima_label = data
         }
 
         horarios_completos.push(data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }))
@@ -72,11 +91,12 @@ function atualizarGraficoLinha(performance, predict) {
         valores_predict.push(null)
     })
 
+    let ultimo = dados.length - 1
 
-    let ultimo = dados_performance.length - 1
-    let ultima_captura = new Date(dados_performance[ultimo].timestamp.replace(' ', 'T'))
+    if ((ultima_captura - ultima_label) / 60000 >= passo / 2) {
+        labels[ultimo] = ultima_captura.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+    }
 
-    labels[ultimo] = ultima_captura.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
     valores_predict[ultimo] = valores_performance[ultimo]
 
     predict.forEach((item, index) => {
@@ -95,94 +115,124 @@ function atualizarGraficoLinha(performance, predict) {
         valores_predict.push(Number(item[config.campo]))
     })
 
+    return {
+        labels,
+        titulos: horarios_completos,
+        autoSkip: false,
+        datasets: [
+            {
+                label: 'Performance',
+                data: valores_performance,
+                borderColor: '#06B6D4',
+                backgroundColor: '#06B6D4',
+                borderWidth: 2,
+                pointRadius: 0,
+                tension: 0.3
+            },
+            {
+                label: 'Predição',
+                data: valores_predict,
+                borderColor: '#FFF',
+                backgroundColor: '#FFF',
+                borderWidth: 2,
+                borderDash: [6, 5],
+                pointRadius: 0,
+                tension: 0.3
+            }
+        ]
+    }
+}
+
+// 7 e 30 dias
+function montarSerieDiaria(dados, config) {
+    const seven_days = dados.length <= 8
+    const labels = []
+    const title = []
+
+    dados.forEach(item => {
+        const [ano, mes, dia] = item.timestamp.slice(0, 10).split('-').map(Number)
+        const data = new Date(ano, mes - 1, dia)
+
+        const ddmm = `${String(dia).padStart(2, '0')}/${String(mes).padStart(2, '0')}`
+        const weekday = data.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '')
+
+        labels.push(seven_days ? `${weekday} ${ddmm}` : ddmm)
+        title.push(data.toLocaleDateString('pt-BR', {
+            weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric'
+        }))
+    })
+
+    return {
+        labels,
+        titulos: title,
+        autoSkip: !seven_days,
+        datasets: [{
+            label: 'Média',
+            data: dados.map(i => Number(i[config.campo])),
+            borderColor: '#06B6D4',
+            backgroundColor: '#06B6D4',
+            borderWidth: 2,
+            pointRadius: 0,
+            tension: 0.3
+        }]
+    }
+}
+
+
+function desenharGraficoLinha(serie, config) {
     if (graficoLinha != null) {
-        graficoLinha.destroy();
+        graficoLinha.destroy()
     }
 
-    const ctx = document.getElementById('line-chart').getContext('2d');
+    const ctx = document.getElementById('line-chart').getContext('2d')
 
     graficoLinha = new Chart(ctx, {
-
         type: 'line',
 
         data: {
-            labels: labels,
-
-            datasets: [
-
-                {
-                    label: 'Performance',
-                    data: valores_performance,
-
-                    borderColor: '#06B6D4',
-                    backgroundColor: '#06B6D4',
-                    borderWidth: 2,
-                    pointRadius: 0,
-                    tension: 0.3
-                },
-
-                {
-                    label: 'Predição',
-
-                    data: valores_predict,
-
-                    borderColor: '#FFF',
-                    backgroundColor: '#FFF',
-                    borderWidth: 2,
-                    borderDash: [6, 5],
-                    pointRadius: 0,
-                    tension: 0.3
-                }
-
-            ]
+            labels: serie.labels,
+            datasets: serie.datasets
         },
 
         options: {
-
             responsive: true,
             maintainAspectRatio: false,
 
             plugins: {
                 legend: {
                     display: true,
-                    labels: {
-                        color: '#94A3B8'
-                    }
+                    labels: { color: '#94A3B8' }
                 },
                 tooltip: {
                     callbacks: {
                         title: function (itens) {
-                            return horarios_completos[itens[0].dataIndex]
+                            return serie.titulos[itens[0].dataIndex]
+                        },
+                        label: function (item) {
+                            return `${item.dataset.label}: ${item.parsed.y}${config.unidade}`
                         }
                     }
                 }
             },
 
             scales: {
-
                 x: {
                     ticks: {
                         color: '#94A3B8',
-                        autoSkip: false,
+                        autoSkip: serie.autoSkip,
+                        maxTicksLimit: 10,   
                         maxRotation: 0
                     },
-                    grid: {
-                        display: false
-                    }
+                    grid: { display: false }
                 },
 
                 y: {
-                    ticks: {
-                        color: '#94A3B8'
-                    },
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.08)'
-                    }
+                    ticks: { color: '#94A3B8' },
+                    grid: { color: 'rgba(255, 255, 255, 0.08)' }
                 }
-
             }
         }
-    });
+    })
 }
 
 
@@ -447,7 +497,13 @@ function renderClpInfo(plc, timestamp) {
     last_update.innerHTML = timestamp
 }
 
-function renderKpiPerformance(json, value) {
+function renderKpiPerformance(json, value, performance) {
+    if (period_filter.value != 24) {
+        renderKpiPeriodo(performance, value)
+        return
+    }
+
+
     if (!json) {
         peak_label.innerHTML = "Sem dados"
         current_label.innerHTML = "Sem dados"
@@ -455,42 +511,70 @@ function renderKpiPerformance(json, value) {
         return
     }
 
-    let peak
-    let minimun
-    let current
-    if (value == "ram") {
-        peak = json.pico_consumo_memoria_ram_porcentagem
-        minimun = json.minimo_consumo_memoria_ram_porcentagem
-        current = json.porcentagem_uso_ram
+    let type = configGraficoLinha[value]
 
-        title_peak.innerHTML = "Pico RAM"
-        title_current.innerHTML = "Atual RAM"
-        title_minimum.innerHTML = "Mínimo RAM"
-    } else if (value == "cpu") {
-        peak = json.pico_porcentagem_uso_cpu
-        minimun = json.minimo_porcentagem_uso_cpu
-        current = json.porcentagem_uso_cpu
+    let name = type["nome"]
+    let unit = type["unidade"]
+    let peak_field = type["pico"]
+    let current_field = type["atual"]
+    let min_field = type["minimo"]
 
-        title_peak.innerHTML = "Pico CPU"
-        title_current.innerHTML = "Atual CPU"
-        title_minimum.innerHTML = "Mínimo CPU"
-    } else {
-        peak = json.scan_time_pico
-        minimun = json.scan_time_minimo
-        current = json.scan_time_atual
-
-        title_peak.innerHTML = "Pico Scan Time"
-        title_current.innerHTML = "Atual Scan Time"
-        title_minimum.innerHTML = "Mínimo Scan Time"
-    }
+    let current = Number(json[current_field])
+    let peak = Number(json[peak_field])
+    let minimun = Number(json[min_field])
 
     peak = peak < 10 ? `0${peak}` : peak
     minimun = minimun < 10 ? `0${minimun}` : minimun
     current = current < 10 ? `0${current}` : current
 
-    peak_label.innerHTML = `${peak}${configGraficoLinha[value]["unidade"]}`
-    current_label.innerHTML = `${current}${configGraficoLinha[value]["unidade"]}`
-    minimun_label.innerHTML = `${minimun}${configGraficoLinha[value]["unidade"]}`
+    title_peak.innerHTML = `Pico ${name}`
+    title_current.innerHTML = `Atual ${name}`
+    title_minimum.innerHTML = `Mínimo ${name}`
+
+    peak_label.innerHTML = `${peak}${unit}`
+    current_label.innerHTML = `${current}${unit}`
+    minimun_label.innerHTML = `${minimun}${unit}`
+}
+
+function renderKpiPeriodo(performance, value) {
+    if (!performance || performance.length == 0) {
+        peak_label.innerHTML = "Sem dados"
+        current_label.innerHTML = "Sem dados"
+        minimun_label.innerHTML = "Sem dados"
+        return
+    }
+
+    let field = configGraficoLinha[value]["campo"]
+    let name = configGraficoLinha[value]["nome"]
+    let unit = configGraficoLinha[value]["unidade"]
+
+    let peak = Number(performance[0][field])
+    let minimun = Number(performance[0][field])
+    let sum = 0
+
+    performance.forEach(item => {
+        let value = Number(item[field])
+
+        if (value > peak) {
+            peak = value
+        }
+
+        if (value < minimun) {
+            minimun = value
+        }
+
+        sum += value
+    })
+
+    let media = sum / performance.length
+
+    title_peak.innerHTML = `Pico ${name}`
+    title_current.innerHTML = `Média ${name}`
+    title_minimum.innerHTML = `Mínimo ${name}`
+
+    peak_label.innerHTML = `${peak.toFixed(1)}${unit}`
+    current_label.innerHTML = `${media.toFixed(1)}${unit}`
+    minimun_label.innerHTML = `${minimun.toFixed(1)}${unit}`
 }
 
 function renderMetrics(metric, value) {
@@ -501,7 +585,6 @@ function renderMetrics(metric, value) {
         return
     }
 
-    let uni
 
     if (value == "cpu") {
         metric = metric[0]
@@ -550,19 +633,7 @@ async function loadClps() {
     let period = period_filter.value
     let clps = await getCompanyPlc()
     renderClps(clps)
-
-    let individual_plc = await getIndividualPlc()
-    let dataMicro = await getDataMicroPlc(period)
-    let metrics = await getMetricAnalyse(period)
-    let data_performance = await getPerformanceAnalyse(period)
-    let data_predict = await getPredictionAnalyse(period)
-
-    renderClpInfo(individual_plc[0], dataMicro[0].timestamp)
-    renderKpiPerformance(dataMicro[0], graph_type.value)
-    plotarGraficoPizza(dataMicro[0])
-    renderMetrics(metrics, graph_type.value)
-    atualizarGraficoLinha(data_performance, data_predict)
-    renderKeyKpis(dataMicro[0])
+    loadData()
 }
 
 async function loadData() {
@@ -576,9 +647,9 @@ async function loadData() {
 
     let timestamp = dataMicro.length > 0 ? dataMicro[0].timestamp : null
     let dataMicroJson = dataMicro.length > 0 ? dataMicro[0] : null
-    console.log(period)
+
     renderClpInfo(clp[0], timestamp)
-    renderKpiPerformance(dataMicroJson, graph_type.value)
+    renderKpiPerformance(dataMicroJson, graph_type.value, data_performance)
     renderKeyKpis(dataMicroJson)
     atualizarGraficoLinha(data_performance, data_predict)
     plotarGraficoPizza(dataMicroJson)
@@ -604,11 +675,11 @@ periodoSelect.addEventListener('change', function () {
     if (periodoSelect.value != 24) {
         btnEtl.style.display = 'block';
         btnEtl.style.opacity = 1
-        loadData()
     } else {
         btnEtl.style.display = 'none';
         btnEtl.style.opacity = 0
     }
+    loadData()
 });
 
 document.getElementById("select_clps").addEventListener("change", () => {
@@ -625,7 +696,7 @@ graph_type_value.addEventListener("change", async () => {
     let microData = await getDataMicroPlc(period)
     let dataMicroJson = microData.length > 0 ? microData[0] : null
 
-    renderKpiPerformance(dataMicroJson, graph_type_value.value)
+    renderKpiPerformance(dataMicroJson, graph_type_value.value, data_performance)
 
     let metrics = await getMetricAnalyse(period)
 

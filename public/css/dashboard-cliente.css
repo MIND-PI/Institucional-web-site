@@ -221,7 +221,7 @@ main {
 /*  */
 .kpi-time {
     width: 100%;
-    text-align: right;
+    text-align: center;
     color: var(--color-text-primary);
     font-size: 0.9rem;
 }
