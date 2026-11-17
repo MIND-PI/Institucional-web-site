@@ -252,6 +252,7 @@
 }
 
 .hs-intervalo {
+    font-family: "Montserrat", sans-serif;
     font-size: 0.7rem;
     color: var(--color-text-secondary);
 }
@@ -282,6 +283,15 @@
     }
 }
 
+
+/* =====================================================================
+   MODO "TELA CHEIA" (sem scroll)
+   Só vale em telas largas e altas o bastante. Abaixo disso a página
+   volta ao comportamento normal (empilha e rola), mantendo a responsividade.
+   - min-width 1400px: largura mínima para os 4 KPIs, a tabela e o donut
+     caberem lado a lado ao lado da sidebar (23rem) sem apertar demais
+   - min-height 850px: altura mínima para a sidebar e os cards caberem sem apertar
+   ===================================================================== */
 @media (min-width: 1400px) and (min-height: 850px) {
     main {
         height: 100vh;

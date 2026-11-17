@@ -1,9 +1,11 @@
 // ===== DADOS MOCKADOS=====
 const rotulos = { critico: 'Crítico', atencao: 'Atenção', estavel: 'Estável' };
 
+const metaHealthScore = 75;
+
 const kpis = [
     { titulo: 'CLPs fora do padrão', valor: '56%', variacao: '▲ 8% nas últimas 24h', cor: '', detalhe: '10 de 18 monitorados' },
-    { titulo: 'Health Score Mediano', valor: '68', unidade: '/100', status: 'atencao', variacao: '▼ 6pts vs período anterior', cor: '', detalhe: 'Meta de qualidade: 75' },
+    { titulo: 'Health Score Mediano', valor: '68', unidade: '/100', status: 'atencao', variacao: '▼ 6pts vs período anterior', cor: '', detalhe: `Meta de qualidade: ${metaHealthScore}` },
     { titulo: 'Mediana Alertas por CLP', valor: '3', variacao: '▲ 57% acima de outros modelos', cor: '', detalhe: '20 alertas e 18 CLPs ativos' },
     { titulo: 'Componente mais crítico', valor: 'CPU', variacao: '30% dos alertas deste modelo', cor: 'alerta', detalhe: '12 de 40 alertas neste período' }
 ];
@@ -146,6 +148,17 @@ function criarGraficoEvolucao() {
                 borderWidth: 1.5,
                 pointRadius: 0,
                 pointHoverRadius: 4
+            },
+            {
+                // linha tracejada da meta (valores preenchidos em atualizarEvolucao)
+                label: `Meta (${metaHealthScore})`,
+                data: [],
+                borderColor: '#ffffff',
+                backgroundColor: '#ffffff',
+                borderWidth: 1.5,
+                borderDash: [6, 4],
+                pointRadius: 0,
+                pointHoverRadius: 0
             }]
         },
         options: {
@@ -196,6 +209,7 @@ function atualizarEvolucao() {
 
     graficoEvolucao.data.labels = labels;
     graficoEvolucao.data.datasets[0].data = valores;
+    graficoEvolucao.data.datasets[1].data = labels.map(() => metaHealthScore);
     graficoEvolucao.update();
 }
 
