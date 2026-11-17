@@ -630,7 +630,6 @@ function renderKeyKpis(plc) {
 }
 
 async function loadClps() {
-    let period = period_filter.value
     let clps = await getCompanyPlc()
     renderClps(clps)
     loadData()
