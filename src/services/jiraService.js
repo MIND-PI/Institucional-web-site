@@ -1,4 +1,3 @@
-
 var jiraUrl = process.env.JIRA_URL;
 var jiraEmail = process.env.JIRA_EMAIL;
 var jiraToken = process.env.JIRA_API_TOKEN;

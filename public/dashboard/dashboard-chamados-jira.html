@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -247,11 +246,27 @@
     const periodoSelect = document.getElementById('period-filter');
     const btnEtl = document.getElementById('btn-etl');
 
-    function obterDados() {
-        GraficoTempoResolucao();
-        GraficoHeatmap();
-        GraficoClpsMaisChamados();
+    // dados recebidos do jira
+    let chamadosJira = [];
+
+
+    async function obterDados() {
+        try {
+            const resposta = await fetch("/jira");
+            if (!resposta.ok) {
+                throw new Error("Erro ao consultar os chamados do Jira.");
+            }
+            chamadosJira = await resposta.json();
+            console.log("Chamados recebidos do Jira:", chamadosJira);
+            GraficoTempoResolucao();
+            GraficoHeatmap();
+            GraficoClpsMaisChamados();
+        } catch (erro) {
+            console.error("Erro ao carregar dashboard:", erro);
+        }
+
     }
+
 
     periodoSelect.addEventListener('change', function () {
         if (periodoSelect.value != '24h') {
@@ -266,28 +281,56 @@
         GraficoClpsMaisChamados();
     });
 
+    let graficoOcorrenciasPorRecurso = null;
 
-    // DASHBOARD - OCORRÊNCIAS POR RECURSO
+
     function GraficoTempoResolucao() {
 
         const canvas = document.getElementById('graficoTempoResolucao');
+        const recursosMapeados = {
+            CPU: 'CPU',
+            RAM: 'RAM',
+            SWAP: 'SWAP',
+            SCAN: 'Scan time',
+            PING: 'PING',
+            LOSS: 'Perda de pacotes',
+            UPLOAD: 'Upload',
+            DOWNLOAD: 'Download',
+            UPTIME: 'Uptime',
+            PROCESSOS: 'Processos'
+        };
+        const contagemRecursos = {};
 
-        const recursos = [
-            'CPU',
-            'RAM',
-            'Scantime'
-        ];
+        chamadosJira.forEach(chamado => {
 
-        const qtdChamados = [5, 4, 2];
+            const resumo = chamado.resumo.toUpperCase();
+            const correspondencia = resumo.match(
+                /\b(CPU|RAM|SWAP|SCAN|PING|LOSS|UPLOAD|DOWNLOAD|UPTIME|PROCESSOS)\b/
+            );
 
-        new Chart(canvas, {
+            if (correspondencia) {
+                const recurso = recursosMapeados[correspondencia[0]];
+                contagemRecursos[recurso] =
+                    (contagemRecursos[recurso] || 0) + 1;
+            }
+
+        });
+
+        const recursos = Object.keys(contagemRecursos);
+        const qtdChamados = Object.values(contagemRecursos);
+
+        if (graficoOcorrenciasPorRecurso !== null) {
+            graficoOcorrenciasPorRecurso.destroy();
+        }
+        graficoOcorrenciasPorRecurso = new Chart(canvas, {
+
             type: 'bar',
 
             data: {
                 labels: recursos,
 
                 datasets: [{
-                    label: 'Chamados por Recursos',
+                    label: 'Ocorrências por recurso',
                     data: qtdChamados,
 
                     backgroundColor: '#06B6D4',
@@ -297,10 +340,12 @@
             },
 
             options: {
+
                 responsive: true,
                 maintainAspectRatio: false,
 
                 plugins: {
+
                     legend: {
                         display: false
                     },
@@ -308,12 +353,14 @@
                     tooltip: {
                         callbacks: {
                             label: (context) =>
-                                `${context.raw} horas`
+                                `${context.raw} ocorrências`
                         }
                     }
+
                 },
 
                 scales: {
+
                     x: {
                         ticks: {
                             color: '#FFFFFF'
@@ -338,7 +385,8 @@
                         },
 
                         ticks: {
-                            color: '#94A3B8'
+                            color: '#94A3B8',
+                            precision: 0
                         },
 
                         grid: {
@@ -349,15 +397,14 @@
                             display: false
                         }
                     }
+
                 }
+
             }
+
         });
+
     }
-
-
-    // DADOS DO HEATMAP
-    // Valores ilustrativos para a prototipação.
-    // Cada número representa a quantidade de ocorrências.
 
     const dadosHeatmapPorPeriodo = {
 
