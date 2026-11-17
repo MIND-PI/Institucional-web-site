@@ -250,3 +250,90 @@
         font-size: 1rem;
     }
 }
+
+@media (min-width: 1400px) and (min-height: 850px) {
+    main {
+        height: 100vh;
+        height: 100dvh;
+        padding: 1.25rem 1rem;
+        gap: 1.25rem;
+        overflow: hidden;
+    }
+
+    .header-main {
+        flex-shrink: 0;
+        padding-bottom: 0.75rem;
+    }
+
+    /* KPIs ocupam só o que precisam */
+    .kpi-micro {
+        flex-shrink: 0;
+    }
+
+    .kpi-micro .kpi-box {
+        min-height: 0;
+        gap: 0.35rem;
+        padding: 0.9rem 1.25rem;
+    }
+
+    .kpi-micro .kpi-result-big {
+        font-size: clamp(2rem, 4.5vh, 2.5rem);
+    }
+
+    /* As duas linhas de cards dividem o espaço que sobra */
+    .linha {
+        flex: 1 1 0;
+        min-height: 0;
+        grid-template-rows: minmax(0, 1fr);
+    }
+
+    .linha-ranking {
+        flex-grow: 1.35;
+    }
+
+    .card {
+        min-height: 0;
+        gap: 0.75rem;
+        padding: 1rem 1.25rem;
+    }
+
+    .card-topo {
+        flex-shrink: 0;
+    }
+
+    /* Tabela: a altura das linhas acompanha a altura da tela */
+    .tabela-scroll {
+        flex: 1;
+        min-height: 0;
+        overflow: auto;
+    }
+
+    .tabela th,
+    .tabela td {
+        padding: clamp(0.4rem, 1.4vh, 1rem) 0.4rem;
+    }
+
+    .tabela td:first-child {
+        white-space: nowrap;
+    }
+
+    /* Donut e gráficos esticam para preencher o card */
+    .donut {
+        flex: 1 1 0;
+        min-height: 0;
+        width: 100%;
+        max-width: 15rem;
+        height: auto;
+    }
+
+    .legenda {
+        flex-shrink: 0;
+        gap: 0.4rem;
+    }
+
+    .grafico {
+        flex: 1 1 0;
+        min-height: 0;
+        height: auto;
+    }
+}
