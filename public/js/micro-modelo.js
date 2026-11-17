@@ -3,8 +3,8 @@ const rotulos = { critico: 'Crítico', atencao: 'Atenção', estavel: 'Estável'
 
 const kpis = [
     { titulo: 'CLPs fora do padrão', valor: '56%', variacao: '▲ 8% nas últimas 24h', cor: '', detalhe: '10 de 18 monitorados' },
-    { titulo: 'Health Score Mediano', valor: '68', variacao: '▼ 6 nas últimas 24h', cor: '', detalhe: '' },
-    { titulo: 'Alertas por CLP', valor: '2,2', variacao: '▲ 57% acima de outros modelos', cor: '', detalhe: '' },
+    { titulo: 'Health Score Mediano', valor: '68', unidade: '/100', status: 'atencao', variacao: '▼ 6pts vs período anterior', cor: '', detalhe: 'Meta de qualidade: 75' },
+    { titulo: 'Mediana Alertas por CLP', valor: '3', variacao: '▲ 57% acima de outros modelos', cor: '', detalhe: '20 alertas e 18 CLPs ativos' },
     { titulo: 'Componente mais crítico', valor: 'CPU', variacao: '30% dos alertas deste modelo', cor: 'alerta', detalhe: '12 de 40 alertas neste período' }
 ];
 
@@ -39,7 +39,10 @@ function renderizarKpis() {
     document.getElementById('kpis').innerHTML = kpis.map(kpi => `
         <div class="kpi-box">
             <p class="kpi-title">${kpi.titulo}</p>
-            <p class="kpi-result-big">${kpi.valor}</p>
+            <div class="kpi-valor-linha">
+                <p class="kpi-result-big ${kpi.status || ''}">${kpi.valor}${kpi.unidade ? `<span class="kpi-unidade">${kpi.unidade}</span>` : ''}</p>
+                ${kpi.status ? `<span class="pill ${kpi.status}">${rotulos[kpi.status]}</span>` : ''}
+            </div>
             <p class="kpi-details ${kpi.cor}">${kpi.variacao}</p>
             ${kpi.detalhe ? `<p class="kpi-detalhe">${kpi.detalhe}</p>` : ''}
         </div>`).join('');

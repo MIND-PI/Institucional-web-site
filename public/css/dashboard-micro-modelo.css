@@ -60,6 +60,36 @@
     font-size: 0.75rem;
 }
 
+/* Linha do valor: número à esquerda e, quando existir, a etiqueta de status à direita */
+.kpi-valor-linha {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+/* Cor do valor conforme o status (mesmas cores das pills) */
+.kpi-micro .kpi-result-big.critico {
+    color: var(--color-danger);
+}
+
+.kpi-micro .kpi-result-big.atencao {
+    color: var(--color-warning);
+}
+
+.kpi-micro .kpi-result-big.estavel {
+    color: var(--color-positive);
+}
+
+/* Sufixo menor ao lado do valor (ex.: /100) */
+.kpi-unidade {
+    margin-left: 0.15rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
 /* ---------- Linhas e cards ---------- */
 .linha {
     display: grid;
@@ -137,6 +167,7 @@
 
 .pill {
     display: inline-block;
+    font-family: "Montserrat", sans-serif;
     padding: 0.25rem 0.9rem;
     border-radius: 1rem;
     font-size: 0.75rem;
