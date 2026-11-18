@@ -1,0 +1,648 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root {
+    --color-bg-primary: #060A13;
+    --color-bg-secondary: #0D1527;
+
+    --color-accent: #06B6D4;
+
+    --color-text-primary: #FFF;
+    --color-text-secondary: #94A3B8;
+    --color-text-muted: rgba(255, 255, 255, 0.3);
+
+    --color-positive: #22C55E;
+    --color-danger: #EF4444;
+    --color-warning: #F59E0B;
+
+    --color-border: #1E2B45;
+}
+
+/* Tela inteira sem scroll */
+body {
+    height: 100vh;
+    overflow: hidden;
+}
+
+main {
+    flex: 1;
+    min-width: 0;
+    height: 100vh;
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* ---------- Header e filtros ---------- */
+.header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
+    border-bottom: 1px solid var(--color-bg-secondary);
+    padding: 0 0.5rem 0.8rem 0.5rem;
+}
+
+.title-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem 1rem;
+    font-family: "Montserrat", sans-serif;
+    color: var(--color-text-primary);
+}
+
+.legend-text {
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: var(--color-text-secondary);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    color: var(--color-text-primary);
+    white-space: nowrap;
+}
+
+.legend-dot {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+}
+
+.legend-dot.square {
+    border-radius: 0.15rem;
+}
+
+.title-main {
+    font-size: 1.8rem;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.filter-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 1.5rem;
+}
+
+.filter-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.filter-input {
+    width: 10rem;
+    background-color: var(--color-bg-secondary);
+    justify-content: center;
+    align-items: center;
+    border: none;
+    border-radius: 0.3rem;
+    color: var(--color-text-primary);
+    height: 1.6rem;
+    padding: 0.3rem;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.7rem;
+}
+
+.filter-text {
+    font-size: 0.7rem;
+    color: var(--color-text-primary);
+    font-weight: bold;
+}
+
+.filter-box i {
+    font-size: 1.7rem;
+}
+
+.bi-arrow-clockwise {
+    cursor: pointer;
+}
+
+.btn-etl {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.8rem;
+    border: 1px solid #00BCD4;
+    border-radius: 6px;
+    background-color: #0B1624;
+    color: #FFFFFF;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: 0.5s;
+    opacity: 0;
+    display: none;
+}
+
+/* ---------- KPIs ---------- */
+.kpi-conteiner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.kpi-box {
+    background-color: var(--color-bg-secondary);
+    border-radius: 1rem;
+    flex: 1;
+    min-width: 0;
+    height: 9rem;
+    padding: 0.8rem;
+    gap: 0.4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top: 3px solid var(--color-accent);
+}
+
+.kpi-title {
+    font-weight: bold;
+    color: var(--color-text-primary);
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.kpi-result-big {
+    color: var(--color-text-primary);
+    margin: auto 0;
+    font-size: 2.6rem;
+    font-weight: bold;
+}
+
+.kpi-details {
+    color: var(--color-text-secondary);
+    text-align: center;
+    font-size: 0.75rem;
+}
+
+.kpi-details b {
+    color: var(--color-text-primary);
+}
+
+/* ---------- Cores de apoio ---------- */
+.text-danger {
+    color: var(--color-danger);
+}
+
+.text-warning {
+    color: var(--color-warning);
+}
+
+.text-positive {
+    color: var(--color-positive);
+}
+
+.text-secondary {
+    color: var(--color-text-secondary);
+}
+
+.bg-danger {
+    background-color: var(--color-danger);
+}
+
+.bg-warning {
+    background-color: var(--color-warning);
+}
+
+.bg-neutral {
+    background-color: var(--color-text-secondary);
+}
+
+.bg-positive {
+    background-color: var(--color-positive);
+}
+
+/* Cor do KPI (borda de cima) conforme o status */
+.kpi-box.kpi-danger {
+    border-top-color: var(--color-danger);
+}
+
+.kpi-box.kpi-warning {
+    border-top-color: var(--color-warning);
+}
+
+.kpi-box.kpi-positive {
+    border-top-color: var(--color-positive);
+}
+
+/* ---------- Boxes (ranking, mapa e variação) ---------- */
+.title-graph {
+    font-weight: bold;
+    white-space: nowrap;
+    font-size: 1.2rem;
+}
+
+.subtitle-graph {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+.box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+}
+
+.table-conteiner {
+    display: flex;
+    width: 100%;
+    flex: 0 0 auto;
+}
+
+.metrics-conteiner {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+}
+
+.table-box,
+.metrics-box {
+    background-color: var(--color-bg-secondary);
+    border-radius: 0.5rem;
+    border: 2px solid var(--color-border);
+    border-top: 3px solid var(--color-accent);
+    padding: 0.8rem 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+    min-height: 0;
+}
+
+.table-box {
+    width: 100%;
+}
+
+.metrics-box {
+    flex: 1;
+}
+
+/* ---------- Tabela de ranking ---------- */
+.table-wrapper {
+    margin-top: 0.4rem;
+    overflow: hidden;
+}
+
+.ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    font-family: "Montserrat", sans-serif;
+}
+
+.ranking-table th {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--color-text-primary);
+    padding: 0.3rem 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.ranking-table td {
+    height: 4rem;
+    font-size: 0.9rem;
+    color: var(--color-text-primary);
+    padding: 0 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+}
+
+.ranking-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.ranking-table tbody tr {
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.ranking-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.ranking-link {
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.ranking-link:hover {
+    color: var(--color-accent);
+}
+
+.btn-detalhes {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--color-accent);
+    border-radius: 6px;
+    color: var(--color-text-primary);
+    font-size: 0.75rem;
+    font-weight: bold;
+    white-space: nowrap;
+    transition: 0.3s;
+}
+
+.btn-detalhes:hover {
+    background-color: var(--color-accent);
+}
+
+.btn-detalhes i {
+    color: inherit;
+    font-size: 0.9rem;
+}
+
+.ranking-model {
+    font-weight: 700;
+}
+
+.health-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    margin: 0 auto;
+    max-width: 12rem;
+}
+
+.health-value {
+    font-weight: 700;
+    min-width: 1.5rem;
+    text-align: right;
+}
+
+.health-bar {
+    flex: 1;
+    height: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--color-border);
+    overflow: hidden;
+}
+
+.health-bar-fill {
+    height: 100%;
+    border-radius: 0.5rem;
+}
+
+.trend-text {
+    font-weight: 700;
+}
+
+.status-pill {
+    display: inline-flex;
+    padding: 0.2rem 0.8rem;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.8rem;
+    color: var(--color-text-primary);
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+/* ---------- Mapa de problemas ---------- */
+.heat-wrapper {
+    flex: 1;
+    min-height: 0;
+    margin-top: 0.5rem;
+}
+
+.heat-grid {
+    display: grid;
+    grid-template-columns: 9rem repeat(5, 1fr);
+    grid-template-rows: auto;
+    grid-auto-rows: minmax(0, 5rem);
+    align-content: center;
+    gap: 0.3rem;
+    height: 100%;
+    align-items: stretch;
+    font-family: "Montserrat", sans-serif;
+    color: var(--color-text-primary);
+}
+
+.heat-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+}
+
+.heat-model {
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.heat-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.3rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.heat-baixo {
+    background-color: rgba(6, 182, 212, 0.1);
+}
+
+.heat-medio {
+    background-color: rgba(245, 158, 11, 0.3);
+}
+
+.heat-alto {
+    background-color: rgba(239, 68, 68, 0.4);
+}
+
+.heat-critico {
+    background-color: rgba(239, 68, 68, 0.75);
+}
+
+/* ---------- Gráfico de variação ---------- */
+.chart-wrapper {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+    margin-top: 0.5rem;
+}
+
+.chart-wrapper canvas {
+    width: 100%;
+    height: 100%;
+}
+
+/* ---------- Telas com pouca altura ---------- */
+@media (min-width: 1025px) and (max-height: 820px) {
+
+    main {
+        padding: 0.8rem 1.2rem;
+        gap: 0.8rem;
+    }
+
+    .kpi-box {
+        height: 7.5rem;
+        padding: 0.6rem;
+    }
+
+    .kpi-title {
+        font-size: 1rem;
+    }
+
+    .kpi-result-big {
+        font-size: 2rem;
+    }
+
+    .title-graph {
+        font-size: 1rem;
+    }
+
+    .ranking-table td {
+        height: 2.6rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* ---------- Tablet e celular (aqui a página pode rolar) ---------- */
+@media (max-width: 1024px) {
+
+    body {
+        height: auto;
+        overflow: auto;
+    }
+
+    main {
+        height: auto;
+        padding: 1.25rem;
+        gap: 1.25rem;
+    }
+
+    .header-main {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .filter-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .filter-box {
+        min-width: 0;
+    }
+
+    .filter-input {
+        width: 100%;
+        height: 2rem;
+    }
+
+    .filter-box .btn-etl {
+        width: 100%;
+        height: 2rem;
+    }
+
+    .kpi-conteiner {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .kpi-box {
+        width: 100%;
+    }
+
+    .table-conteiner,
+    .metrics-conteiner {
+        flex: none;
+    }
+
+    .title-main {
+        font-size: 1.5rem;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    .ranking-table {
+        min-width: 46rem;
+        height: auto;
+    }
+
+    .ranking-table td {
+        height: auto;
+        padding: 0.8rem 0.5rem;
+    }
+
+    .metrics-conteiner {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .metrics-box {
+        min-height: 20rem;
+    }
+
+    .heat-wrapper {
+        overflow-x: auto;
+    }
+
+    .heat-grid {
+        min-width: 30rem;
+    }
+}
+
+@media (max-width: 768px) {
+
+    main {
+        padding: 1rem 0.75rem;
+        gap: 1rem;
+    }
+
+    .filter-container {
+        grid-template-columns: 1fr;
+    }
+
+    .kpi-title {
+        font-size: 1rem;
+    }
+
+    .title-graph {
+        font-size: 1rem;
+    }
+
+    .table-box,
+    .metrics-box {
+        padding: 0.8rem;
+    }
+}
