@@ -105,7 +105,7 @@ function montarSerie24h(dados, predict, config) {
         let futuro = new Date(ultima_captura)
         futuro.setMinutes(futuro.getMinutes() + minutos)
 
-        if (minutos % 60 == 0) {
+        if (minutos % 30 == 0) {
             horario = futuro.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
         }
 
