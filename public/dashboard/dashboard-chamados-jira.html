@@ -145,16 +145,6 @@
                 </div>
 
                 <div class="filter-box">
-                    <p class="filter-text">Periodo</p>
-
-                    <select id="period-filter" class="filter-input">
-                        <option value="24h" class="filter-option">Últimas 24h</option>
-                        <option value="7d" class="filter-option">Últimos 7 dias</option>
-                        <option value="30d" class="filter-option">Últimos 30 dias</option>
-                    </select>
-                </div>
-
-                <div class="filter-box">
                     <i class="bi bi-arrow-clockwise"></i>
                 </div>
 
@@ -165,22 +155,59 @@
         <section class="kpi-conteiner">
 
             <div class="kpi-box">
-                <p class="kpi-title">CLP com mais ocorrencias</p>
-                <p class="kpi-result-big">CLP-MAQ-03</p>
-                <p class="kpi-details">5 ocorrencias registradas</p>
+                <p class="kpi-title">CLP com mais ocorrências</p>
+                <p class="kpi-result-big" id="kpi-clp">Carregando...</p>
+                <p class="kpi-details" id="kpi-clp-detalhes">Aguardando dados</p>
             </div>
 
             <div class="kpi-box">
                 <p class="kpi-title">Recurso mais afetado</p>
-                <p class="kpi-result-big">CPU</p>
-                <p class="kpi-details">6 chamados referentes a CPU</p>
+                <p class="kpi-result-big" id="kpi-recurso">Carregando...</p>
+                <p class="kpi-details" id="kpi-recurso-detalhes">Aguardando dados</p>
             </div>
 
-            <div class="kpi-box">
+            <div class="kpi-box" id="kpi-tempo-box">
                 <p class="kpi-title">Tempo médio de resolução</p>
-                <p class="kpi-result-big">3h 23min</p>
-                <p class="kpi-details">↑ 2% período anterior</p>
+                <p class="kpi-result-big" id="kpi-tempo">Carregando...</p>
+                <p class="kpi-details" id="kpi-tempo-detalhes">Aguardando dados</p>
             </div>
+
+        </section>
+
+        <section class="ia-recommendation">
+
+            <div class="ia-header">
+                <div class="ia-title">
+                    <i class="bi bi-stars"></i>
+                    <h2>Análise inteligente MIND</h2>
+                </div>
+
+                <span class="ia-status">Analisando dados</span>
+            </div>
+
+            <div class="ia-content">
+
+                <div class="ia-diagnosis">
+                    <h3>Diagnóstico</h3>
+                    <p id="ia-diagnostico">
+                        Aguardando análise dos dados...
+                    </p>
+                </div>
+
+                <div class="ia-action">
+                    <h3>
+                        <i class="bi bi-lightbulb"></i>
+                        Ação sugerida
+                    </h3>
+
+                    <p id="ia-acao">
+                        A recomendação será apresentada após a análise.
+                    </p>
+                </div>
+
+            </div>
+
+            <p class="ia-justification" id="ia-justificativa"></p>
 
         </section>
 
@@ -242,12 +269,150 @@
 
 <script>
 
-    // FILTRO DE PERÍODO
-    const periodoSelect = document.getElementById('period-filter');
-    const btnEtl = document.getElementById('btn-etl');
-
     // dados recebidos do jira
     let chamadosJira = [];
+    const btnEtl = document.getElementById('btn-etl');
+
+    function AtualizarKPIs() {
+
+        const contagemClps = {};
+        const contagemRecursos = {};
+
+        const recursosMapeados = {
+            CPU: 'CPU',
+            RAM: 'RAM',
+            SWAP: 'SWAP',
+            SCAN: 'Scan time',
+            PING: 'PING',
+            LOSS: 'Perda de pacotes',
+            UPLOAD: 'Upload',
+            DOWNLOAD: 'Download',
+            UPTIME: 'Uptime',
+            PROCESSOS: 'Processos'
+        };
+
+        let tempoTotalResolucao = 0;
+        let chamadosResolvidos = 0;
+
+        chamadosJira.forEach(chamado => {
+
+            const resumo = (chamado.resumo || '').toUpperCase();
+
+            const clpEncontrado = resumo.match(
+                /\b(?:CLP-[A-Z0-9]+(?:-[A-Z0-9]+)*|COMPACT-LOGIC)\b/
+            );
+
+            if (clpEncontrado) {
+                const clp = clpEncontrado[0];
+
+                contagemClps[clp] = (contagemClps[clp] || 0) + 1;
+            }
+
+            const recursoEncontrado = resumo.match(
+                /\b(CPU|RAM|SWAP|SCAN|PING|LOSS|UPLOAD|DOWNLOAD|UPTIME|PROCESSOS)\b/
+            );
+
+            if (recursoEncontrado) {
+                const recurso = recursosMapeados[recursoEncontrado[0]];
+
+                contagemRecursos[recurso] =
+                    (contagemRecursos[recurso] || 0) + 1;
+            }
+
+            if (chamado.criadoEm && chamado.resolvidoEm) {
+
+                const dataCriacao = new Date(chamado.criadoEm);
+                const dataResolucao = new Date(chamado.resolvidoEm);
+
+                if (
+                    !isNaN(dataCriacao.getTime()) &&
+                    !isNaN(dataResolucao.getTime()) &&
+                    dataResolucao >= dataCriacao
+                ) {
+
+                    const diferencaMinutos =
+                        (dataResolucao - dataCriacao) / (1000 * 60);
+
+                    tempoTotalResolucao += diferencaMinutos;
+                    chamadosResolvidos++;
+
+                }
+            }
+
+        });
+
+        const clpMaisOcorrencias = Object.entries(contagemClps)
+            .sort((a, b) => b[1] - a[1])[0];
+
+        document.getElementById('kpi-clp').textContent =
+            clpMaisOcorrencias ? clpMaisOcorrencias[0] : 'Sem dados';
+
+        document.getElementById('kpi-clp-detalhes').textContent =
+            clpMaisOcorrencias
+                ? `${clpMaisOcorrencias[1]} ocorrências registradas`
+                : 'Nenhuma ocorrência identificada';
+
+        const recursoMaisAfetado = Object.entries(contagemRecursos)
+            .sort((a, b) => b[1] - a[1])[0];
+
+        document.getElementById('kpi-recurso').textContent =
+            recursoMaisAfetado ? recursoMaisAfetado[0] : 'Sem dados';
+
+        document.getElementById('kpi-recurso-detalhes').textContent =
+            recursoMaisAfetado
+                ? `${recursoMaisAfetado[1]} chamados referentes a ${recursoMaisAfetado[0]}`
+                : 'Nenhum recurso identificado';
+
+        const elementoTempo = document.getElementById('kpi-tempo');
+        const elementoDetalhes = document.getElementById('kpi-tempo-detalhes');
+
+        if (chamadosResolvidos > 0) {
+
+            const mediaMinutos = Math.round(
+                tempoTotalResolucao / chamadosResolvidos
+            );
+
+            const horas = Math.floor(mediaMinutos / 60);
+            const minutos = mediaMinutos % 60;
+
+            let tempoFormatado = '';
+
+            if (horas > 0) {
+                tempoFormatado += `${horas}h `;
+            }
+
+            tempoFormatado += `${minutos}min`;
+            elementoTempo.textContent = tempoFormatado;
+
+            if (mediaMinutos <= 30) {
+
+                elementoDetalhes.textContent =
+                    'Bom: dentro do tempo ideal';
+
+                elementoDetalhes.style.color = '#22C55E';
+
+            } else if (mediaMinutos <= 60) {
+
+                elementoDetalhes.textContent =
+                    'Atenção: acima do tempo ideal';
+
+                elementoDetalhes.style.color = '#F59E0B';
+
+            } else {
+
+                elementoDetalhes.textContent =
+                    'Ruim: tempo de resolução elevado';
+
+                elementoDetalhes.style.color = '#EF4444';
+            }
+        } else {
+            elementoTempo.textContent = 'Sem dados';
+            elementoDetalhes.textContent =
+                'Nenhum chamado resolvido encontrado';
+
+            elementoDetalhes.style.color = '';
+        }
+    }
 
 
     async function obterDados() {
@@ -258,6 +423,7 @@
             }
             chamadosJira = await resposta.json();
             console.log("Chamados recebidos do Jira:", chamadosJira);
+            AtualizarKPIs();
             GraficoTempoResolucao();
             GraficoHeatmap();
             GraficoClpsMaisChamados();
@@ -267,19 +433,7 @@
 
     }
 
-
-    periodoSelect.addEventListener('change', function () {
-        if (periodoSelect.value != '24h') {
-            btnEtl.style.display = 'block';
-            btnEtl.style.opacity = 1;
-        } else {
-            btnEtl.style.display = 'none';
-            btnEtl.style.opacity = 0;
-        }
-
-        GraficoHeatmap();
-        GraficoClpsMaisChamados();
-    });
+    btnEtl.addEventListener('click', obterDados);
 
     let graficoOcorrenciasPorRecurso = null;
 
@@ -303,7 +457,7 @@
 
         chamadosJira.forEach(chamado => {
 
-            const resumo = chamado.resumo.toUpperCase();
+            const resumo = (chamado.resumo || '').toUpperCase();
             const correspondencia = resumo.match(
                 /\b(CPU|RAM|SWAP|SCAN|PING|LOSS|UPLOAD|DOWNLOAD|UPTIME|PROCESSOS)\b/
             );
@@ -406,90 +560,9 @@
 
     }
 
-    const dadosHeatmapPorPeriodo = {
-
-        '24h': {
-            clps: [
-                'CLP-MAQ-01',
-                'CLP-MAQ-02',
-                'CLP-MAQ-03',
-                'CLP-MAQ-04',
-                'CLP-MAQ-05'
-            ],
-
-            recursos: [
-                'CPU',
-                'RAM',
-                'SWAP',
-                'Scan time'
-            ],
-
-            valores: [
-                [3, 1, 0, 1, 0],
-                [0, 2, 1, 1, 0],
-                [5, 2, 1, 0, 1],
-                [0, 0, 0, 2, 1],
-                [1, 1, 0, 0, 0]
-            ]
-        },
-
-        '7d': {
-            clps: [
-                'CLP-MAQ-01',
-                'CLP-MAQ-02',
-                'CLP-MAQ-03',
-                'CLP-MAQ-04',
-                'CLP-MAQ-05'
-            ],
-
-            recursos: [
-                'CPU',
-                'RAM',
-                'SWAP',
-                'Scan time'
-            ],
-
-            valores: [
-                [8, 2, 1, 2],
-                [1, 7, 2, 3],
-                [15, 4, 2, 2],
-                [0, 1, 0, 6],
-                [3, 2, 1, 1]
-            ]
-        },
-
-        '30d': {
-            clps: [
-                'CLP-MAQ-01',
-                'CLP-MAQ-02',
-                'CLP-MAQ-03',
-                'CLP-MAQ-04',
-                'CLP-MAQ-05'
-            ],
-
-            recursos: [
-                'CPU',
-                'RAM',
-                'SWAP',
-                'Scan time'
-            ],
-
-            valores: [
-                [18, 5, 3, 4],
-                [4, 15, 6, 8],
-                [28, 9, 5, 7],
-                [2, 4, 1, 14],
-                [9, 6, 3, 3]
-            ]
-        }
-    };
-
-
-    // HEATMAP - RECORRÊNCIA POR CLP E RECURSO
 
     let graficoHeatmap = null;
 
-    // Plugin personalizado para exibir os valores dentro das células
     const pluginValoresHeatmap = {
         id: 'valoresHeatmap',
 
@@ -519,32 +592,87 @@
     };
 
     function GraficoHeatmap() {
-
-        const periodo = periodoSelect.value;
-        const dados = dadosHeatmapPorPeriodo[periodo];
-
         const canvas = document.getElementById('graficoHeatmap');
+        const recursosMapeados = {
+            CPU: 'CPU',
+            RAM: 'RAM',
+            SWAP: 'SWAP',
+            SCAN: 'Scan time',
+            PING: 'PING',
+            LOSS: 'Perda de pacotes',
+            UPLOAD: 'Upload',
+            DOWNLOAD: 'Download',
+            UPTIME: 'Uptime',
+            PROCESSOS: 'Processos'
+        };
 
-        if (graficoHeatmap !== null) {
-            graficoHeatmap.destroy();
-        }
+        const contagem = {};
+        const clps = new Set();
+        const recursos = new Set();
 
-        // Transforma a matriz em pontos para o Chart.js
+        // Identifica os equipamentos e recursos de todos os chamados
+        chamadosJira.forEach(chamado => {
+
+            const resumo = (chamado.resumo || '').toUpperCase();
+
+            const clpEncontrado = resumo.match(
+                /\b(?:CLP-[A-Z0-9]+(?:-[A-Z0-9]+)*|COMPACT-LOGIC)\b/i
+            );
+
+            const recursoEncontrado = resumo.match(
+                /\b(CPU|RAM|SWAP|SCAN|PING|LOSS|UPLOAD|DOWNLOAD|UPTIME|PROCESSOS)\b/i
+            );
+
+            if (!clpEncontrado || !recursoEncontrado) {
+                return;
+            }
+
+            const clp = clpEncontrado[0].toUpperCase();
+
+            const recurso =
+                recursosMapeados[recursoEncontrado[0].toUpperCase()];
+
+            clps.add(clp);
+            recursos.add(recurso);
+
+            const chave = `${clp}|${recurso}`;
+
+            contagem[chave] = (contagem[chave] || 0) + 1;
+
+        });
+
+        const clpsOrdenados = Array.from(clps).sort();
+        const recursosOrdenados = Array.from(recursos).sort();
+
+        const clpsEscala = clpsOrdenados.length > 0
+            ? clpsOrdenados
+            : ['Sem dados'];
+
+        const recursosEscala = recursosOrdenados.length > 0
+            ? recursosOrdenados
+            : ['Sem dados'];
+
         const pontos = [];
 
-        dados.clps.forEach((clp, indiceClp) => {
+        clpsOrdenados.forEach(clp => {
 
-            dados.recursos.forEach((recurso, indiceRecurso) => {
+            recursosOrdenados.forEach(recurso => {
+
+                const chave = `${clp}|${recurso}`;
 
                 pontos.push({
                     x: recurso,
                     y: clp,
-                    v: dados.valores[indiceClp][indiceRecurso]
+                    v: contagem[chave] || 0
                 });
 
             });
 
         });
+
+        if (graficoHeatmap !== null) {
+            graficoHeatmap.destroy();
+        }
 
         graficoHeatmap = new Chart(canvas, {
 
@@ -559,17 +687,17 @@
 
                     backgroundColor: (context) => {
 
-                        const valor = context.dataset.data[context.dataIndex].v;
+                        const ponto = context.dataset.data[context.dataIndex];
 
-                        if (valor === 0) {
+                        if (!ponto || ponto.v === 0) {
                             return '#1E293B';
                         }
 
-                        if (valor <= 3) {
+                        if (ponto.v <= 3) {
                             return '#0E7490';
                         }
 
-                        if (valor <= 7) {
+                        if (ponto.v <= 7) {
                             return '#D97706';
                         }
 
@@ -586,7 +714,10 @@
 
                         if (!area) return 30;
 
-                        return (area.width / dados.recursos.length) - 4;
+                        return Math.max(
+                            10,
+                            (area.width / recursosEscala.length) - 4
+                        );
                     },
 
                     height: (context) => {
@@ -595,7 +726,10 @@
 
                         if (!area) return 20;
 
-                        return (area.height / dados.clps.length) - 4;
+                        return Math.max(
+                            10,
+                            (area.height / clpsEscala.length) - 4
+                        );
                     }
 
                 }]
@@ -617,8 +751,7 @@
                         callbacks: {
 
                             title: (items) => {
-                                const ponto = items[0].raw;
-                                return ponto.y;
+                                return items[0].raw.y;
                             },
 
                             label: (context) => {
@@ -629,6 +762,7 @@
                             }
 
                         }
+
                     }
 
                 },
@@ -638,9 +772,7 @@
                     x: {
 
                         type: 'category',
-
-                        labels: dados.recursos,
-
+                        labels: recursosEscala,
                         offset: true,
 
                         ticks: {
@@ -663,11 +795,8 @@
                     y: {
 
                         type: 'category',
-
-                        labels: dados.clps,
-
+                        labels: clpsEscala,
                         offset: true,
-
                         reverse: true,
 
                         ticks: {
@@ -691,139 +820,102 @@
 
             },
 
-            // Registra o plugin que desenha os números no centro das células
             plugins: [pluginValoresHeatmap]
 
         });
 
     }
 
-
     // GRÁFICO DE OCORRÊNCIAS POR CLP
-
     let graficoClpsMaisChamados = null;
 
-    function GraficoClpsMaisChamados() {
 
+    function GraficoClpsMaisChamados() {
         const canvas = document.getElementById('graficoClpsMaisChamados');
+
+        const contagemClps = {};
+
+        chamadosJira.forEach(chamado => {
+            const resumo = (chamado.resumo || '').toUpperCase();
+
+            const correspondencia = resumo.match(
+                /\b(?:CLP-[A-Z0-9]+(?:-[A-Z0-9]+)*|COMPACT-LOGIC)\b/i
+            );
+
+            if (correspondencia) {
+                const clp = correspondencia[0].toUpperCase();
+
+                contagemClps[clp] =
+                    (contagemClps[clp] || 0) + 1;
+            }
+        });
+
+        const clpsOrdenados = Object.entries(contagemClps)
+            .sort((a, b) => b[1] - a[1]);
+
+        const nomesClps = clpsOrdenados.map(item => item[0]);
+        const qtdChamados = clpsOrdenados.map(item => item[1]);
 
         if (graficoClpsMaisChamados !== null) {
             graficoClpsMaisChamados.destroy();
         }
 
-        // Dados ilustrativos para a prototipação
-        const dadosClps = [
-            { clp: 'CLP-MAQ-03', ocorrencias: 15 },
-            { clp: 'CLP-MAQ-01', ocorrencias: 12 },
-            { clp: 'CLP-MAQ-05', ocorrencias: 9 },
-            { clp: 'CLP-MAQ-02', ocorrencias: 6 },
-            { clp: 'CLP-MAQ-04', ocorrencias: 3 }
-        ];
-
-        // Ordena os equipamentos do maior para o menor
-        dadosClps.sort((a, b) => a.ocorrencias - b.ocorrencias);
-
         graficoClpsMaisChamados = new Chart(canvas, {
-
             type: 'bar',
-
             data: {
-
-                labels: dadosClps.map(item => item.clp),
-
+                labels: nomesClps,
                 datasets: [{
-
-                    label: 'Ocorrências',
-
-                    data: dadosClps.map(item => item.ocorrencias),
-
+                    label: 'Ocorrências por CLP',
+                    data: qtdChamados,
                     backgroundColor: '#06B6D4',
                     borderRadius: 5,
-                    borderSkipped: false,
-
-                    barPercentage: 0.65,
-                    categoryPercentage: 0.75
-
+                    borderSkipped: false
                 }]
-
             },
-
             options: {
-
                 indexAxis: 'y',
-
                 responsive: true,
                 maintainAspectRatio: false,
-
                 plugins: {
-
                     legend: {
                         display: false
                     },
-
                     tooltip: {
-
                         callbacks: {
-
                             label: (context) =>
                                 `${context.raw} ocorrências`
-
                         }
-
                     }
-
                 },
-
                 scales: {
-
                     x: {
-
                         beginAtZero: true,
-
-                        title: {
-                            display: true,
-                            text: 'Quantidade de ocorrências',
-                            color: '#94A3B8'
-                        },
-
                         ticks: {
                             color: '#94A3B8',
-                            precision: 0,
-                            stepSize: 1
+                            precision: 0
                         },
-
                         grid: {
                             color: 'rgba(255, 255, 255, 0.08)'
                         },
-
                         border: {
                             display: false
                         }
-
                     },
-
                     y: {
-
                         ticks: {
                             color: '#FFFFFF'
                         },
-
                         grid: {
                             display: false
                         },
-
                         border: {
                             display: false
                         }
-
                     }
-
                 }
-
             }
-
         });
-
     }
+
 
 </script>
