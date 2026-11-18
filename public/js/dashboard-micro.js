@@ -220,7 +220,7 @@ function desenharGraficoLinha(serie, config) {
                     ticks: {
                         color: '#94A3B8',
                         autoSkip: serie.autoSkip,
-                        maxTicksLimit: 10,   
+                        maxTicksLimit: 10,
                         maxRotation: 0
                     },
                     grid: { display: false }
@@ -363,7 +363,12 @@ async function getIndividualPlc() {
 
     // Transformando a resposta em json
     let json = await response.json()
+    if (json.length <= 0) {
+        return {}
+    }
 
+    sessionStorage.setItem("NOME_CLP", json[0].nome_clp)
+    sessionStorage.setItem("MAC_ADDRESS", json[0].mac_address)
     return json
 }
 
@@ -451,6 +456,34 @@ async function getMetricAnalyse(period) {
     // Chamando a api 
     let response = await fetch(`/clp/predicao-metrica/${id_plc}/${id_empresa}`, {
         method: "GET"
+    })
+
+    // Verificando se a resposta da api foi ok
+    if (!response.ok) {
+        console.log("Não foi possível achar o clp pelo id")
+        return []
+    }
+
+    // Transformando a resposta em json
+    let json = await response.json()
+
+    return json
+}
+
+async function getClpAlert(period) {
+    let nome_clp = sessionStorage.getItem("NOME_CLP")
+    let mac_address = sessionStorage.getItem("MAC_ADDRESS")
+    if (period == 24) {
+        period += "h"
+    } else {
+        period += "d"
+    }
+    // Chamando a api 
+    let response = await fetch(`/jira/listar-alertas-clp/${nome_clp}/${mac_address}/${period}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
     })
 
     // Verificando se a resposta da api foi ok
@@ -629,6 +662,12 @@ function renderKeyKpis(plc) {
 
 }
 
+function renderKpiAlert(alerts, period) {
+    console.log(alerts)
+    kpi_alert.innerHTML = alerts.length
+    kpi_alert_time.innerHTML = period == 24 ? `Nas últimas ${period} horas` : `Nos últimos ${period} dias`
+}
+
 async function loadClps() {
     let clps = await getCompanyPlc()
     renderClps(clps)
@@ -647,12 +686,15 @@ async function loadData() {
     let timestamp = dataMicro.length > 0 ? dataMicro[0].timestamp : null
     let dataMicroJson = dataMicro.length > 0 ? dataMicro[0] : null
 
+    let dataAlert = await getClpAlert(period)
+
     renderClpInfo(clp[0], timestamp)
     renderKpiPerformance(dataMicroJson, graph_type.value, data_performance)
     renderKeyKpis(dataMicroJson)
     atualizarGraficoLinha(data_performance, data_predict)
     plotarGraficoPizza(dataMicroJson)
     renderMetrics(metrics, graph_type.value)
+    renderKpiAlert(dataAlert, period)
 }
 
 // ============================
