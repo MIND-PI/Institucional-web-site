@@ -1,4 +1,5 @@
 var clpModel = require("../models/clpModel");
+var getS3 = require("../services/getS3")
 
 function listarClps(req, res) {
 
@@ -13,6 +14,333 @@ function listarClps(req, res) {
     }
 }
 
-module.exports = {                                    
-    listarClps
+function listarClpPorId(req, res) {
+
+    var idClp = req.params.idClp;
+
+    if (idClp == undefined) {
+        res.status(400).send("O id do clp está indefinido!");
+    } else {
+        clpModel.listarClpPorId(idClp)
+            .then(function (resultado) {
+
+                if (resultado.length == 0) {
+                    return res.status(404).json("O id não é valido para um clp");
+                }
+
+                res.json(resultado);
+            })
+            .catch(function (erro) {
+                console.log(erro);
+                res.status(500).json(erro.sqlMessage);
+            });
+    }
+}
+
+async function microAnalise(req, res) {
+    let idEmpresa = req.params.idEmpresa
+    let idClp = req.params.idClp
+    let period = req.params.period
+
+    if (idEmpresa == null) {
+        return res.status(400).json({ erro: "O id da empresa está indefinido!" })
+    }
+
+    if (idClp == null) {
+        return res.status(400).json({ erro: "O id do clp está indefinido!" })
+    }
+
+    if (period == 30) {
+        period = "/30-dias"
+    } else if (period == 7) {
+        period = "/7-dias"
+    } else {
+        period = ""
+    }
+
+    let object = await getS3.getObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/clp-micro${period}/ultimo-resultado.json`)
+
+    if (object == null) {
+        return res.status(404).json({ erro: "Não foram encontrados dados para este CLP" })
+    }
+
+    console.log(object)
+    return res.status(200).json(object)
+}
+
+function listarModelosDisponiveis(req, res) {
+
+    var idEmpresa = req.params.idEmpresa;
+
+    if (idEmpresa == undefined || isNaN(idEmpresa)) {
+        res.status(400).send("O id da empresa está indefinido ou inválido!");
+    } else {
+        clpModel.listarModelosDisponiveis(idEmpresa)
+            .then(function (resultado) { res.json(resultado); })
+            .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
+    }
+}
+
+function listarTiposMedicao(req, res) {
+    clpModel.listarTiposMedicao()
+        .then(function (resultado) { res.json(resultado); })
+        .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
+}
+
+function adicionarClp(req, res) {
+    var nome = req.body.nomeServer;
+    var localizacaoId = req.body.localizacaoServer;
+    var status = req.body.statusServer;
+    var modeloId = req.body.modeloServer;
+    var empresaId = req.body.empresaServer;
+    var medicoes = req.body.medicoesServer;
+
+    if (!nome || !localizacaoId || !modeloId || !empresaId || (status != 0 && status != 1)) {
+        res.status(400).send("Preencha todos os campos obrigatórios!");
+        return;
+    }
+
+    if (!Array.isArray(medicoes) || medicoes.length == 0) {
+        res.status(400).send("Escolha o que o CLP vai monitorar!");
+        return;
+    }
+
+    // tudo que entra no SQL precisa ser número
+    var invalida = medicoes.some(function (m) {
+        return isNaN(m.tipoMedicaoId) || m.parametro === null || m.parametro === "" || isNaN(m.parametro);
+    });
+    if (invalida) {
+        res.status(400).send("Medição com dados inválidos!");
+        return;
+    }
+
+    // CPU (1), RAM (2) e Scan Time (5) são obrigatórias
+    var ids = medicoes.map(function (m) { return Number(m.tipoMedicaoId); });
+    if (![1, 2, 5].every(function (id) { return ids.includes(id); })) {
+        res.status(400).send("CPU, RAM e Scan Time são obrigatórios!");
+        return;
+    }
+
+    clpModel.adicionarClp(nome, localizacaoId, status, modeloId, empresaId, medicoes)
+        .then(function (resultado) { res.status(201).json(resultado); })
+        .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
+}
+
+function atualizarClp(req, res) {
+    var idClp = req.params.idClp;
+    var nome = req.body.nomeServer;
+    var localizacaoId = req.body.localizacaoServer;
+    var status = req.body.statusServer;
+    var modeloId = req.body.modeloServer;
+    var empresaId = req.body.empresaServer;
+
+    if (idClp == undefined || isNaN(idClp)) {
+        res.status(400).send("O id do CLP está indefinido ou inválido!");
+    } else if (!nome || !localizacaoId || !modeloId || !empresaId || (status != 0 && status != 1)) {
+        res.status(400).send("Preencha todos os campos obrigatórios!");
+    } else {
+        clpModel.atualizarClp(idClp, nome, localizacaoId, status, modeloId, empresaId)
+            .then(function (resultado) { res.status(200).json(resultado); })
+            .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
+    }
+}
+
+function listarMedicoes(req, res) {
+    var idClp = req.params.idClp;
+    var idEmpresa = req.params.idEmpresa;
+
+    if (isNaN(idClp) || isNaN(idEmpresa)) {
+        res.status(400).send("Id do CLP ou da empresa inválido!");
+    } else {
+        clpModel.listarMedicoes(idClp, idEmpresa)
+            .then(function (resultado) { res.json(resultado); })
+            .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
+    }
+}
+
+function salvarMedicoes(req, res) {
+    var idClp = req.params.idClp;
+    var empresaId = req.body.empresaServer;
+    var medicoes = req.body.medicoesServer;
+
+    if (isNaN(idClp) || isNaN(empresaId) || !Array.isArray(medicoes) || medicoes.length == 0) {
+        res.status(400).send("Dados inválidos!");
+        return;
+    }
+
+    // garantimos que tudo que entra é número, porque o sql é montado com texto
+    var invalida = medicoes.some(function (m) {
+        return isNaN(m.tipoMedicaoId) || isNaN(m.parametro) || (m.status != 0 && m.status != 1);
+    });
+    if (invalida) {
+        res.status(400).send("Medição com dados inválidos!");
+        return;
+    }
+
+    clpModel.clpPertenceEmpresa(idClp, empresaId)
+        .then(function (resultado) {
+            if (resultado.length == 0) {
+                res.status(403).send("Esse CLP não pertence à sua empresa!");
+                return;
+            }
+
+            return Promise.all(medicoes.map(function (m) {
+                return clpModel.salvarMedicao(idClp, m.tipoMedicaoId, m.status, m.parametro);
+            })).then(function () { res.status(200).send("Medições salvas!"); });
+        })
+        .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
+}
+
+function deletarClp(req, res) {
+    var idClp = req.params.idClp;
+    var empresaId = req.params.idEmpresa;
+
+    if (idClp == undefined || isNaN(idClp) || empresaId == undefined || isNaN(empresaId)) {
+        res.status(400).send("Id do CLP ou da empresa inválido!");
+    } else {
+        clpModel.deletarClp(idClp, empresaId)
+            .then(function (resultado) { res.status(200).json(resultado); })
+            .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
+    }
+}
+
+function listarLocalizacoes(req, res) {
+    var idEmpresa = req.params.idEmpresa;
+
+    if (idEmpresa == undefined || isNaN(idEmpresa)) {
+        res.status(400).send("Id da empresa está inválido ou indefinido")
+    } else {
+        clpModel.listarLocalizacoes(idEmpresa)
+            .then(function (resultado) {
+                res.json(resultado);
+            })
+            .catch(function (erro) {
+                console.log(erro);
+                res.status(500).json(erro.sqlMessage);
+            });
+    }
+}
+
+function adicionarLocalizacao(req, res) {
+    var idEmpresa = req.params.idEmpresa;
+    var nome = (req.body.nomeServer || "").trim().replace(/\s+/g, " ");
+
+    if (!nome || idEmpresa == undefined || isNaN(idEmpresa)) {
+        res.status(400).send("Informe o nome da localização");
+        return;
+    }
+
+    clpModel.adicionarLocalizacao(nome, idEmpresa)
+        .then(function (resultado) {
+            res.status(201).json(resultado);
+        })
+        .catch(function (erro) {
+            console.log(erro);
+            // 1062 é chave duplicada (viola o UNIQUE da tabela localização)
+            if (erro.errno == 1062) {
+                res.status(409).send("Essa localização já existe!");
+            }
+            else {
+                res.status(500).json(erro.sqlMessage);
+            }
+        });
+
+}
+
+async function performanceAnalise(req, res) {
+    let idEmpresa = req.params.idEmpresa
+    let idClp = req.params.idClp
+    let period = req.params.period
+
+    if (idEmpresa == null) {
+        return res.status(400).json({ erro: "O id da empresa está indefinido!" })
+    }
+
+    if (idClp == null) {
+        return res.status(400).json({ erro: "O id do clp está indefinido!" })
+    }
+
+    if (period == 30) {
+        period = "/30-dias"
+    } else if (period == 7) {
+        period = "/7-dias"
+    } else {
+        period = ""
+    }
+
+
+    let object = await getS3.getObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/scan-cpu-performance${period}/ultimo-resultado.json`)
+
+    if (object == null) {
+        return res.status(404).json({ erro: "Não foram encontrados dados para este CLP" })
+    }
+
+    console.log(object)
+    return res.status(200).json(object)
+}
+
+
+async function predicaoAnalise(req, res) {
+    let idEmpresa = req.params.idEmpresa
+    let idClp = req.params.idClp
+
+    if (idEmpresa == null) {
+        return res.status(400).json({ erro: "O id da empresa está indefinido!" })
+
+    }
+
+    if (idClp == null) {
+        return res.status(400).json({ erro: "O id do clp está indefinido!" })
+    }
+
+    let object = await getS3.getObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/prediction-performance/ultimo-resultado.json`)
+
+    if (object == null) {
+        return res.status(404).json({ erro: "Não foram encontradas métricas para este CLP" })
+    }
+
+    console.log(object)
+    return res.status(200).json(object)
+}
+
+async function predicaoMetrica(req, res) {
+    let idEmpresa = req.params.idEmpresa
+    let idClp = req.params.idClp
+
+    if (idEmpresa == null) {
+        return res.status(400).json({ erro: "O id do clp está indefinido!" })
+    }
+
+    if (idClp == null) {
+        return res.status(400).json({ erro: "O id do clp está indefinido!" })
+    }
+
+    let object = await getS3.getObject(`gold/id-empresa-${idEmpresa}/id-clp-${idClp}/prediction-metrics/ultimo-resultado.json`)
+
+    if (object == null) {
+        return res.status(404).json({ erro: "Não foram encontradas métricas para este CLP" })
+    }
+
+    console.log(object)
+    return res.status(200).json(object)
+}
+
+
+
+module.exports = {
+    listarClps,
+    listarModelosDisponiveis,
+    adicionarClp,
+    atualizarClp,
+    listarMedicoes,
+    salvarMedicoes,
+    listarTiposMedicao,
+    deletarClp,
+    adicionarLocalizacao,
+    listarLocalizacoes,
+    listarClpPorId,
+    microAnalise,
+    performanceAnalise,
+    predicaoAnalise,
+    predicaoMetrica
 };

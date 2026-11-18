@@ -1,309 +1,508 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MIND | CLPs</title>
-    <link rel="stylesheet" href="../css/reset.css">
-    <link rel="stylesheet" href="../css/aside.css">
-    <link rel="stylesheet" href="../css/gerenciamento-padrao.css">
-    <link rel="stylesheet" href="../css/popups.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-</head>
+    <link rel="stylesheet" href="../css/reset.css" />
+    <link rel="stylesheet" href="../css/aside.css" />
+    <link rel="stylesheet" href="../css/gerenciamento-padrao.css" />
+    <link rel="stylesheet" href="../css/popups.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    />
+  </head>
 
-<body>
-    <button class="menu-mobile" id="menuMobile" data-open="false" data-close="bi-list" data-icon-open="bi-x-lg">
-        <i class="bi bi-list"></i>
+  <body>
+    <button
+      class="menu-mobile"
+      id="menuMobile"
+      data-open="false"
+      data-close="bi-list"
+      data-icon-open="bi-x-lg"
+    >
+      <i class="bi bi-list"></i>
     </button>
     <aside class="sidebar" id="sidebar">
-        <!-- HEADER / LOGO DO HEADER -->
-        <header class="sidebar-header">
-            <div class="logo-img">
-                <img src="./../assets/icon/logoMind/mind_logo_branca.png" alt="logo MIND">
-            </div>
-            <div class="logo-text">
-                <h2 class="logo-title">MIND</h2>
-                <h5 class="logo-subtitle">OBSERVABILIDADE</h5>
-            </div>
-        </header>
-        <!-- INICIO DA NAV BAR -->
-        <nav class="sidebar-nav">
-            <section class="nav-section">
-                <!-- TODO: FAZER DIFERENÇA ENTRE FORNECEDOR E CLIENTE QUANDO SE CONECTA NO SISTEMA -->
-                <h4 class="nav-section-title" id="nav_title">FLUXO DO CLIENTE</h4>
-                <ul class="nav-list" id="nav_flow">
-                </ul>
-            </section>
-            <section class="nav-section">
-                <h4 class="nav-section-title">CONFIGURAÇÕES</h4>
-                <ul class="nav-list">
-                    <li class="nav-item">
-                        <a class="nav-link" id="btn_config">
-                            <i class="bi bi-gear"></i>
-                            Configuração de usuario
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="https://equipe-mind.atlassian.net/servicedesk/customer/portal/2" class="nav-link"
-                            target="_blank">
-                            <i class="bi bi-question-circle"></i>
-                            Ajuda
-                        </a>
-                    </li>
-                </ul>
-            </section>
-            <section class="nav-section">
-                <h4 class="nav-section-title">SAIR</h4>
-                <ul class="nav-list">
-                    <li class="nav-item">
-                        <a class="nav-link" id="btn_logout" href="./../login.html">
-                            <i class="bi bi-box-arrow-right"></i>
-                            LOGOUT
-                        </a>
-                    </li>
-                </ul>
-            </section>
-        </nav>
-        <!-- CARD DO USUARIO -->
-        <footer class="user-card">
-            <div class="img-card">
-                <img src="../assets/imgs/fotosUsuarios/foto_padrao.png" alt="Foto do usuário" id="imgUser"
-                    onerror="this.onerror=null; this.src='../assets/imgs/fotosUsuarios/foto_padrao.png'">
-            </div>
-            <div class="text-card">
-                <p id="nomeUsuario" class="text-user-name">Rogerio Andrade</p>
-                <p id="tipoUsuario" class="text-user-type">CLIENTE</p>
-            </div>
-        </footer>
-        <!-- CONFIGURAÇÕES DO USUARIO -->
-        <div class="overlay_config" id="overlay_config">
-            <div class="modal_config">
-                <div class="modal_header">
-                    <h2>Configurações</h2>
-                    <button type="button" class="btn_fechar" id="btn_fechar_config">✖</button>
-                </div>
-
-                <form id="form_config" class="form-config">
-
-                    <div class="input_group file_group">
-                        <img src="../assets/imgs/fotosUsuarios/foto_padrao.png" alt="Preview da Foto"
-                            id="preview_foto_modal" class="preview-foto-modal">
-                        <div class="file_upload_wrapper">
-                            <label for="input_foto" class="btn_upload">Escolher nova foto</label>
-                            <input type="file" id="input_foto" name="foto_perfil" accept="image/*">
-                        </div>
-                    </div>
-
-                    <div class="input_group">
-                        <label for="input_nome">Nome de usuário</label>
-                        <input type="text" id="input_nome" name="nome" placeholder="Digite seu novo nome">
-                    </div>
-
-                    <div class="input_group">
-                        <label for="input_senha">Nova senha</label>
-                        <input type="password" id="input_senha" name="senha" placeholder="Deixe em branco para manter">
-                    </div>
-
-                    <button onclick="salvarConfiguracoes()" type="button" class="btn_salvar">Salvar Alterações</button>
-                </form>
-            </div>
+      <!-- HEADER / LOGO DO HEADER -->
+      <header class="sidebar-header">
+        <div class="logo-img">
+          <img
+            src="./../assets/icon/logoMind/mind_logo_branca.png"
+            alt="logo MIND"
+          />
         </div>
+        <div class="logo-text">
+          <h2 class="logo-title">MIND</h2>
+          <h5 class="logo-subtitle">OBSERVABILIDADE</h5>
+        </div>
+      </header>
+      <!-- INICIO DA NAV BAR -->
+      <nav class="sidebar-nav">
+        <section class="nav-section">
+          <!-- TODO: FAZER DIFERENÇA ENTRE FORNECEDOR E CLIENTE QUANDO SE CONECTA NO SISTEMA -->
+          <h4 class="nav-section-title" id="nav_title">FLUXO DO CLIENTE</h4>
+          <ul class="nav-list" id="nav_flow"></ul>
+        </section>
+        <section class="nav-section">
+          <h4 class="nav-section-title">CONFIGURAÇÕES</h4>
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a class="nav-link" id="btn_config">
+                <i class="bi bi-gear"></i>
+                Configuração de usuario
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                href="https://equipe-mind.atlassian.net/servicedesk/customer/portal/2"
+                class="nav-link"
+                target="_blank"
+              >
+                <i class="bi bi-question-circle"></i>
+                Ajuda
+              </a>
+            </li>
+          </ul>
+        </section>
+        <section class="nav-section">
+          <h4 class="nav-section-title">SAIR</h4>
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a class="nav-link" id="btn_logout" href="./../login.html">
+                <i class="bi bi-box-arrow-right"></i>
+                LOGOUT
+              </a>
+            </li>
+          </ul>
+        </section>
+      </nav>
+      <!-- CARD DO USUARIO -->
+      <footer class="user-card">
+        <div class="img-card">
+          <img
+            src="../assets/imgs/fotosUsuarios/foto_padrao.png"
+            alt="Foto do usuário"
+            id="imgUser"
+            onerror="
+              this.onerror = null;
+              this.src = '../assets/imgs/fotosUsuarios/foto_padrao.png';
+            "
+          />
+        </div>
+        <div class="text-card">
+          <p id="nomeUsuario" class="text-user-name">Rogerio Andrade</p>
+          <p id="tipoUsuario" class="text-user-type">CLIENTE</p>
+        </div>
+      </footer>
+      <!-- CONFIGURAÇÕES DO USUARIO -->
+      <div class="overlay_config" id="overlay_config">
+        <div class="modal_config">
+          <div class="modal_header">
+            <h2>Configurações</h2>
+            <button type="button" class="btn_fechar" id="btn_fechar_config">
+              ✖
+            </button>
+          </div>
+
+          <form id="form_config" class="form-config">
+            <div class="input_group file_group">
+              <img
+                src="../assets/imgs/fotosUsuarios/foto_padrao.png"
+                alt="Preview da Foto"
+                id="preview_foto_modal"
+                class="preview-foto-modal"
+              />
+              <div class="file_upload_wrapper">
+                <label for="input_foto" class="btn_upload"
+                  >Escolher nova foto</label
+                >
+                <input
+                  type="file"
+                  id="input_foto"
+                  name="foto_perfil"
+                  accept="image/*"
+                />
+              </div>
+            </div>
+
+            <div class="input_group">
+              <label for="input_nome">Nome de usuário</label>
+              <input
+                type="text"
+                id="input_nome"
+                name="nome"
+                placeholder="Digite seu novo nome"
+              />
+            </div>
+
+            <div class="input_group">
+              <label for="input_senha">Nova senha</label>
+              <input
+                type="password"
+                id="input_senha"
+                name="senha"
+                placeholder="Deixe em branco para manter"
+              />
+            </div>
+
+            <button
+              onclick="salvarConfiguracoes()"
+              type="button"
+              class="btn_salvar"
+            >
+              Salvar Alterações
+            </button>
+          </form>
+        </div>
+      </div>
     </aside>
 
     <main class="main">
-        <header class="header-main">
-            <h1 class="title-management">CLPs</h1>
-            <p class="subtitle-management">Gerencie seus CLPs.</p>
-        </header>
+      <header class="header-main">
+        <h1 class="title-management">CLPs</h1>
+        <p class="subtitle-management">Gerencie seus CLPs.</p>
+      </header>
 
-        <section class="toolbar-management">
-            <div class="search-management">
-                <i class="bi bi-search"></i>
-                <input type="text" class="search-management-input" id="input_busca" placeholder="Buscar por apelido">
-            </div>
-            <div class="btn-management-content">
-                <button type="button" class="btn-management" id="btn_add_clp" title="Adicionar CLP">
-                    + Adicionar clp
-                </button>
-            </div>
-        </section>
+      <section class="toolbar-management">
+        <div class="search-management">
+          <i class="bi bi-search"></i>
+          <input
+            type="text"
+            class="search-management-input"
+            id="input_busca"
+            placeholder="Buscar por apelido"
+          />
+        </div>
+        <div class="btn-management-content">
+          <button
+            type="button"
+            class="btn-management"
+            id="btn_add_clp"
+            title="Adicionar CLP"
+          >
+            + Adicionar clp
+          </button>
+          <button
+            type="button"
+            class="btn-management"
+            id="btn_add_localizacao"
+            title="Localização CLP"
+          >
+            + Adicionar localização
+          </button>
+        </div>
+      </section>
 
-        <!-- TABELA DE CLPs -->
-        <section class="table-card-management">
-            <table class="table-management">
-                <thead>
-                    <tr>
-                        <th>STATUS</th>
-                        <th>MODELO</th>
-                        <th>APELIDO</th>
-                        <th>LOCALIZAÇÃO</th>
-                        <th>DATA DE CRIAÇÃO</th>
-                        <th>DATA DE ATUALIZAÇÃO</th>
-                        <th class="management-col-actions">Ações</th>
-                    </tr>
-                </thead>
+      <!-- TABELA DE CLPs -->
+      <section class="table-card-management">
+        <table class="table-management">
+          <thead>
+            <tr>
+              <th>STATUS</th>
+              <th>MODELO</th>
+              <th>APELIDO</th>
+              <th>LOCALIZAÇÃO</th>
+              <th>DATA DE CRIAÇÃO</th>
+              <th>DATA DE ATUALIZAÇÃO</th>
+              <th class="management-col-actions">Ações</th>
+            </tr>
+          </thead>
 
-                <tbody id="table_clps">
-                    <!-- linhas geradas pelo clp.js -->
-                </tbody>
-            </table>
+          <tbody id="table_clps">
+            <!-- linhas geradas pelo clp.js -->
+          </tbody>
+        </table>
 
-            <footer class="table-footer-management">
-                <span id="total_clps">0 clps</span>
-            </footer>
-        </section>
+        <footer class="table-footer-management">
+          <span id="total_clps">0 clps</span>
+        </footer>
+      </section>
     </main>
 
     <!-- ===== ADICIONAR CLP ===== -->
     <div class="overlay_config" id="overlay_add_clp">
-        <div class="modal_config modal-clp">
-            <h2 class="modal-clp-titulo centro">Adicionar CLP</h2>
+      <div class="modal_config modal-clp">
+        <h2 class="modal-clp-titulo centro">Adicionar CLP</h2>
 
-            <form id="form_adicionar_clp" novalidate>
-                <div class="grade-clp">
-                    <div class="campo-clp">
-                        <label for="select_adicionar_modelo">Modelo<span class="obrigatorio">*</span></label>
-                        <select id="select_adicionar_modelo">
-                            <option value="" disabled selected>Selecione</option>
-                            <!-- opções geradas pelo clp.js -->
-                        </select>
-                    </div>
+        <form id="form_adicionar_clp" novalidate>
+          <div class="grade-clp">
+            <div class="campo-clp">
+              <label for="select_adicionar_modelo"
+                >Modelo<span class="obrigatorio">*</span></label
+              >
+              <select id="select_adicionar_modelo">
+                <option value="" disabled selected>Selecione</option>
+                <!-- opções geradas pelo clp.js -->
+              </select>
+            </div>
 
-                    <div class="campo-clp">
-                        <label for="select_adicionar_status">Status<span class="obrigatorio">*</span></label>
-                        <select id="select_adicionar_status">
-                            <option value="1" selected>Ativo</option>
-                            <option value="0">Inativo</option>
-                        </select>
-                    </div>
+            <div class="campo-clp">
+              <label for="select_adicionar_status"
+                >Status<span class="obrigatorio">*</span></label
+              >
+              <select id="select_adicionar_status">
+                <option value="1" selected>Ativo</option>
+                <option value="0">Inativo</option>
+              </select>
+            </div>
 
-                    <div class="campo-clp">
-                        <label for="input_adicionar_localizacao">Localização<span class="obrigatorio">*</span></label>
-                        <input type="text" id="input_adicionar_localizacao" placeholder="Localização do CLP" maxlength="100">
-                    </div>
+            <div class="campo-clp">
+              <label for="select_adicionar_localizacao"
+                >Localização<span class="obrigatorio">*</span></label
+              >
+              <select id="select_adicionar_localizacao">
+                <option value="" disabled selected>Selecione</option>
+                <!-- opções geradas pelo clp.js -->
+              </select>
+            </div>
 
-                    <div class="campo-clp">
-                        <label for="input_adicionar_apelido">Apelido<span class="obrigatorio">*</span></label>
-                        <input type="text" id="input_adicionar_apelido" placeholder="Digite o apelido" maxlength="100">
-                    </div>
-                </div>
+            <div class="campo-clp">
+              <label for="input_adicionar_apelido"
+                >Apelido<span class="obrigatorio">*</span></label
+              >
+              <input
+                type="text"
+                id="input_adicionar_apelido"
+                placeholder="Digite o apelido"
+                maxlength="100"
+              />
+            </div>
+          </div>
 
-                <p class="equipe-modal-erro" id="erro_adicionar_clp"></p>
+          <p class="equipe-modal-erro" id="erro_adicionar_clp"></p>
 
-                <div class="botoes-clp">
-                    <button type="button" class="btn-clp vermelho" id="btn_cancelar_adicionar">Cancelar</button>
-                    <button type="submit" class="btn-clp verde" id="btn_confirmar_adicionar">Confirmar</button>
-                </div>
-            </form>
-        </div>
+          <div class="botoes-clp">
+            <button
+              type="button"
+              class="btn-clp vermelho"
+              id="btn_cancelar_adicionar"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn-clp verde"
+              id="btn_confirmar_adicionar"
+            >
+              Confirmar
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- ===== EDITAR CLP ===== -->
     <div class="overlay_config" id="overlay_edit_clp">
-        <div class="modal_config modal-clp">
-            <h2 class="modal-clp-titulo esquerda">Editar CLP</h2>
+      <div class="modal_config modal-clp">
+        <h2 class="modal-clp-titulo esquerda">Editar CLP</h2>
 
-            <form id="form_editar_clp" novalidate>
-                <div class="grade-clp">
-                    <div class="campo-clp">
-                        <label for="select_editar_modelo">Modelo<span class="obrigatorio">*</span></label>
-                        <select id="select_editar_modelo">
-                            <!-- opções geradas pelo clp.js -->
-                        </select>
-                    </div>
+        <form id="form_editar_clp" novalidate>
+          <div class="grade-clp">
+            <div class="campo-clp">
+              <label for="select_editar_modelo"
+                >Modelo<span class="obrigatorio">*</span></label
+              >
+              <select id="select_editar_modelo">
+                <!-- opções geradas pelo clp.js -->
+              </select>
+            </div>
 
-                    <div class="campo-clp">
-                        <label for="select_editar_status">Status<span class="obrigatorio">*</span></label>
-                        <select id="select_editar_status">
-                            <option value="1">Ativo</option>
-                            <option value="0">Inativo</option>
-                        </select>
-                    </div>
+            <div class="campo-clp">
+              <label for="select_editar_status"
+                >Status<span class="obrigatorio">*</span></label
+              >
+              <select id="select_editar_status">
+                <option value="1">Ativo</option>
+                <option value="0">Inativo</option>
+              </select>
+            </div>
 
-                    <div class="campo-clp">
-                        <label for="input_editar_localizacao">Localização<span class="obrigatorio">*</span></label>
-                        <input type="text" id="input_editar_localizacao" placeholder="Localização do CLP" maxlength="100">
-                    </div>
+            <div class="campo-clp">
+              <label for="select_editar_localizacao"
+                >Localização<span class="obrigatorio">*</span></label
+              >
+              <select id="select_editar_localizacao">
+                <!-- opções geradas pelo clp.js -->
+              </select>
+            </div>
 
-                    <div class="campo-clp">
-                        <label for="input_editar_apelido">Apelido<span class="obrigatorio">*</span></label>
-                        <input type="text" id="input_editar_apelido" placeholder="Digite o apelido" maxlength="100">
-                    </div>
-                </div>
+            <div class="campo-clp">
+              <label for="input_editar_apelido"
+                >Apelido<span class="obrigatorio">*</span></label
+              >
+              <input
+                type="text"
+                id="input_editar_apelido"
+                placeholder="Digite o apelido"
+                maxlength="100"
+              />
+            </div>
+          </div>
 
-                <p class="equipe-modal-erro" id="erro_editar_clp"></p>
+          <p class="equipe-modal-erro" id="erro_editar_clp"></p>
 
-                <div class="botoes-clp">
-                    <button type="button" class="btn-clp vermelho" id="btn_cancelar_editar">Cancelar</button>
-                    <button type="submit" class="btn-clp verde" id="btn_confirmar_editar">Confirmar</button>
-                </div>
-            </form>
-        </div>
+          <div class="botoes-clp">
+            <button
+              type="button"
+              class="btn-clp vermelho"
+              id="btn_cancelar_editar"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn-clp verde"
+              id="btn_confirmar_editar"
+            >
+              Confirmar
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- ===== EXCLUIR CLP ===== -->
     <div class="overlay_config" id="overlay_remove_clp">
-        <div class="modal_config modal-clp modal-clp-estreito">
-            <p class="texto-excluir">Tem certeza que quer excluir o <strong><span id="nome_remover_clp"></span> ?</strong></p>
+      <div class="modal_config modal-clp modal-clp-estreito">
+        <p class="texto-excluir">
+          Tem certeza que quer excluir o
+          <strong><span id="nome_remover_clp"></span> ?</strong>
+        </p>
 
-            <form id="form_remover_clp" novalidate>
-                <div class="campo-excluir">
-                    <!-- o placeholder recebe o apelido do CLP (feito pelo clp.js) -->
-                    <input type="text" id="input_remover_clp" placeholder="" autocomplete="off">
-                    <small>Digite para confirmar</small>
-                </div>
+        <form id="form_remover_clp" novalidate>
+          <div class="campo-excluir">
+            <!-- o placeholder recebe o apelido do CLP (feito pelo clp.js) -->
+            <input
+              type="text"
+              id="input_remover_clp"
+              placeholder=""
+              autocomplete="off"
+            />
+            <small>Digite para confirmar</small>
+          </div>
 
-                <p class="equipe-modal-erro" id="erro_remover_clp"></p>
+          <p class="equipe-modal-erro" id="erro_remover_clp"></p>
 
-                <div class="botoes-clp">
-                    <button type="button" class="btn-clp verde" id="btn_cancelar_remover">Cancelar</button>
-                    <button type="submit" class="btn-clp vermelho" id="btn_confirmar_remover">Excluir</button>
-                </div>
-            </form>
-        </div>
+          <div class="botoes-clp">
+            <button
+              type="button"
+              class="btn-clp verde"
+              id="btn_cancelar_remover"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn-clp vermelho"
+              id="btn_confirmar_remover"
+            >
+              Excluir
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- ===== ESCOLHER O QUE MONITORAR ===== -->
     <div class="overlay_config" id="overlay_monitor_clp">
-        <div class="modal_config modal-clp modal-clp-monitorar">
-            <div class="modal-clp-topo">
-                <h2 class="modal-clp-titulo">Escolha o que deseja monitorar</h2>
-                <button type="button" class="btn_fechar" id="btn_fechar_monitorar" title="Fechar">✖</button>
-            </div>
-
-            <form id="form_monitorar_clp" novalidate>
-                <div class="caixa-monitorar">
-                    <h3 class="caixa-monitorar-titulo">Selecionados</h3>
-
-                    <!-- linhas geradas pelo clp.js (CPU, RAM e Swap já vêm marcados) -->
-                    <div class="lista-monitorar" id="lista_monitorar"></div>
-
-                    <div class="linha-adicionar">
-                        <label class="rotulo-adicionar" for="select_adicionar_recurso">
-                            <i class="bi bi-plus-lg"></i> Adicionar
-                        </label>
-                        <select id="select_adicionar_recurso">
-                            <option value="" selected>Selecione</option>
-                            <!-- opções geradas pelo clp.js -->
-                        </select>
-                    </div>
-                </div>
-
-                <p class="equipe-modal-erro" id="erro_monitorar_clp"></p>
-
-                <div class="botoes-clp">
-                    <button type="button" class="btn-clp vermelho" id="btn_cancelar_monitorar">Cancelar</button>
-                    <button type="submit" class="btn-clp verde" id="btn_confirmar_monitorar">Confirmar</button>
-                </div>
-            </form>
+      <div class="modal_config modal-clp modal-clp-monitorar">
+        <div class="modal-clp-topo">
+          <h2 class="modal-clp-titulo">Escolha o que deseja monitorar</h2>
+          <button
+            type="button"
+            class="btn_fechar"
+            id="btn_fechar_monitorar"
+            title="Fechar"
+          >
+            ✖
+          </button>
         </div>
+
+        <form id="form_monitorar_clp" novalidate>
+          <div class="caixa-monitorar">
+            <h3 class="caixa-monitorar-titulo">Selecionados</h3>
+
+            <!-- linhas geradas pelo clp.js (CPU, RAM e Swap já vêm marcados) -->
+            <div class="lista-monitorar" id="lista_monitorar"></div>
+
+            <div class="linha-adicionar">
+              <label class="rotulo-adicionar" for="select_adicionar_recurso">
+                <i class="bi bi-plus-lg"></i> Adicionar
+              </label>
+              <select id="select_adicionar_recurso">
+                <option value="" selected>Selecione</option>
+                <!-- opções geradas pelo clp.js -->
+              </select>
+            </div>
+          </div>
+
+          <p class="equipe-modal-erro" id="erro_monitorar_clp"></p>
+
+          <div class="botoes-clp">
+            <button
+              type="button"
+              class="btn-clp vermelho"
+              id="btn_cancelar_monitorar"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn-clp verde"
+              id="btn_confirmar_monitorar"
+            >
+              Confirmar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ===== ADICIONAR LOCALIZAÇÃO ===== -->
+    <div class="overlay_config" id="overlay_add_localizacao">
+      <div class="modal_config modal-clp modal-clp-estreito">
+        <h2 class="modal-clp-titulo centro">Adicionar Localização</h2>
+
+        <form id="form_adicionar_localizacao" novalidate>
+          <div class="campo-clp">
+            <label for="input_nome_localizacao"
+              >Nome do setor <span class="obrigatorio">*</span></label
+            >
+            <input
+              type="text"
+              id="input_nome_localizacao"
+              placeholder="Ex.: Planta Industrial - Linha 03"
+              maxlength="255"
+            />
+          </div>
+
+          <p class="equipe-modal-erro" id="erro_adicionar_localizacao"></p>
+
+          <div class="botoes-clp">
+            <button
+              type="button"
+              class="btn-clp vermelho"
+              id="btn_cancelar_localizacao"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn-clp verde"
+              id="btn_confirmar_localizacao"
+            >
+              Confirmar
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <script src="../js/sessao.js"></script>
     <script src="../js/configuracoes.js"></script>
     <script src="../js/sidebar.js"></script>
     <script src="../js/clp.js"></script>
-</body>
-
+  </body>
 </html>

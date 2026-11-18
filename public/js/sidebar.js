@@ -12,7 +12,7 @@ function renderAside() {
         },
         "cliente": {
             "pages": [
-                { nome: "Dashboard", icone: "bi-bar-chart-fill", link: "./dashboard-cliente.html" },
+                { nome: "Dashboard", icone: "bi-bar-chart-fill", link: "./dashboard-micro-clp.html" },
                 { nome: "Gerenciamento clps", icone: "bi-cpu", link: "./gerenciamento-clp.html" }
             ]
         }
