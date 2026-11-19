@@ -42,4 +42,8 @@ router.post("/adicionarLocalizacao/:idEmpresa", function (req, res){
     clpController.adicionarLocalizacao(req, res);
 });
 
+router.get("/baixarScript/:idClp/:idEmpresa", function (req, res) {
+    clpController.baixarScript(req, res);
+});
+
 module.exports = router;

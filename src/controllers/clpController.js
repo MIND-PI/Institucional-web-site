@@ -194,6 +194,7 @@ function adicionarLocalizacao(req, res){
     
 }
 
+// Baixa o script de captura python
 function baixarScript(req, res) {
     var idClp = req.params.idClp;
     var idEmpresa = req.params.idEmpresa;
