@@ -427,6 +427,7 @@
             GraficoTempoResolucao();
             GraficoHeatmap();
             GraficoClpsMaisChamados();
+            await analisarDashboardIA();
         } catch (erro) {
             console.error("Erro ao carregar dashboard:", erro);
         }
@@ -915,6 +916,56 @@
                 }
             }
         });
+    }
+
+
+
+    async function analisarDashboardIA() {
+
+        const status = document.querySelector('.ia-status');
+
+        const diagnostico = document.getElementById('ia-diagnostico');
+        const acao = document.getElementById('ia-acao');
+        const justificativa = document.getElementById('ia-justificativa');
+
+        try {
+
+            status.textContent = 'Analisando dados...';
+
+            const resposta = await fetch('/ia/jira', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    nomeUsuario: document.getElementById('nomeUsuario').textContent.trim(),
+                    dados: chamadosJira
+                })
+            });
+
+            if (!resposta.ok) {
+                throw new Error('Erro ao solicitar análise da IA.');
+            }
+
+            const resultado = await resposta.json();
+
+            diagnostico.textContent = resultado.diagnostico;
+            acao.textContent = resultado.acao;
+            justificativa.textContent = resultado.justificativa;
+
+            status.textContent = 'Análise concluída';
+
+        } catch (erro) {
+
+            console.error('Erro na análise da IA:', erro);
+
+            status.textContent = 'Erro na análise';
+
+            diagnostico.textContent = 'Não foi possível analisar os dados.';
+            acao.textContent = 'Tente atualizar a dashboard.';
+            justificativa.textContent = '';
+
+        }
     }
 
 
