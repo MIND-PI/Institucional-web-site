@@ -563,10 +563,17 @@ main {
 
 .ia-message p,
 .user-message p {
-    background-color: var(--color-bg-secondary);
-    width: 40%;
     padding: 1rem;
     border-radius: 1rem;
+    max-width: 85%;
+}
+
+.ia-message p{
+    border: 1px solid var(--color-border);
+}
+
+.user-message p {
+    background-color: var(--color-bg-secondary);
 }
 
 .ia-message,
