@@ -497,6 +497,26 @@ async function getClpAlert(period) {
 
     return json
 }
+
+// Buscar medições / parâmetros do CLP (limites)
+async function getMedicoes() {
+    let id_plc = select_clps.value
+    let id_empresa = sessionStorage.getItem("ID_EMPRESA")
+
+    // Segue o padrão das outras chamadas: rota /clp/listarMedicoes/:idClp/:idEmpresa
+    let response = await fetch(`/clp/listarMedicoes/${id_plc}/${id_empresa}`, {
+        method: "GET"
+    })
+
+    if (!response.ok) {
+        console.log("Não foi possível listar medições do clp")
+        return []
+    }
+
+    let json = await response.json()
+    return json
+}
+
 // ============================
 // CHAMANDO FUNÇÕES DE CARREGAMENTO DE TELA
 // ============================
@@ -687,6 +707,18 @@ async function loadData() {
     let dataMicroJson = dataMicro.length > 0 ? dataMicro[0] : null
 
     let dataAlert = await getClpAlert(period)
+    // obter medições/limites configurados para o CLP
+    let medicoes = await getMedicoes()
+    // filtrar apenas as medições monitoradas (monitorado == 1) e mapear os campos solicitados
+    let parametros_liberados = []
+
+    parametros_liberados = (Array.isArray(medicoes) ? medicoes : []).filter(m => Number(m.monitorado) === 1).map(m => {
+        return {
+            nome: m.nome,
+            unidade_medida: m.unidade_medida,
+            parametro: m.parametro
+        }
+    })
 
     renderClpInfo(clp[0], timestamp)
     renderKpiPerformance(dataMicroJson, graph_type.value, data_performance)
@@ -695,6 +727,61 @@ async function loadData() {
     plotarGraficoPizza(dataMicroJson)
     renderMetrics(metrics, graph_type.value)
     renderKpiAlert(dataAlert, period)
+
+
+    // Montar payload enxuto com apenas os campos essenciais para o chatbot,
+    // evitando enviar arrays grandes (economiza tokens).
+    const metricKeys = ["scanTime", "cpu", "ram"]
+
+    const snapshotMetrics = {}
+    metricKeys.forEach(key => {
+        const cfg = configGraficoLinha[key]
+        const campo = cfg.campo
+        const pico_field = cfg.pico
+        const min_field = cfg.minimo
+        const atual_field = cfg.atual
+
+        const perf_last = (data_performance && data_performance.length > 0) ? Number(data_performance[0][campo]) : null
+        const perf_first = (data_performance && data_performance.length > 0) ? Number(data_performance[data_performance.length - 1][campo]) : null
+        const pred_first = (data_predict && data_predict.length > 0) ? Number(data_predict[0][campo]) : null
+        const pred_last = (data_predict && data_predict.length > 0) ? Number(data_predict[data_predict.length - 1][campo]) : null
+
+        const minimo = dataMicroJson ? Number(dataMicroJson[min_field]) : null
+        const pico = dataMicroJson ? Number(dataMicroJson[pico_field]) : null
+        const atual = dataMicroJson ? Number(dataMicroJson[atual_field]) : null
+
+        snapshotMetrics[key] = {
+            minimo,
+            pico,
+            atual,
+            pred_first,
+            pred_last,
+            perf_first,
+            perf_last
+        }
+    })
+
+    const dashboardPayload = {
+        essentials: {
+            metrics: snapshotMetrics,
+            alertas_count: (dataAlert && dataAlert.length) ? dataAlert.length : 0,
+            anomalias: dataMicroJson?.acima_limite || null,
+            previsao_risco: dataMicroJson?.risco_predicao || null,
+            health_score: dataMicroJson?.health_score || null,
+            health_score_status: dataMicroJson?.health_score_status || null
+        },
+        indicadores_modelo: metrics || null,
+        parametros_limite: parametros_liberados,
+        meta: {
+            nome_modelo: clp && clp[0] ? clp[0].nome_modelo : null,
+            setor: clp && clp[0] ? clp[0].localizacao : null,
+            mac_address: clp && clp[0] ? clp[0].mac_address : null,
+            ultima_atualizacao: timestamp
+        }
+    }
+
+    sessionStorage.setItem("DASHBOARD_PAYLOAD", JSON.stringify(dashboardPayload))
+
 }
 
 // ============================
