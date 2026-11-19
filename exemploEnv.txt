@@ -1,0 +1,33 @@
+AMBIENTE_PROCESSO=producao
+
+# Configurações de conexão com o banco de dados
+DB_HOST='ip'
+DB_DATABASE='nomeDoBd'
+DB_USER='usuario'
+DB_PASSWORD='senha'
+DB_PORT=
+
+
+# Configurações do servidor de aplicação
+APP_PORT=3333
+APP_HOST=localhost
+SMTP_USER=email
+SMTP_PASS=senha
+
+# importante: caso sua senha contenha caracteres especiais, insira-a entre 'aspas'
+# o banco e o usuário serão criados pelo script src/database/script-tabelas.sql
+
+# bucket das FOTOS
+BUCKET_NAME='nome'
+
+# bucket dos DADOS (bronze/silver/gold), que vai dentro do zip
+SCRIPT_BUCKET_NAME='nome'
+
+# os dois buckets devem estar NA MESMA REGIÃO
+BUCKET_REGION='us-east-1'
+
+# --- Credenciais que vão dentro do zip do script de captura ---
+# use os mesmos valores que você já coloca no .env do script Python
+SCRIPT_AWS_ACCESS_KEY_ID=<cole aqui>
+SCRIPT_AWS_SECRET_ACCESS_KEY=<cole aqui>
+SCRIPT_AWS_SESSION_TOKEN=<cole aqui, ou deixe vazio se não tiver>

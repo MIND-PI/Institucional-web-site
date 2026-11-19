@@ -546,6 +546,9 @@ document
     if (evento.target.closest(".management-btn-edit")) abrirModalEditar(linha);
     if (evento.target.closest(".management-btn-monitor"))
       abrirModalMonitorar(linha);
+    if (evento.target.closest(".management-btn-download")) {
+      window.location.href = `/clp/baixarScript/${linha.dataset.id}/${sessionStorage.getItem("ID_EMPRESA")}`;
+    }
   });
 
 // FETCHES DO BANCO
@@ -578,7 +581,9 @@ function loadActions() {
         </button>`;
 
   if (sessionStorage.getItem("CARGO_USUARIO") === "administrador") {
-    actions += `<button type="button" class="management-btn-icon management-btn-edit" title="Editar">
+    actions += `<button type="button" class="management-btn-icon management-btn-download" title="Baixar script de captura">
+                <i class="bi bi-download"></i></button>
+            <button type="button" class="management-btn-icon management-btn-edit" title="Editar">
                 <i class="bi bi-pencil-square"></i></button>
             <button type="button" class="management-btn-icon management-btn-delete" title="Remover">
                 <i class="bi bi-trash3"></i></button>`;

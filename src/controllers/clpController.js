@@ -220,10 +220,10 @@ function baixarScript(req, res) {
                 "ID_FORNECEDOR=" + clp.fornecedorId,
                 "INTERVALO_MIN=15",
                 "",
-                "AWS_ACCESS_KEY_ID=" + (process.env.AWS_ACCESS_KEY_ID || ""),
-                "AWS_SECRET_ACCESS_KEY=" + (process.env.AWS_SECRET_ACCESS_KEY || ""),
-                "AWS_SESSION_TOKEN=" + (process.env.AWS_SESSION_TOKEN || ""),
-                "AWS_BUCKET_NAME=" + (process.env.BUCKET_NAME || "")
+                "AWS_ACCESS_KEY_ID=" + (process.env.SCRIPT_AWS_ACCESS_KEY_ID || ""),
+                "AWS_SECRET_ACCESS_KEY=" + (process.env.SCRIPT_AWS_SECRET_ACCESS_KEY || ""),
+                "AWS_SESSION_TOKEN=" + (process.env.SCRIPT_AWS_SESSION_TOKEN || ""),
+                "AWS_BUCKET_NAME=" + (process.env.SCRIPT_BUCKET_NAME || "")
             ].join("\n");
 
             res.attachment("mind-captura-clp-" + clp.idClp + ".zip");
