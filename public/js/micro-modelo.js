@@ -150,7 +150,6 @@ function criarGraficoEvolucao() {
                 pointHoverRadius: 4
             },
             {
-                // linha tracejada da meta (valores preenchidos em atualizarEvolucao)
                 label: `Meta (${metaHealthScore})`,
                 data: [],
                 borderColor: '#ffffff',
