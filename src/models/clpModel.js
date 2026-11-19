@@ -51,7 +51,9 @@ function adicionarClp(nome, localizacaoId, status, modeloId, empresaId, medicoes
         INSERT INTO clp_medicao (clpId, tipoMedicaoId, status, parametro)
         VALUES ${valores};
         `;
-        return database.executar(instrucaoMedicoes);
+        return database.executar(instrucaoMedicoes).then(function (){
+            return { idClp: idNovo};
+        });
     });
 }
 
