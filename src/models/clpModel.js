@@ -157,6 +157,17 @@ function adicionarLocalizacao(nome, idEmpresa){
     return database.executar(instrucaoSql);
 }
 
+function buscarDadosScript(idClp, idEmpresa) {
+    var instrucaoSql = `
+    SELECT c.idClp, c.empresaId, c.modeloId,
+           m.nome AS modeloNome, m.empresaId AS fornecedorId
+    FROM clp c
+    JOIN modelo m ON m.idmodelo = c.modeloId
+    WHERE c.idClp = ${idClp} AND c.empresaId = ${idEmpresa};
+    `;
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     listarClps,
     listarModelosDisponiveis,
@@ -168,5 +179,6 @@ module.exports = {
     listarTiposMedicao,
     deletarClp,
     listarLocalizacoes,
-    adicionarLocalizacao
+    adicionarLocalizacao,
+    buscarDadosScript
 }
