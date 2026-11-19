@@ -163,7 +163,7 @@
             </div>
 
             <div class="kpi-box">
-                <p class="kpi-title">Anomalias detectadas</p>
+                <p class="kpi-title">Fora do limite</p>
                 <p class="kpi-result-big" id="anomalies_detected">CPU e RAM</p>
                 <p class="kpi-time">Registros acima do limite previsto</p>
             </div>
@@ -302,19 +302,6 @@
                     <button class="btn-close-chat" id="btn_close_chat"><i class="bi bi-x"></i>Fechar chat</button>
                 </div>
                 <div class="content-chat">
-                    <div class="ia-message">
-                        <div>
-                            <img src="../assets/icon/MIND .png" alt="Logo do bot da mind">
-                        </div>
-                        <p>AAAAAAAAA AAAA AA </p>
-                    </div>
-                    <div class="user-message">
-                        <p>AAAAAAAAA AAAA AA</p>
-                        <div class="img-card">
-                            <img src="../assets/imgs/fotosUsuarios/foto_padrao.png" alt="Foto do usuário" id="imgUser"
-                                onerror="this.onerror=null; this.src='../assets/imgs/fotosUsuarios/foto_padrao.png'">
-                        </div>
-                    </div>
                 </div>
 
             </div>
@@ -325,7 +312,8 @@
                     <div></div>
                 </div>
                 <div class="chat-input">
-                    <input type="text" placeholder="Pergunte algo a ia">
+                    <input id="chat_input" type="text" placeholder="Pergunte algo a ia">
+                    <button id="btn_send_chat" class="btn-send-chat" type="button">Enviar</button>
                 </div>
             </div>
         </section>
