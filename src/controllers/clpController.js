@@ -1,4 +1,6 @@
 var clpModel = require("../models/clpModel");
+var archiver = require("archiver");
+var path = require("path");
 
 function listarClps(req, res) {
 
@@ -192,6 +194,47 @@ function adicionarLocalizacao(req, res){
     
 }
 
+function baixarScript(req, res) {
+    var idClp = req.params.idClp;
+    var idEmpresa = req.params.idEmpresa;
+
+    if (isNaN(idClp) || isNaN(idEmpresa)) {
+        res.status(400).send("Id do CLP ou da empresa inválido!");
+        return;
+    }
+
+    clpModel.buscarDadosScript(idClp, idEmpresa)
+        .then(function (resultado) {
+            if (resultado.length == 0) {
+                res.status(404).send("CLP não encontrado!");
+                return;
+            }
+            var clp = resultado[0];
+
+            var env = [
+                "ID_CLP=" + clp.idClp,
+                "ID_EMPRESA=" + clp.empresaId,
+                "MODELO_CLP_MONITORADO=" + clp.modeloId,
+                'NOME_MODELO_CLP="' + clp.modeloNome + '"',
+                "ID_FORNECEDOR=" + clp.fornecedorId,
+                "INTERVALO_MIN=15",
+                "",
+                "AWS_ACCESS_KEY_ID=" + (process.env.AWS_ACCESS_KEY_ID || ""),
+                "AWS_SECRET_ACCESS_KEY=" + (process.env.AWS_SECRET_ACCESS_KEY || ""),
+                "AWS_SESSION_TOKEN=" + (process.env.AWS_SESSION_TOKEN || ""),
+                "AWS_BUCKET_NAME=" + (process.env.BUCKET_NAME || "")
+            ].join("\n");
+
+            res.attachment("mind-captura-clp-" + clp.idClp + ".zip");
+            var zip = archiver("zip");
+            zip.on("error", function (erro) { console.log(erro); res.end(); });
+            zip.pipe(res);
+            zip.append(env, { name: ".env" });
+            zip.directory(path.join(__dirname, "../templates/captura"), false);
+            zip.finalize();
+        })
+        .catch(function (erro) { console.log(erro); res.status(500).json(erro.sqlMessage); });
+}
 
 
 module.exports = {                                    
@@ -204,5 +247,6 @@ module.exports = {
     listarTiposMedicao,
     deletarClp,
     adicionarLocalizacao,
-    listarLocalizacoes
+    listarLocalizacoes,
+    baixarScript
 };
