@@ -72,6 +72,10 @@ async function sendMessage() {
         return
     }
 
+    // obter histórico (array) do sessionStorage ou criar novo
+    let history = JSON.parse(sessionStorage.getItem("HISTORICO_IA") || "[]")
+    history.push({ userMessage: text })
+
     // Mostrar mensagem do usuário na UI
     appendUserMessage(text)
     chatInput.value = ""
@@ -92,7 +96,8 @@ async function sendMessage() {
             body: JSON.stringify({
                 nomeUsuario: nomeUsuario,
                 pergunta: text,
-                dados: dados
+                dados: dados,
+                history: history
             })
         })
 
@@ -104,8 +109,11 @@ async function sendMessage() {
 
         const json = await resp.json()
         const reply = json.reply || "Sem resposta"
-        botElem.querySelector("p").innerText = reply
+        botElem.querySelector("p").innerHTML = reply
         scrollChatToBottom()
+
+        history.push({ ia: { reply } })
+        sessionStorage.setItem("HISTORICO_IA", JSON.stringify(history))
     } catch (e) {
         botElem.querySelector("p").innerText = "Erro na conexão com a IA"
         console.error(e)
@@ -123,28 +131,37 @@ async function sendMessageHtml() {
     const text_ia = document.getElementById("text_suport_ia")
     text_ia.innerHTML = "Carregando mensagem..."
 
+
     try {
         const resp = await fetch("/ia/response-micro/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 nomeUsuario: nomeUsuario,
-                pergunta: text,
-                dados: dados
+                pergunta: null,
+                dados: dados,
             })
         })
 
         if (!resp.ok) {
             const err = await resp.json().catch(() => ({}))
-            botElem.querySelector("p").innerText = err.erro || "Sem dados para uma resposta elaborada"
+            text_ia.innerText = err.erro || "Sem dados para uma resposta elaborada"
             return
         }
 
         const json = await resp.json()
         const reply = json.reply || "Sem dados para uma resposta elaborada"
-        botElem.querySelector("p").innerText = reply
+        text_ia.innerHTML = reply
+
+        // salvar/atualizar histórico com a resposta gerada
+        let history = JSON.parse(sessionStorage.getItem("HISTORICO_IA") || "[]")
+
+        history.push({ ia: reply })
+        
+        sessionStorage.setItem("HISTORICO_IA", JSON.stringify(history))
+        console.log("HISTORICO_IA:", sessionStorage.getItem("HISTORICO_IA"))
     } catch (e) {
-        botElem.querySelector("p").innerText = "Erro na conexão com a IA"
+        text_ia.innerText = "Erro na conexão com a IA"
         console.error(e)
     }
 }
@@ -157,3 +174,6 @@ chatInput.addEventListener("keydown", (e) => {
         sendMessage()
     }
 })
+
+// Executa sendMessageHtml somente após o dashboard ter populado o payload.
+sendMessageHtml()
