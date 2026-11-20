@@ -488,7 +488,11 @@
                     label: 'Ocorrências por recurso',
                     data: qtdChamados,
 
-                    backgroundColor: '#06B6D4',
+                    backgroundColor: qtdChamados.map(qtd => {
+                        if (qtd <= 3) return '#0E7490';
+                        if (qtd <= 7) return '#D97706';
+                        return '#DC2626';
+                    }),
                     borderRadius: 5,
                     borderSkipped: false
                 }]
@@ -868,7 +872,11 @@
                 datasets: [{
                     label: 'Ocorrências por CLP',
                     data: qtdChamados,
-                    backgroundColor: '#06B6D4',
+                    backgroundColor: qtdChamados.map(qtd => {
+                        if (qtd <= 3) return '#0E7490';
+                        if (qtd <= 7) return '#D97706';
+                        return '#DC2626';
+                    }),
                     borderRadius: 5,
                     borderSkipped: false
                 }]
