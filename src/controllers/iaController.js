@@ -5,14 +5,15 @@ async function responseDashMicro(req, res) {
     let pergunta = req.body.pergunta
     let dados = req.body.dados
     let history = req.body.history
-    console.log(nome_usuario, pergunta, dados, history)
+    console.log(nome_usuario, pergunta, dados)
+    console.log("history:", history)
 
     if (!nome_usuario || nome_usuario.trim() == "") {
         nome_usuario = "Usuario desconhecido"
     }
 
     if (!pergunta || pergunta.trim() == "") {
-        pergunta = "Me de o resumo inicial, SEJA DIRETO"
+        pergunta = "A pergunta está nula, então fale sobre os componenetes criticos no máximo 100 letras, foque no que está com problema, se não tiver fale que está tudo ok e obrigatoriamente comprimente com bom dia e o nome do usuario. Ignore o histórico de mensagem, essa sua resposta em especifico vai para o mural do site"
     }
 
     if (!dados || dados.trim() == "") {
@@ -22,8 +23,12 @@ async function responseDashMicro(req, res) {
         return;
     }
 
-    if (!history || history.trim() == "") {
-        history = "Mensagem incial, cumprimente com 'Bom dia {nome do usuario}' e fale de forma direta as informações principais de alerta ou não."
+    // preparar representação do histórico para inserir no prompt
+    let historyForPrompt = ""
+    if (!history || history.length === 0) {
+        historyForPrompt = "Sem histórico, responda com um bom dia"
+    } else {
+        historyForPrompt = JSON.stringify(history)
     }
 
     let input = `
@@ -67,6 +72,7 @@ async function responseDashMicro(req, res) {
     - Sem jargão estatístico, sem listas longas, sem títulos. Texto corrido.
     - Arredonde: 31 ms, 75%, health 47,5.
     - Termine oferecendo detalhar apenas se houver algo relevante a mais. Sem saudações longas nem agradecimentos.
+    - Suas mensagens não podem ter **Mensagem**, use <span class="bold"></span> ou <span class="italico"></span> no lugar
 
     # Resumo inicial (pergunta vazia)
     Em até 4 linhas: (1) estado geral (status e health); (2) o ponto que mais merece atenção, com tendência e previsão; (3) uma ação sugerida.
@@ -106,10 +112,10 @@ async function responseDashMicro(req, res) {
     ${dados}
     # Nome do usuario
     nome do usuario = ${nome_usuario}
+    # Histórico de mensagem
+    ${historyForPrompt}
     # Pergunta do usuario
     pergunta do usuario = ${pergunta}
-    # Histórico de mensagem
-    ${history}
     `
 
     console.log(input)
