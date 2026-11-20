@@ -4,3 +4,4 @@ package-lock.json
 *.env
 .github
 .env.dev
+AGENTS.md

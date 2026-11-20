@@ -54,7 +54,6 @@ async function responseDashMicro(req, res) {
 }
 
 async function responseDashJira(req, res) {
-
     const nome_usuario = req.body.nomeUsuario;
     const dados = req.body.dados;
 
@@ -140,9 +139,7 @@ seguindo exatamente esta estrutura:
         });
 
     } catch (erro) {
-
         console.error('Erro ao consultar a IA:', erro);
-
         return res.status(500).json({
             erro: 'Não foi possível gerar a recomendação da IA.'
         });

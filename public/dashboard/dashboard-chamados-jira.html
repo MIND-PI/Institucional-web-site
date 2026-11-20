@@ -217,11 +217,11 @@
             <div class="graph-box-lines">
 
                 <div class="lines-content">
-                    <p class="title-graph">Ocorrencias por recurso</p>
+                    <p class="title-graph">Ocorrencias por CLP</p>
                 </div>
 
                 <div class="line-chart-wrapper">
-                    <canvas id="graficoTempoResolucao"></canvas>
+                    <canvas id="graficoClpsMaisChamados"></canvas>
                 </div>
 
             </div>
@@ -229,11 +229,11 @@
             <div class="graph-box-lines">
 
                 <div class="lines-content">
-                    <p class="title-graph">Ocorrencias por CLP</p>
+                    <p class="title-graph">Ocorrencias por recurso</p>
                 </div>
 
                 <div class="line-chart-wrapper">
-                    <canvas id="graficoClpsMaisChamados"></canvas>
+                    <canvas id="graficoTempoResolucao"></canvas>
                 </div>
 
             </div>
@@ -929,9 +929,7 @@
         const justificativa = document.getElementById('ia-justificativa');
 
         try {
-
             status.textContent = 'Analisando dados...';
-
             const resposta = await fetch('/ia/jira', {
                 method: 'POST',
                 headers: {
@@ -967,6 +965,5 @@
 
         }
     }
-
 
 </script>
