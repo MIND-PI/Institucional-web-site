@@ -17,4 +17,24 @@ async function getUrlS3(key) {
     return url;
 }
 
+// Lê um JSON da camada gold, que fica no bucket dos DADOS (SCRIPT_BUCKET_NAME),
+// diferente do bucket das imagens (BUCKET_NAME).
+// Devolve null quando o arquivo ainda não existe.
+async function getJsonS3(key) {
+    try {
+        const resposta = await s3.send(new GetObjectCommand({
+            Bucket: process.env.SCRIPT_BUCKET_NAME,
+            Key: key
+        }));
+        const texto = await resposta.Body.transformToString();
+        return JSON.parse(texto);
+    } catch (erro) {
+        if (erro.name === "NoSuchKey") {
+            return null;
+        }
+        throw erro;
+    }
+}
+
 module.exports = getUrlS3
+module.exports.getJsonS3 = getJsonS3;
