@@ -1,43 +1,86 @@
-// ===== DADOS MOCKADOS=====
+// ===== ESTADO DA TELA =====
 const rotulos = { critico: 'Crítico', atencao: 'Atenção', estavel: 'Estável' };
+const chaveStatus = { 'Estável': 'estavel', 'Atenção': 'atencao', 'Crítico': 'critico' };
+const coresStatus = { 'Estável': '#22C55E', 'Atenção': '#F59E0B', 'Crítico': '#EF4444' };
 
-const metaHealthScore = 75;
+const idFornecedor = sessionStorage.getItem('ID_EMPRESA');
+const parametros = new URLSearchParams(window.location.search);
+let idModelo = parametros.get('modelo');
 
-const kpis = [
-    { titulo: 'CLPs fora do padrão', valor: '56%', variacao: '▲ 8% nas últimas 24h', cor: '', detalhe: '10 de 18 monitorados' },
-    { titulo: 'Health Score Mediano', valor: '68', unidade: '/100', status: 'atencao', variacao: '▼ 6pts vs período anterior', cor: '', detalhe: `Meta de qualidade: ${metaHealthScore}` },
-    { titulo: 'Mediana Alertas por CLP', valor: '3', variacao: '▲ 57% acima de outros modelos', cor: '', detalhe: '20 alertas e 18 CLPs ativos' },
-    { titulo: 'Componente mais crítico', valor: 'CPU', variacao: '30% dos alertas deste modelo', cor: 'alerta', detalhe: '12 de 40 alertas neste período' }
-];
+let metaHealthScore = 75;
+let graficoStatus, graficoComponentes, graficoEvolucao;
 
-const ranking = [
-    { apelido: 'CLP-SIE-01', cliente: 'Mitsubishi Electric', setor: 'Automação Industrial', health: 30, status: 'critico', alertas: 10, componente: 'SCAN' },
-    { apelido: 'CLP-SIE-05', cliente: 'Petrobras', setor: 'Óleo e Gás', health: 32, status: 'critico', alertas: 9, componente: 'CPU' },
-    { apelido: 'CLP-SIE-03', cliente: 'Vale', setor: 'Mineração', health: 45, status: 'atencao', alertas: 7, componente: 'CPU' },
-    { apelido: 'CLP-SIE-10', cliente: 'Mitsubishi Electric', setor: 'Automação Industrial', health: 48, status: 'atencao', alertas: 6, componente: 'SCAN' }
-];
-
-const statusClps = [
-    { nome: 'Estável', qtd: 8, cor: '#22C55E' },
-    { nome: 'Atenção', qtd: 6, cor: '#F59E0B' },
-    { nome: 'Crítico', qtd: 4, cor: '#EF4444' }
-];
-
-const alertasComponente = { labels: ['CPU', 'RAM', 'SCAN', 'REDE', 'SWAP'], valores: [12, 10, 8, 6, 4] };
-
-const horas = [];
-for (let h = 0; h < 24; h++) {
-    horas.push(String(h).padStart(2, '0') + ':00');
+// ===== FORMATAÇÃO =====
+function arredondar(valor) {
+    return valor === null || valor === undefined ? '—' : Math.round(valor);
 }
 
-const evolucao = {
-    '24h': { labels: horas, valores: [28, 13, 41, 32, 36, 35, 33, 39, 33, 45, 48, 51, 28, 30, 33, 44, 41, 41, 41, 42, 44, 36, 44, 47] },
-    '7d': { labels: ['07/11', '08/11', '09/11', '10/11', '11/11', '12/11', '13/11'], valores: [52, 47, 55, 44, 50, 41, 47] },
-    '30d': { labels: ['15/10', '20/10', '25/10', '30/10', '04/11', '09/11', '13/11'], valores: [58, 54, 49, 52, 45, 50, 47] }
-};
+function statusDoHealth(health, limites) {
+    if (health === null || health === undefined) return null;
+    if (health >= limites.estavel) return 'estavel';
+    if (health >= limites.atencao) return 'atencao';
+    return 'critico';
+}
 
-// ===== RENDERIZAÇÃO DO HTML =====
-function renderizarKpis() {
+function textoVariacao(atual, anterior, unidade, sufixo) {
+    if (atual === null || anterior === null || atual === undefined || anterior === undefined) {
+        return 'Sem período anterior para comparar';
+    }
+    const diferenca = atual - anterior;
+    const seta = diferenca > 0 ? '▲' : diferenca < 0 ? '▼' : '=';
+    return `${seta} ${Math.abs(Math.round(diferenca))}${unidade} ${sufixo}`;
+}
+
+// ===== RENDERIZAÇÃO =====
+function montarKpis(dados) {
+    const k = dados.kpis;
+    const status = statusDoHealth(k.health_mediano, dados.limites_status);
+
+    const outros = k.alertas_mediana_outros_modelos;
+    let comparaOutros = 'Sem outros modelos para comparar';
+    if (outros && k.alertas_mediana_por_clp !== null) {
+        const pct = Math.round((k.alertas_mediana_por_clp - outros) / outros * 100);
+        comparaOutros = `${pct >= 0 ? '▲' : '▼'} ${Math.abs(pct)}% ${pct >= 0 ? 'acima' : 'abaixo'} de outros modelos`;
+    }
+
+    const totalAlertas = k.alertas_total;
+    const pctComponente = totalAlertas > 0 ? Math.round(k.componente_critico_alertas / totalAlertas * 100) : 0;
+
+    return [
+        {
+            titulo: 'CLPs fora do padrão',
+            valor: k.pct_fora_padrao === null ? '—' : Math.round(k.pct_fora_padrao) + '%',
+            variacao: textoVariacao(k.pct_fora_padrao, k.pct_fora_padrao_anterior, '%', 'vs período anterior'),
+            cor: '',
+            detalhe: `${k.clps_fora_padrao} de ${dados.totalClps} monitorados`
+        },
+        {
+            titulo: 'Health Score Mediano',
+            valor: String(arredondar(k.health_mediano)),
+            unidade: '/100',
+            status: status,
+            variacao: textoVariacao(k.health_mediano, k.health_mediano_anterior, 'pts', 'vs período anterior'),
+            cor: '',
+            detalhe: `Meta de qualidade: ${metaHealthScore}`
+        },
+        {
+            titulo: 'Mediana Alertas por CLP',
+            valor: String(arredondar(k.alertas_mediana_por_clp)),
+            variacao: comparaOutros,
+            cor: '',
+            detalhe: `${totalAlertas} alertas e ${k.clps_com_dados} CLPs ativos`
+        },
+        {
+            titulo: 'Componente mais crítico',
+            valor: k.componente_critico || '—',
+            variacao: k.componente_critico ? `${pctComponente}% dos alertas deste modelo` : 'Nenhum alerta no período',
+            cor: k.componente_critico ? 'alerta' : '',
+            detalhe: `${k.componente_critico_alertas} de ${totalAlertas} alertas neste período`
+        }
+    ];
+}
+
+function renderizarKpis(kpis) {
     document.getElementById('kpis').innerHTML = kpis.map(kpi => `
         <div class="kpi-box">
             <p class="kpi-title">${kpi.titulo}</p>
@@ -50,36 +93,79 @@ function renderizarKpis() {
         </div>`).join('');
 }
 
-function renderizarRanking() {
-    document.getElementById('ranking').innerHTML = ranking.map(clp => `
+function renderizarRanking(ranking) {
+    const corpo = document.getElementById('ranking');
+    if (ranking.length === 0) {
+        corpo.innerHTML = '<tr><td colspan="6">Nenhum CLP com dados neste período</td></tr>';
+        return;
+    }
+    corpo.innerHTML = ranking.map(clp => {
+        const status = chaveStatus[clp.status] || 'estavel';
+        return `
         <tr>
             <td>${clp.apelido}</td>
             <td>${clp.cliente}</td>
             <td>${clp.setor}</td>
-            <td><span class="pill ${clp.status}">${clp.health} - ${rotulos[clp.status]}</span></td>
+            <td><span class="pill ${status}">${arredondar(clp.health)} - ${rotulos[status]}</span></td>
             <td>${clp.alertas}</td>
-            <td>${clp.componente}</td>
-        </tr>`).join('');
+            <td>${clp.pior_componente || '—'}</td>
+        </tr>`;
+    }).join('');
 }
 
-// ===== GRÁFICOS =====
-function criarGraficoStatus() {
-    const total = statusClps.reduce((soma, item) => soma + item.qtd, 0);
-    document.getElementById('total-clps').textContent = total;
+function atualizarStatus(contagem) {
+    const itens = ['Estável', 'Atenção', 'Crítico'].map(nome => ({
+        nome, qtd: contagem[nome] || 0, cor: coresStatus[nome]
+    }));
+    const total = itens.reduce((soma, item) => soma + item.qtd, 0);
 
-    document.getElementById('legenda-status').innerHTML = statusClps.map(item => `
+    document.getElementById('total-clps').textContent = total;
+    document.getElementById('legenda-status').innerHTML = itens.map(item => `
         <li><span style="background-color: ${item.cor}"></span>${item.nome} - ${item.qtd}</li>`).join('');
 
-    new Chart(document.getElementById('grafico-status'), {
+    graficoStatus.data.labels = itens.map(item => item.nome);
+    graficoStatus.data.datasets[0].data = itens.map(item => item.qtd);
+    graficoStatus.data.datasets[0].backgroundColor = itens.map(item => item.cor);
+    graficoStatus.update();
+}
+
+function atualizarComponentes(alertas) {
+    const nomes = ['CPU', 'RAM', 'SCAN', 'REDE', 'SWAP'];
+    graficoComponentes.data.labels = nomes;
+    graficoComponentes.data.datasets[0].data = nomes.map(nome => alertas[nome] || 0);
+    graficoComponentes.update();
+}
+
+function atualizarEvolucao(evolucao, nomeModelo) {
+    document.getElementById('hs-min').textContent = arredondar(evolucao.minimo);
+    document.getElementById('hs-max').textContent = arredondar(evolucao.maximo);
+    document.getElementById('hs-atual').textContent = arredondar(evolucao.atual);
+
+    const labels = evolucao.labels;
+    document.getElementById('hs-intervalo').textContent =
+        labels.length ? labels[0] + ' - ' + labels[labels.length - 1] : '';
+
+    graficoEvolucao.data.labels = labels;
+    graficoEvolucao.data.datasets[0].label = nomeModelo || 'Modelo';
+    graficoEvolucao.data.datasets[0].data = evolucao.mediana;
+    graficoEvolucao.data.datasets[1].label = `Meta (${metaHealthScore})`;
+    graficoEvolucao.data.datasets[1].data = labels.map(() => metaHealthScore);
+    graficoEvolucao.update();
+}
+
+function limparTela(mensagem) {
+    document.getElementById('kpis').innerHTML = `<p class="kpi-detalhe">${mensagem}</p>`;
+    document.getElementById('ranking').innerHTML = `<tr><td colspan="6">${mensagem}</td></tr>`;
+    atualizarStatus({});
+    atualizarComponentes({});
+    atualizarEvolucao({ labels: [], mediana: [], minimo: null, maximo: null, atual: null }, '');
+}
+
+// ===== GRÁFICOS (criados vazios; os dados chegam da API) =====
+function criarGraficoStatus() {
+    graficoStatus = new Chart(document.getElementById('grafico-status'), {
         type: 'doughnut',
-        data: {
-            labels: statusClps.map(item => item.nome),
-            datasets: [{
-                data: statusClps.map(item => item.qtd),
-                backgroundColor: statusClps.map(item => item.cor),
-                borderWidth: 0
-            }]
-        },
+        data: { labels: [], datasets: [{ data: [], backgroundColor: [], borderWidth: 0 }] },
         options: {
             responsive: true,
             maintainAspectRatio: false,
@@ -90,15 +176,11 @@ function criarGraficoStatus() {
 }
 
 function criarGraficoComponentes() {
-    new Chart(document.getElementById('grafico-componentes'), {
+    graficoComponentes = new Chart(document.getElementById('grafico-componentes'), {
         type: 'bar',
         data: {
-            labels: alertasComponente.labels,
-            datasets: [{
-                data: alertasComponente.valores,
-                backgroundColor: '#06B6D4',
-                barThickness: 14
-            }]
+            labels: [],
+            datasets: [{ data: [], backgroundColor: '#06B6D4', barThickness: 14 }]
         },
         options: {
             indexAxis: 'y',
@@ -133,21 +215,20 @@ function criarGraficoComponentes() {
     });
 }
 
-let graficoEvolucao;
-
 function criarGraficoEvolucao() {
     graficoEvolucao = new Chart(document.getElementById('grafico-evolucao'), {
         type: 'line',
         data: {
             labels: [],
             datasets: [{
-                label: 'SIEMENS-S7-1500',
+                label: 'Modelo',
                 data: [],
                 borderColor: '#20E4D7',
                 backgroundColor: '#20E4D7',
                 borderWidth: 1.5,
                 pointRadius: 0,
-                pointHoverRadius: 4
+                pointHoverRadius: 4,
+                spanGaps: true
             },
             {
                 label: `Meta (${metaHealthScore})`,
@@ -197,41 +278,85 @@ function criarGraficoEvolucao() {
     });
 }
 
-function atualizarEvolucao() {
+// ===== BUSCA DOS DADOS =====
+async function carregarMicroModelo() {
+    if (!idModelo) {
+        limparTela('Selecione um modelo');
+        return;
+    }
+
     const periodo = document.getElementById('filtro-periodo').value;
-    const { labels, valores } = evolucao[periodo];
 
-    document.getElementById('hs-min').textContent = Math.min(...valores);
-    document.getElementById('hs-max').textContent = Math.max(...valores);
-    document.getElementById('hs-atual').textContent = valores[valores.length - 1];
-    document.getElementById('hs-intervalo').textContent = labels[0] + ' - ' + labels[labels.length - 1];
+    try {
+        const resposta = await fetch(`/microModelo/${idFornecedor}/${idModelo}/${periodo}`);
 
-    graficoEvolucao.data.labels = labels;
-    graficoEvolucao.data.datasets[0].data = valores;
-    graficoEvolucao.data.datasets[1].data = labels.map(() => metaHealthScore);
-    graficoEvolucao.update();
+        if (resposta.status === 404) {
+            const vazio = await resposta.json();
+            if (vazio.modeloNome) document.querySelector('.clp-h1').textContent = vazio.modeloNome;
+            limparTela('Ainda não há dados para este modelo');
+            return;
+        }
+        if (!resposta.ok) {
+            limparTela('Não foi possível carregar os dados');
+            return;
+        }
+
+        const dados = await resposta.json();
+        metaHealthScore = dados.meta_health_score;
+
+        document.querySelector('.clp-h1').textContent = dados.modeloNome || 'Modelo';
+        renderizarKpis(montarKpis(dados));
+        renderizarRanking(dados.ranking);
+        atualizarStatus(dados.status);
+        atualizarComponentes(dados.alertas_por_componente);
+        atualizarEvolucao(dados.evolucao, dados.modeloNome);
+    } catch (erro) {
+        console.log(erro);
+        limparTela('Não foi possível conectar ao servidor');
+    }
+}
+
+// ===== FILTRO DE MODELO =====
+async function carregarModelos() {
+    const seletor = document.getElementById('filtro-modelo');
+    try {
+        const resposta = await fetch(`/modelo/${idFornecedor}`);
+        if (!resposta.ok) return;
+        const modelos = await resposta.json();
+
+        seletor.innerHTML = '<option value="" disabled>Selecionar modelo</option>' +
+            modelos.map(m => `<option value="${m.idModelo}">${m.nome}</option>`).join('');
+        seletor.value = idModelo || '';
+    } catch (erro) {
+        console.log(erro);
+    }
+}
+
+function trocarModelo() {
+    idModelo = document.getElementById('filtro-modelo').value;
+    // mantém o id do modelo na URL, igual a quando vem da tela macro
+    const url = new URL(window.location.href);
+    url.searchParams.set('modelo', idModelo);
+    window.history.replaceState(null, '', url);
+    carregarMicroModelo();
 }
 
 // ===== INÍCIO E EVENTOS =====
-function atualizarTela() {
-    // futuramente: buscar os dados na API aqui antes de renderizar
-    renderizarKpis();
-    renderizarRanking();
-    atualizarEvolucao();
-}
-
-function iniciar() {
+async function iniciar() {
     criarGraficoStatus();
     criarGraficoComponentes();
     criarGraficoEvolucao();
-    atualizarTela();
 
     const linkDashboard = document.querySelector('#nav_flow .nav-link');
     if (linkDashboard) linkDashboard.classList.add('active');
+
+    await carregarModelos();
+    carregarMicroModelo();
 }
 
-document.getElementById('filtro-periodo').addEventListener('change', atualizarEvolucao);
-document.getElementById('btn-atualizar').addEventListener('click', atualizarTela);
-document.getElementById('btn-refresh').addEventListener('click', atualizarTela);
+document.getElementById('filtro-periodo').addEventListener('change', carregarMicroModelo);
+document.getElementById('filtro-modelo').addEventListener('change', trocarModelo);
+document.getElementById('btn-atualizar').addEventListener('click', carregarMicroModelo);
+document.getElementById('btn-refresh').addEventListener('click', carregarMicroModelo);
 
 iniciar();
