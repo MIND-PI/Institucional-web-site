@@ -22,7 +22,7 @@ Público: pessoa da indústria, nem sempre técnica. Os textos precisam explicar
 ## 2. Contexto do projeto e stack
 
 - Projeto: **MIND**, plataforma de observabilidade de CLPs industriais.
-- Front-end: **HTML + CSS + JavaScript puro**. Gráficos com **Chart.js** (CDN) e o plugin **chartjs-plugin-datalabels** (CDN).
+- Front-end: **HTML + CSS + JavaScript puro**. Gráficos com **Chart.js** (CDN) e plugins já existentes no próprio arquivo JS da tela.
 - Back-end (fora do escopo desta tela): Node.js + Express. Dados vêm de uma API; por enquanto a tela usa dados de exemplo.
 - Fonte: **Poppins**.
 - Quem desenvolve é iniciante/intermediário em front-end: o código deve ser **simples e legível**.
@@ -46,7 +46,7 @@ A sidebar não faz parte desta especificação. Nela, o fluxo do cliente mostra 
 
 **Estilo de código**
 - Manter o código **simples**. Preferir `for` e `if` claros a cadeias de `map/filter/reduce`.
-- **Não** criar plugins personalizados do Chart.js nem desenhar manualmente no canvas. Usar as opções nativas e o `chartjs-plugin-datalabels`.
+- **Não** criar plugins **novos** do Chart.js sem pedir e **não remover os plugins existentes** (`pluginFundoFaixas` e `pluginRotulosSetores`).
 - Cores do JS escritas direto em hexadecimal (sem ler variáveis do CSS pelo JS).
 - Comentários curtos em português nos pontos não óbvios.
 - Reaproveitar as **classes que já existem** (inclusive a grafia `conteiner`). Não renomear classes sem pedir.
@@ -92,11 +92,11 @@ Ordem vertical dentro do `<main>` (`display: flex; flex-direction: column; gap: 
 
 ## 6. Cabeçalho e filtros
 
-- Esquerda: título **"Visão geral da planta"** (`h1.clp-h1`) e abaixo **"Última atualização às HH:MM"** (`#last-update`, atualizado pelo JS).
+- Esquerda: título **"Visão macro da planta"** (`h1.clp-h1` / `#page-title`) e abaixo **"Última atualização às HH:MM"** (`#last-update`, atualizado pelo JS).
 - Direita (`.filter-container`), da esquerda para a direita:
   1. Botão **Atualizar** (`#btn-etl`), cor de destaque, texto escuro, altura mínima `2.75rem`.
   2. Select **Setor** (`#sector-filter`): "Setor: Todos", "Setor: Usinagem"...
-  3. Select **Período** (`#period-filter`, `onchange="atualizarGraficos()"`): Últimas 24 horas, Últimos 7 dias, Últimos 30 dias.
+  3. Select **Período** (`#period-filter`): Últimas 24 horas, Últimos 7 dias, Últimos 30 dias.
 - Os selects têm o rótulo visível dentro do próprio texto da opção. O `<label>` existe só para leitores de tela (classe `.filter-text`, oculta visualmente).
 - O filtro de **setor** e o de **período** valem para a tela inteira (KPIs, gráficos e ranking).
 
@@ -118,7 +118,7 @@ Regras:
 - **Health geral** considera **somente CLPs online**. Os offline não têm Health Score.
 - **Disponibilidade** = CLPs online ÷ total de CLPs.
 - **CLPs críticos** = CLPs com Health Score na faixa Crítico.
-- Hoje os valores são fixos no HTML. **[PENDENTE]** preencher pelo JS com dados da API.
+- Estado atual: os 4 KPIs são renderizados pelo JS a partir de `mockDashboardData.kpis` (resolvido no front). **[PENDENTE]** trocar o mock por dados da API.
 - Selos: `.status-pill` com `.is-danger`, `.is-warning` ou `.is-positive`.
 
 ---
@@ -132,22 +132,23 @@ Card à esquerda (`.graph-box-lines`).
 - À direita: "de 42 setores" (`#setores-total`; o número vem dos dados).
 - Subtítulo: "Média de health dos CLPs online de cada setor, de 0 a 100" (`.lines-title`).
 
-**Filtros do gráfico** (`.chart-filters`, selects `.chart-select`)
-- `#sector-metric`: "Métrica: Health médio" (por enquanto só essa opção).
-- `#sector-show` (`onchange="atualizarGraficos()"`): "Mostrar: CLPs com problema" (`problem`) ou "Mostrar: todos os online" (`online`).
-- **[PENDENTE]** definir exatamente o que cada opção calcula (a média de "CLPs com problema" nunca passaria da faixa Atenção, se só entram CLPs em Atenção/Crítico).
+**Filtros do gráfico (estado atual)**
+- Não há selects próprios ativos no card de setores no HTML atual.
+- O gráfico usa `sectorsChart.items` já pronto e mostra os 5 piores por `health`.
+- **[PENDENTE]** definir se voltam filtros locais no card (ex.: métrica/modo) e, se voltarem, o cálculo exato de cada opção.
 
 **Gráfico** (`<canvas id="bar-chart">` dentro de `.line-chart-wrapper`, altura `10.5rem`)
 - Chart.js, tipo `bar`, `indexAxis: 'y'` (barras horizontais), eixo de valores fixo de **0 a 100**.
 - Mostra os **5 setores com menor health**, ordenados do pior (em cima) para o melhor.
-- Cor de cada barra pela faixa de status do valor (função `corDaFaixa`).
-- Ao lado de cada barra (datalabels): `valor · online/total online`, ex.: `32 · 5/8 online`.
+- Cor de cada barra pela faixa de status do valor (`faixaDoHealth`).
+- Ao lado de cada barra: `valor` e `online/total online`, ex.: `32` e `5/8 online`.
+- O card usa plugins próprios já existentes no JS: `pluginFundoFaixas` (fundo por faixas) e `pluginRotulosSetores` (rótulos à direita).
 - Sem legenda do Chart.js.
 
 **Abaixo do gráfico**
 - Legenda das faixas (`.zone-legend`): Crítico, Atenção, Bom (com os limites da seção 11).
-- Aviso de CLP fora da curva (texto laranja), ex.: "Há CLP fora da curva em USINAGEM." **[PENDENTE]** implementar no HTML/JS (hoje existe só no protótipo).
-- Rodapé (`.box-footer`): "Os outros 37 setores estão com health médio ≥ 62" (`#peak-label`, calculado dos dados) e o link **"Ver detalhes dos fora da curva →"** (`.link-more`).
+- Aviso de CLP fora da curva (texto laranja), ex.: "Há CLP fora da curva em USINAGEM." Implementado no front via `#outlier-info` com base em `sectorsChart.outlier`.
+- Rodapé (`.box-footer`): "Os outros 37 setores estão com health médio ≥ 62" (`#setores-footer`, calculado dos dados) e o link (`#setores-link`, `.link-more`).
 
 **Propósito:** mostrar o **comportamento típico do setor** e **explicar por que o health do setor caiu**, apontando o CLP fora da curva. Depois o usuário segue para a tela Micro.
 
@@ -160,11 +161,11 @@ Card à direita (`.graph-box-pizza`).
 - Título "Situação da frota". Subtítulo (`#frota-resumo`): "23% dos 30 CLPs estão estáveis" (calculado).
 - Gráfico de **rosca** (`<canvas id="pizza">` dentro de `.pizza-chart`, `cutout: '64%'`), 4 fatias: Estável, Atenção, Crítico, Offline.
 - No centro, em HTML (`.pizza-center`): total de CLPs (`#frota-total`) e o texto "CLPs". O texto central **não** é desenhado no canvas.
-- Legenda ao lado do gráfico (`.pizza-datas`), cada item com bolinha colorida, nome em negrito com a quantidade e uma linha de definição:
-  - Estável · 7: "health de 60 ou mais" (`#frota-estavel`)
-  - Atenção · 6: "health de 40 a 59" (`#frota-atencao`)
-  - Crítico · 7: "health abaixo de 40" (`#frota-critico`)
-  - Offline · 10: "sem comunicação" (`#frota-offline`)
+- Legenda ao lado do gráfico (`.pizza-datas`, `#fleet-legend`), cada item com bolinha colorida, nome em negrito com a quantidade e uma linha de definição:
+  - Estável · 7: "health de 60 ou mais"
+  - Atenção · 6: "health de 40 a 59"
+  - Crítico · 7: "health abaixo de 40"
+  - Offline · 10: "sem comunicação"
 - Offline é um **estado**, não uma faixa de health: entra na rosca em cinza, mas **fora** da média de health.
 - Sem legenda do Chart.js (a legenda é o HTML acima).
 
@@ -190,7 +191,7 @@ Regras:
 - Ordenado do **menor para o maior** Health Score.
 - A linha inteira é clicável (`.ranking-row`, `tabindex="0"`, `data-clp="CLP-07"`) e abre a tela **Micro CLP** do CLP escolhido. **[PENDENTE]** definir a URL/parâmetro de navegação.
 - Hover e foco com fundo `rgba(6, 182, 212, 0.08)`.
-- Hoje a tabela é estática no HTML. **[PENDENTE]** gerar as linhas pelo JS.
+- A tabela é gerada pelo JS (`renderRanking`) em `#ranking-head` e `#ranking-body` (resolvido no front).
 - **[PENDENTE]** paginação, rolagem interna ou busca (podem existir mais de 1000 CLPs).
 - **[PENDENTE]** clicar no KPI "CLPs críticos" deve filtrar o ranking só pelos críticos?
 
@@ -202,7 +203,7 @@ Regras:
 - **[PENDENTE]** faixas definitivas do projeto. Há três versões em circulação:
   - Especificação do Micro CLP: Crítico < 40, Atenção 40 a 59, Estável ≥ 60.
   - Tela Macro Modelo (colega): Crítico < 50, Atenção 50 a 74, Estável ≥ 75.
-  - Código atual (`corDaFaixa` e CSS): 30 e 60.
+  - Código atual (`faixaDoHealth` e CSS): 40 e 60.
 - Enquanto não houver decisão, **usar 40 e 60** e concentrar os limites em um único lugar do JS.
 
 **CLP offline**
@@ -215,6 +216,9 @@ Regras:
 - **[PENDENTE]** mínimo de CLPs online por setor para aplicar a regra (sugestão: 4).
 - O CLP fora da curva continua contado no **ranking**, nos **CLPs críticos** e na **situação da frota**.
 - O botão "Ver detalhes dos fora da curva" mostra o CLP (nome e health) e compara a média do setor **com** e **sem** ele, e leva à tela Micro CLP.
+- Estado atual: a regra **NÃO** está implementada. O front apenas exibe o aviso a partir de `sectorsChart.outlier` (`enabled`, `message`), que hoje é mock.
+- **[PENDENTE]** definir onde o cálculo será feito (sugestão: back-end/API; front apenas exibe).
+- **[PENDENTE]** definir formato mínimo de dados do fora da curva (sugestão: `nomeClp`, `healthClp`, `mediaSetorComClp`, `mediaSetorSemClp`).
 
 **Top 5**
 - O gráfico mostra só os 5 piores setores. Os demais ficam resumidos no rodapé. **[PENDENTE]** tela/lista com todos os setores (sugestão: tabela com busca e ordenação).
@@ -223,23 +227,44 @@ Regras:
 
 ## 12. Dados
 
-Hoje: objeto `dadosMacro` no JS, com dados de exemplo.
+Hoje: objeto `mockDashboardData` no JS, com dados de exemplo.
 
 ```js
-const dadosMacro = {
-    setores: {
-        total: 42,                       // total de setores do cliente
-        menorHealthDoRestante: 62,       // menor health entre os setores que NÃO estão no top 5
-        problem: [ { nome: 'USINAGEM', health: 32, online: 5, total: 8 }, /* ... */ ],
-        online:  [ { nome: 'USINAGEM', health: 38, online: 5, total: 8 }, /* ... */ ]
+const mockDashboardData = {
+    header: { title: "Visão macro da planta", lastUpdatePrefix: "Última atualização às" },
+    filters: {
+        sectors: [{ value: "todos", label: "Setor: Todos" }, /* ... */],
+        periods: [{ value: "24h", label: "Últimas 24 horas" }, /* ... */]
     },
-    frota: { estavel: 7, atencao: 6, critico: 7, offline: 10 }
+    kpis: [/* 4 cards */],
+    sectorsChart: {
+        title: "5 setores com pior health médio",
+        subtitle: "Média de health dos CLPs online de cada setor, de 0 a 100",
+        totalSectors: 42,
+        minOtherHealth: 62,
+        linkLabel: "Ver todos os setores e valores →",
+        items: [{ name: "USINAGEM", health: 32, online: 5, total: 8 }, /* ... */],
+        outlier: { enabled: true, message: "...", detailsLinkLabel: "Ver detalhes dos fora da curva →" },
+        legend: [/* crítico/atenção/bom */]
+    },
+    fleet: {
+        title: "Situação da frota",
+        summaryPrefix: "Apenas",
+        values: { estavel: 7, atencao: 6, critico: 7, offline: 10 },
+        legend: [/* estável/atenção/crítico/offline */]
+    },
+    ranking: {
+        title: "Ranking de CLPs",
+        hint: "Do menor para o maior health score · clique em uma linha para ver o detalhe",
+        columns: ["Apelido", "Setor", "Modelo", "Health médio", "Status", "Alertas", "Componente mais problemático"],
+        rows: [/* { nickname, sectorLabel, model, health, status, statusTone, alerts, component, sector } */]
+    }
 };
 ```
 
 Futuro: dados vindos da API do back-end (Node/Express), a partir da camada gold do S3, por CLP: `clp-ultimos-processos`, `clp-micro`, `clp-ranking-processos`, `clp-ping`. **[PENDENTE]** contrato da API (rotas e formato).
 
-O ponto de troca é a função `atualizarGraficos()` (marcado com `TODO`). Ela deve usar o **período** e o **setor** dos filtros.
+O ponto de troca é `getDadosFiltrados(filters)` (marcado com `TODO`) e os handlers `onChangeFiltros` / `onAtualizarClick`, que hoje leem mock e devem passar a buscar API usando **período** e **setor**.
 
 ---
 
@@ -247,23 +272,60 @@ O ponto de troca é a função `atualizarGraficos()` (marcado com `TODO`). Ela d
 
 | Elemento (id) | Usado para |
 |---|---|
+| `page-title` | título da tela |
 | `last-update` | hora da última atualização |
+| `btn-etl` | atualizar dados |
 | `period-filter`, `sector-filter` | filtros do topo |
-| `sector-show`, `sector-metric` | filtros do gráfico de setores |
+| `kpi-container` | container dos 4 KPIs renderizados por JS |
+| `sectors-title`, `sectors-subtitle` | textos do card de setores |
 | `setores-total` | "de N setores" |
 | `bar-chart` | canvas das barras |
-| `peak-label` | texto do rodapé do gráfico de setores |
+| `zone-legend` | legenda das faixas do gráfico de setores |
+| `outlier-info` | aviso de fora da curva |
+| `setores-footer`, `setores-link` | rodapé e link do card de setores |
 | `pizza` | canvas da rosca |
 | `frota-total`, `frota-resumo` | total no centro e subtítulo |
-| `frota-estavel`, `frota-atencao`, `frota-critico`, `frota-offline` | legenda da rosca |
+| `fleet-legend` | legenda HTML da rosca (gerada por JS) |
+| `frota-title` | título do card de frota |
+| `ranking-title`, `ranking-hint` | título e dica do ranking |
+| `ranking-head`, `ranking-body` | `<thead>`/`<tbody>` do ranking (gerados por JS) |
 
 Funções em `dashboard-macro-CLP.js`:
-- `obterDados()`: chamada no `onload` do `<body>`. Define a fonte padrão do Chart.js e chama `atualizarGraficos()`.
-- `atualizarGraficos()`: lê os filtros, chama os dois gráficos e atualiza a hora.
-- `plotarGraficoSetores(modo)`: ordena, pega os 5 piores, monta o gráfico e os textos.
-- `plotarGraficoFrota()`: monta a rosca e os textos.
-- `corDaFaixa(health)`: devolve a cor da faixa.
-- Cada gráfico é destruído (`destroy()`) antes de ser recriado.
+- `initDashboardMacroCLP()`: inicializa fonte global do Chart.js, estrutura estática, eventos e primeiro render.
+- `montarEstruturaEstatica(data)`: preenche título/subtítulos e opções dos filtros.
+- `getDadosFiltrados(filters)`: ponto atual de leitura de dados (mock) e filtro por setor.
+- `renderDashboard(data)`: orquestra KPIs, gráfico de setores, frota e ranking.
+- `renderKpis(kpis)`: monta os 4 cards em `#kpi-container`.
+- `renderGraficoSetores(sectorsConfig)`: ordena setores por health, pega top 5 piores e desenha barras.
+- `renderGraficoFrota(frota)`: monta rosca e resumo da frota.
+- `renderRanking(rows, rankingConfig)`: gera cabeçalho/linhas da tabela e estado vazio.
+- `onChangeFiltros()` e `onAtualizarClick()`: handlers dos filtros e botão atualizar.
+- Plugins existentes do Chart.js no arquivo: `pluginFundoFaixas` e `pluginRotulosSetores`.
+
+### Estrutura real de dados consumida pelo JS (resumo)
+
+```js
+{
+  header: { title, lastUpdatePrefix },
+  filters: { sectors: [{ value, label }], periods: [{ value, label }] },
+  kpis: [{ type, tone, title, ... }],
+  sectorsChart: {
+    title, subtitle, totalSectors, minOtherHealth, linkLabel,
+    items: [{ name, health, online, total }],
+    outlier: { enabled, message, detailsLinkLabel },
+    legend: [{ label, tone }]
+  },
+  fleet: {
+    title, summaryPrefix,
+    values: { estavel, atencao, critico, offline },
+    legend: [{ key, label, detail, tone }]
+  },
+  ranking: {
+    title, hint, columns: [string],
+    rows: [{ nickname, sectorLabel, model, health, status, statusTone, alerts, component, sector }]
+  }
+}
+```
 
 ---
 
@@ -280,7 +342,7 @@ Funções em `dashboard-macro-CLP.js`:
 
 - Até `1100px`: KPIs em 2 colunas; gráficos em 1 coluna.
 - Até `640px`: KPIs em 1 coluna; cabeçalho em coluna; filtros em grade de 2 colunas com o botão Atualizar ocupando a linha toda; a tabela rola na horizontal.
-- Em telas pequenas, o texto ao lado das barras (datalabels) pode ficar apertado. **[PENDENTE]** testar.
+- Em telas pequenas, o texto ao lado das barras (rótulos à direita) pode ficar apertado. **[PENDENTE]** testar.
 
 ---
 
@@ -304,3 +366,10 @@ Funções em `dashboard-macro-CLP.js`:
 ## 18. Como refinar este documento
 
 Quando uma decisão for tomada, mover o item de **[PENDENTE]** para a seção correspondente e remover a marca. Manter este arquivo sempre igual ao que está no código.
+
+---
+
+## 19. Divergências entre regra de negócio desejada e código atual (não corrigidas aqui)
+
+- Regra de **CLP fora da curva** está documentada, mas **não está implementada** no cálculo atual; o front só exibe aviso mock (`sectorsChart.outlier`).
+- Ainda **não existe mínimo de CLPs online por setor** aplicado para avaliar fora da curva.

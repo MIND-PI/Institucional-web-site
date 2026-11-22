@@ -21,6 +21,7 @@ var emailRouter = require("./src/routes/email");
 var equipeRouter = require("./src/routes/equipe");
 var modeloRouter = require("./src/routes/modelo");
 var clienteRouter = require("./src/routes/cliente");
+var macroClp = require("./routes/macroClp");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -34,6 +35,7 @@ app.use("/email", emailRouter);
 app.use("/equipe", equipeRouter);
 app.use("/modelo", modeloRouter);
 app.use("/cliente", clienteRouter);
+app.use("/dashboard", macroClp);
 
 app.listen(PORTA_APP, function () {
     console.log(`
