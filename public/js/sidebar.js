@@ -5,6 +5,7 @@ function renderAside() {
     let pags = {
         "fornecedor": {
             "pages": [
+                { nome: "Painel pós-venda", icone: "bi-headset", link: "./dashboard-lidia.html" },
                 { nome: "Dashboard", icone: "bi-bar-chart-fill", link: "./dashboard-fornecedor.html" },
                 { nome: "Gerenciamento modelo", icone: "bi-cpu", link: "./gerenciamento-modelo.html" },
                 { nome: "Gerenciamento cliente", icone: "bi-person-video2", link: "./gerenciamento-cliente.html" }
