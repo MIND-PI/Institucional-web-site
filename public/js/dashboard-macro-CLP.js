@@ -1,24 +1,33 @@
 (function () {
     const FONTE = "Poppins, Arial, sans-serif";
+    const MACRO_CLP_API_BASE = window.MACRO_CLP_API_BASE || "/dashboard/macro-clp";
+    const FIXTURE_URL = "/macro-clp-exemplo.json";
     const COR_BARRA = { danger: "--color-danger", warning: "--color-warning", positive: "--color-positive" };
     const COR_TEXTO = { danger: "--color-danger", warning: "--color-warning", positive: "--color-positive-text" };
+    const FAIXAS_PADRAO = { criticoAbaixoDe: 40, estavelAPartirDe: 60 };
+    const query = new URLSearchParams(window.location.search);
+    const MODO_FIXTURE = query.get("fixture") === "1";
 
     const state = {
         sector: "todos",
-        period: "24h"
+        period: "agora"
     };
 
     let graficoSetores = null;
     let graficoFrota = null;
     let setoresAtuais = [];
+    let dadosBaseAtual = mockDashboardData;
+    let faixasAtuais = FAIXAS_PADRAO;
 
     function cor(variavel) {
         return getComputedStyle(document.documentElement).getPropertyValue(variavel).trim();
     }
 
     function faixaDoHealth(health) {
-        if (health < 40) return "danger";
-        if (health < 60) return "warning";
+        const valor = Number(health);
+        if (!Number.isFinite(valor)) return "warning";
+        if (valor < faixasAtuais.criticoAbaixoDe) return "danger";
+        if (valor < faixasAtuais.estavelAPartirDe) return "warning";
         return "positive";
     }
 
@@ -57,13 +66,20 @@
         }
 
         if (kpi.type === "health") {
+            const pontoCritico = kpi.scale && Array.isArray(kpi.scale.breakpoints)
+                ? kpi.scale.breakpoints[0]
+                : faixasAtuais.criticoAbaixoDe;
+            const pontoEstavel = kpi.scale && Array.isArray(kpi.scale.breakpoints)
+                ? kpi.scale.breakpoints[1]
+                : faixasAtuais.estavelAPartirDe;
+
             const escalaHtml = kpi.scale
                 ? (
                     '<div class="scale-bar"><span class="scale-marker" style="left: ' + kpi.scale.marker + '%;"></span></div>' +
                     '<div class="scale-labels">' +
                     '<span class="at-start">' + kpi.scale.labels[0] + "</span>" +
-                    '<span style="left: 40%;">' + kpi.scale.labels[1] + "</span>" +
-                    '<span style="left: 60%;">' + kpi.scale.labels[2] + "</span>" +
+                    '<span style="left: ' + pontoCritico + '%;">' + kpi.scale.labels[1] + "</span>" +
+                    '<span style="left: ' + pontoEstavel + '%;">' + kpi.scale.labels[2] + "</span>" +
                     '<span class="at-end">' + kpi.scale.labels[3] + "</span>" +
                     "</div>"
                 )
@@ -181,6 +197,8 @@
         body.innerHTML = rankingRows
             .map(function (row) {
                 const tone = row.statusTone || faixaDoHealth(row.health);
+                const healthNumero = Number(row.health);
+                const barra = Number.isFinite(healthNumero) ? healthNumero : 0;
                 return (
                     '<tr class="ranking-row" tabindex="0" data-clp="' + row.nickname + '">' +
                     '<td class="cell-strong">' + row.nickname + "</td>" +
@@ -189,7 +207,7 @@
                     "<td>" +
                     '<div class="health-cell">' +
                     '<span class="health-value is-' + tone + '">' + row.health + "</span>" +
-                    '<div class="health-track"><div class="health-fill bg-' + tone + '" style="width: ' + row.health + '%;"></div></div>' +
+                    '<div class="health-track"><div class="health-fill bg-' + tone + '" style="width: ' + barra + '%;"></div></div>' +
                     "</div>" +
                     "</td>" +
                     '<td><span class="status-pill ' + classeStatus(tone) + '">' + row.status + "</span></td>" +
@@ -207,8 +225,8 @@
             const ctx = chart.ctx;
             const x = chart.scales.x;
             const inicio = x.getPixelForValue(0);
-            const x40 = x.getPixelForValue(40);
-            const x60 = x.getPixelForValue(60);
+            const xCritico = x.getPixelForValue(faixasAtuais.criticoAbaixoDe);
+            const xEstavel = x.getPixelForValue(faixasAtuais.estavelAPartirDe);
             const fim = x.getPixelForValue(100);
 
             chart.getDatasetMeta(0).data.forEach(function (barra) {
@@ -219,11 +237,11 @@
                 else ctx.rect(inicio, topo, fim - inicio, barra.height);
                 ctx.clip();
                 ctx.fillStyle = cor("--zone-danger");
-                ctx.fillRect(inicio, topo, x40 - inicio, barra.height);
+                ctx.fillRect(inicio, topo, xCritico - inicio, barra.height);
                 ctx.fillStyle = cor("--zone-warning");
-                ctx.fillRect(x40, topo, x60 - x40, barra.height);
+                ctx.fillRect(xCritico, topo, xEstavel - xCritico, barra.height);
                 ctx.fillStyle = cor("--zone-positive");
-                ctx.fillRect(x60, topo, fim - x60, barra.height);
+                ctx.fillRect(xEstavel, topo, fim - xEstavel, barra.height);
                 ctx.restore();
             });
         }
@@ -255,17 +273,26 @@
 
     function renderGraficoSetores(sectorsConfig) {
         const lista = (sectorsConfig.items || []).slice().sort(function (a, b) { return a.health - b.health; }).slice(0, 5);
-        const restante = sectorsConfig.totalSectors - lista.length;
 
         setoresAtuais = lista;
 
         document.getElementById("setores-total").textContent = "de " + sectorsConfig.totalSectors + " setores";
-        document.getElementById("setores-footer").textContent =
-            "Os outros " + restante + " setores estão com health médio ≥ " + sectorsConfig.minOtherHealth;
-        document.getElementById("setores-link").textContent =
-            sectorsConfig.outlier && sectorsConfig.outlier.enabled
-                ? sectorsConfig.outlier.detailsLinkLabel
-                : sectorsConfig.linkLabel;
+        const footerEl = document.getElementById("setores-footer");
+        if (sectorsConfig.footer && sectorsConfig.footer.visible) {
+            footerEl.hidden = false;
+            footerEl.textContent = sectorsConfig.footer.text || "";
+        } else {
+            footerEl.hidden = true;
+            footerEl.textContent = "";
+        }
+        const linkSetores = document.getElementById("setores-link");
+        if (sectorsConfig.outlier && sectorsConfig.outlier.enabled) {
+            linkSetores.hidden = false;
+            linkSetores.textContent = sectorsConfig.outlier.detailsLinkLabel;
+        } else {
+            linkSetores.hidden = true;
+            linkSetores.textContent = "";
+        }
         document.getElementById("outlier-info").textContent =
             sectorsConfig.outlier && sectorsConfig.outlier.enabled
                 ? sectorsConfig.outlier.message
@@ -318,12 +345,18 @@
     function renderGraficoFrota(frota) {
         const nomes = ["Estável", "Atenção", "Crítico", "Offline"];
         const valores = [frota.values.estavel, frota.values.atencao, frota.values.critico, frota.values.offline];
-        const total = valores.reduce(function (acc, n) { return acc + n; }, 0);
+        const totalPadrao = valores.reduce(function (acc, n) { return acc + n; }, 0);
+        const total = Number.isFinite(Number(frota.totalClps)) ? Number(frota.totalClps) : totalPadrao;
         const pctEstavel = total ? Math.round((frota.values.estavel / total) * 100) : 0;
+        const semHealth = Number.isFinite(Number(frota.semHealth)) ? Number(frota.semHealth) : 0;
 
         document.getElementById("frota-total").textContent = String(total);
-        document.getElementById("frota-resumo").textContent =
+        let resumo =
             frota.summaryPrefix + " " + pctEstavel + "% dos " + total + " CLPs estão estáveis";
+        if (semHealth > 0) {
+            resumo += " · " + semHealth + " sem health no período";
+        }
+        document.getElementById("frota-resumo").textContent = resumo;
 
         if (graficoFrota) graficoFrota.destroy();
         graficoFrota = new Chart(document.getElementById("pizza").getContext("2d"), {
@@ -347,7 +380,8 @@
 
     function atualizarCabecalho(header) {
         document.getElementById("page-title").textContent = header.title;
-        document.getElementById("last-update").textContent = header.lastUpdatePrefix + " " + agoraHoraMinuto();
+        document.getElementById("last-update").textContent =
+            header.lastUpdateText || (header.lastUpdatePrefix + " " + agoraHoraMinuto());
     }
 
     function montarEstruturaEstatica(data) {
@@ -364,27 +398,119 @@
         renderLegendaSetores(data.sectorsChart.legend);
     }
 
+    function atualizarFaixas(data) {
+        const faixas = data && data.meta ? data.meta.faixas : null;
+        if (!faixas) {
+            faixasAtuais = FAIXAS_PADRAO;
+            return;
+        }
+
+        const critico = Number(faixas.criticoAbaixoDe);
+        const estavel = Number(faixas.estavelAPartirDe);
+        if (!Number.isFinite(critico) || !Number.isFinite(estavel) || estavel <= critico) {
+            faixasAtuais = FAIXAS_PADRAO;
+            return;
+        }
+
+        faixasAtuais = {
+            criticoAbaixoDe: critico,
+            estavelAPartirDe: estavel
+        };
+    }
+
+    function montarDadosExemplo() {
+        const dados = JSON.parse(JSON.stringify(mockDashboardData));
+        if (!dados.filters) dados.filters = {};
+        dados.filters.periods = [
+            { value: "agora", label: "Agora" },
+            { value: "7-dias", label: "Últimos 7 dias" },
+            { value: "30-dias", label: "Últimos 30 dias" }
+        ];
+        dados.header.lastUpdateText = "Última atualização: dados de exemplo";
+        if (!dados.meta) dados.meta = {};
+        dados.meta.faixas = FAIXAS_PADRAO;
+        return dados;
+    }
+
+    async function buscarDadosBackend(periodo) {
+        const idEmpresa = sessionStorage.getItem("ID_EMPRESA");
+        if (!idEmpresa) {
+            throw new Error("ID_EMPRESA não encontrado na sessão.");
+        }
+
+        const params = new URLSearchParams({
+            idEmpresa: idEmpresa,
+            periodo: periodo
+        });
+
+        const resposta = await fetch(MACRO_CLP_API_BASE + "?" + params.toString(), { method: "GET" });
+        if (resposta.status === 404) {
+            return window.macroClpAdapter.buildSemDadosDashboardData();
+        }
+
+        if (!resposta.ok) {
+            throw new Error("Falha ao buscar macro CLP. HTTP " + resposta.status);
+        }
+
+        const json = await resposta.json();
+        return window.macroClpAdapter.adaptGoldToDashboardData(json);
+    }
+
+    async function buscarDadosFixture() {
+        const resposta = await fetch(FIXTURE_URL, { method: "GET" });
+        if (!resposta.ok) {
+            throw new Error("Falha ao buscar fixture. HTTP " + resposta.status);
+        }
+
+        const json = await resposta.json();
+        const dados = window.macroClpAdapter.adaptGoldToDashboardData(json);
+        dados.header.lastUpdateText = "dados de exemplo (fixture)";
+        return dados;
+    }
+
+    async function carregarDados(periodo) {
+        try {
+            if (!window.macroClpAdapter) {
+                throw new Error("macroClpAdapter não carregado.");
+            }
+            if (MODO_FIXTURE) {
+                return await buscarDadosFixture();
+            }
+            return await buscarDadosBackend(periodo);
+        } catch (erro) {
+            console.warn("[Macro CLP] Falha ao buscar API. Exibindo dados de exemplo.", erro);
+            return montarDadosExemplo();
+        }
+    }
+
     function getDadosFiltrados(filters) {
-        // TODO: substituir por fetch() da API usando filters.sector e filters.period
-        const rows = mockDashboardData.ranking.rows;
-        const rowsFiltradas = filters.sector === "todos" ? rows : rows.filter(function (row) { return row.sector === filters.sector; });
+        const rows = (dadosBaseAtual.ranking && dadosBaseAtual.ranking.rows) || [];
+
+        // Regra da tela: filtro de setor afeta SOMENTE o ranking.
+        const rowsFiltradas = filters.sector === "todos"
+            ? rows
+            : rows.filter(function (row) { return row.sector === filters.sector; });
 
         return {
-            header: mockDashboardData.header,
-            filters: mockDashboardData.filters,
-            kpis: mockDashboardData.kpis,
-            sectorsChart: mockDashboardData.sectorsChart,
-            fleet: mockDashboardData.fleet,
+            header: dadosBaseAtual.header,
+            filters: dadosBaseAtual.filters,
+            kpis: dadosBaseAtual.kpis,
+            sectorsChart: dadosBaseAtual.sectorsChart,
+            fleet: dadosBaseAtual.fleet,
             ranking: {
-                title: mockDashboardData.ranking.title,
-                hint: mockDashboardData.ranking.hint,
-                columns: mockDashboardData.ranking.columns,
+                title: dadosBaseAtual.ranking.title,
+                hint: dadosBaseAtual.ranking.hint,
+                columns: dadosBaseAtual.ranking.columns,
                 rows: rowsFiltradas
-            }
+            },
+            meta: dadosBaseAtual.meta
         };
     }
 
     function renderDashboard(data) {
+        atualizarFaixas(data);
+        montarOpcoes("sector-filter", data.filters.sectors, state.sector);
+        montarOpcoes("period-filter", data.filters.periods, state.period);
         atualizarCabecalho(data.header);
         renderKpis(data.kpis);
         renderGraficoSetores(data.sectorsChart);
@@ -393,17 +519,28 @@
         renderRanking(data.ranking.rows, data.ranking);
     }
 
-    function onChangeFiltros() {
+    async function onChangeFiltros() {
+        const periodoAnterior = state.period;
         state.sector = document.getElementById("sector-filter").value;
         state.period = document.getElementById("period-filter").value;
 
-        // TODO: substituir por fetch() da API e re-renderizar com os dados retornados
+        if (state.period !== periodoAnterior) {
+            dadosBaseAtual = await carregarDados(state.period);
+
+            const setoresDisponiveis = dadosBaseAtual.filters && dadosBaseAtual.filters.sectors
+                ? dadosBaseAtual.filters.sectors.map(function (item) { return item.value; })
+                : ["todos"];
+            if (setoresDisponiveis.indexOf(state.sector) === -1) {
+                state.sector = "todos";
+            }
+        }
+
         const dados = getDadosFiltrados(state);
         renderDashboard(dados);
     }
 
-    function onAtualizarClick() {
-        // TODO: substituir por fetch() da API para forçar atualização dos dados no backend
+    async function onAtualizarClick() {
+        dadosBaseAtual = await carregarDados(state.period);
         const dados = getDadosFiltrados(state);
         renderDashboard(dados);
     }
@@ -414,9 +551,10 @@
         document.getElementById("btn-etl").addEventListener("click", onAtualizarClick);
     }
 
-    function initDashboardMacroCLP() {
+    async function initDashboardMacroCLP() {
         Chart.defaults.font.family = FONTE;
-        montarEstruturaEstatica(mockDashboardData);
+        dadosBaseAtual = await carregarDados(state.period);
+        montarEstruturaEstatica(dadosBaseAtual);
         bindEventos();
         renderDashboard(getDadosFiltrados(state));
     }

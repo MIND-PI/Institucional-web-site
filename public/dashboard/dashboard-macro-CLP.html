@@ -130,7 +130,11 @@
 
                 <div class="filter-box">
                     <label class="filter-text" for="period-filter">Período</label>
-                    <select id="period-filter" class="filter-input"></select>
+                    <select id="period-filter" class="filter-input">
+                        <option value="agora">Agora</option>
+                        <option value="7-dias">Últimos 7 dias</option>
+                        <option value="30-dias">Últimos 30 dias</option>
+                    </select>
                 </div>
             </div>
         </header>
@@ -203,6 +207,7 @@
     <script src="./../js/configuracoes.js"></script>
     <script src="./../js/sidebar.js"></script>
     <script src="./../js/mockDashboardData.js"></script>
+    <script src="./../js/macroClpAdapter.js"></script>
     <script src="./../js/dashboard-macro-CLP.js"></script>
 </body>
 
