@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIND | Dashboard</title>
+
+    <link rel="stylesheet" href="./../css/reset.css">
+    <link rel="stylesheet" href="./../css/aside.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="./../css/dashboard-chamados-jira.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Plugin necessário para criar heatmaps -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1"></script>
+</head>
+
+<body onload="obterDados()">
+
+    <button class="menu-mobile" id="menuMobile" data-open="false" data-close="bi-list" data-icon-open="bi-x-lg">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <aside class="sidebar" id="sidebar">
+
+        <header class="sidebar-header">
+            <div class="logo-img">
+                <img src="./../assets/icon/logoMind/mind_logo_branca.png" alt="logo MIND">
+            </div>
+
+            <div class="logo-text">
+                <h2 class="logo-title">MIND</h2>
+                <h5 class="logo-subtitle">OBSERVABILIDADE</h5>
+            </div>
+        </header>
+
+        <nav class="sidebar-nav">
+            <section class="nav-section">
+                <h4 class="nav-section-title" id="nav_title">FLUXO DO CLIENTE</h4>
+                <ul class="nav-list" id="nav_flow"></ul>
+            </section>
+
+            <section class="nav-section">
+                <h4 class="nav-section-title">CONFIGURAÇÕES</h4>
+
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a class="nav-link" id="btn_config">
+                            <i class="bi bi-gear"></i>
+                            Configuração de usuario
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="https://equipe-mind.atlassian.net/servicedesk/customer/portal/2" class="nav-link"
+                            target="_blank">
+                            <i class="bi bi-question-circle"></i>
+                            Ajuda
+                        </a>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="nav-section">
+                <h4 class="nav-section-title">SAIR</h4>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a class="nav-link" id="btn_logout" href="./../login.html">
+                            <i class="bi bi-box-arrow-right"></i>
+                            LOGOUT
+                        </a>
+                    </li>
+                </ul>
+            </section>
+        </nav>
+
+        <footer class="user-card">
+            <div class="img-card">
+                <img src="../assets/imgs/fotosUsuarios/foto_padrao.png" alt="Foto do usuário" id="imgUser"
+                    onerror="this.onerror=null; this.src='../assets/imgs/fotosUsuarios/foto_padrao.png'">
+            </div>
+
+            <div class="text-card">
+                <p id="nomeUsuario" class="text-user-name">Rogerio Andrade</p>
+                <p id="tipoUsuario" class="text-user-type">CLIENTE</p>
+            </div>
+        </footer>
+
+        <div class="overlay_config" id="overlay_config">
+            <div class="modal_config">
+                <div class="modal_header">
+                    <h2>Configurações</h2>
+                    <button type="button" class="btn_fechar" id="btn_fechar_config">✖</button>
+                </div>
+
+                <form id="form_config" class="form-config">
+
+                    <div class="input_group file_group">
+                        <img src="./assets/imgs/fotosUsuarios/foto_padrao.png" alt="Preview da Foto"
+                            id="preview_foto_modal" class="preview-foto-modal">
+
+                        <div class="file_upload_wrapper">
+                            <label for="input_foto" class="btn_upload">Escolher nova foto</label>
+                            <input type="file" id="input_foto" name="foto_perfil" accept="image/*">
+                        </div>
+                    </div>
+
+                    <div class="input_group">
+                        <label for="input_nome">Nome de usuário</label>
+                        <input type="text" id="input_nome" name="nome" placeholder="Digite seu novo nome">
+                    </div>
+
+                    <div class="input_group">
+                        <label for="input_senha">Nova senha</label>
+                        <input type="password" id="input_senha" name="senha" placeholder="Deixe em branco para manter">
+                    </div>
+
+                    <button onclick="salvarConfiguracoes()" type="button" class="btn_salvar">
+                        Salvar Alterações
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </aside>
+
+    <main>
+
+        <!-- CABEÇALHO -->
+        <header class="header-main">
+
+            <div class="box-title">
+                <h1 class="clp-h1">Dashboard dos chamados JIRA</h1>
+            </div>
+
+            <div class="filter-container">
+
+                <div class="filter-box">
+                    <button id="btn-etl" class="btn-etl">
+                        Atualizar
+                    </button>
+                </div>
+
+                <div class="filter-box">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </div>
+
+            </div>
+        </header>
+
+        <!-- KPIs -->
+        <section class="kpi-conteiner">
+
+            <div class="kpi-box">
+                <p class="kpi-title">CLP com mais ocorrências</p>
+                <p class="kpi-result-big" id="kpi-clp">Carregando...</p>
+                <p class="kpi-details" id="kpi-clp-detalhes">Aguardando dados</p>
+            </div>
+
+            <div class="kpi-box">
+                <p class="kpi-title">Recurso mais afetado</p>
+                <p class="kpi-result-big" id="kpi-recurso">Carregando...</p>
+                <p class="kpi-details" id="kpi-recurso-detalhes">Aguardando dados</p>
+            </div>
+
+            <div class="kpi-box" id="kpi-tempo-box">
+                <p class="kpi-title">Tempo médio de resolução</p>
+                <p class="kpi-result-big" id="kpi-tempo">Carregando...</p>
+                <p class="kpi-details" id="kpi-tempo-detalhes">Aguardando dados</p>
+            </div>
+
+        </section>
+
+        <section class="ia-recommendation">
+
+            <div class="ia-header">
+                <div class="ia-title">
+                    <i class="bi bi-stars"></i>
+                    <h2>Análise inteligente MIND</h2>
+                </div>
+
+                <span class="ia-status">Analisando dados</span>
+            </div>
+
+            <div class="ia-content">
+
+                <div class="ia-diagnosis">
+                    <h3>Diagnóstico</h3>
+                    <p id="ia-diagnostico">
+                        Aguardando análise dos dados...
+                    </p>
+                </div>
+
+                <div class="ia-action">
+                    <h3>
+                        <i class="bi bi-lightbulb"></i>
+                        Ação sugerida
+                    </h3>
+
+                    <p id="ia-acao">
+                        A recomendação será apresentada após a análise.
+                    </p>
+                </div>
+
+            </div>
+
+            <p class="ia-justification" id="ia-justificativa"></p>
+
+        </section>
+
+        <!-- GRAFICOS SUPERIORES -->
+        <section class="graph-conteiner">
+
+            <div class="graph-box-lines">
+
+                <div class="lines-content">
+                    <p class="title-graph">Ocorrencias por CLP</p>
+                </div>
+
+                <div class="line-chart-wrapper">
+                    <canvas id="graficoClpsMaisChamados"></canvas>
+                </div>
+
+            </div>
+
+            <div class="graph-box-lines">
+
+                <div class="lines-content">
+                    <p class="title-graph">Ocorrencias por recurso</p>
+                </div>
+
+                <div class="line-chart-wrapper">
+                    <canvas id="graficoTempoResolucao"></canvas>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- HEATMAP -->
+        <section class="graph-conteiner graficos-inferiores">
+
+            <div class="graph-box-lines grafico-evolucao">
+
+                <div class="lines-content">
+                    <p class="title-graph">Ocorrencias Por CLP e Recurso</p>
+                </div>
+
+                <div class="line-chart-wrapper">
+                    <canvas id="graficoHeatmap"></canvas>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>
+
+<script src="./../js/sessao.js"></script>
+<script src="./../js/configuracoes.js"></script>
+<script src="./../js/sidebar.js"></script>
+
+<script>
+
+    // dados recebidos do jira
+    let chamadosJira = [];
+    const btnEtl = document.getElementById('btn-etl');
+
+    // Extrai o nome do CLP antes do primeiro |
+    function extrairNomeCLP(resumo) {
+        if (!resumo) return null;
+
+        const clp = resumo.split('|')[0].trim();
+
+        return clp && !clp.includes(' ') ? clp : null;
+    }
+
+    function AtualizarKPIs() {
+
+        const contagemClps = {};
+        const contagemRecursos = {};
+
+        const recursosMapeados = {
+            CPU: 'CPU',
+            RAM: 'RAM',
+            SWAP: 'SWAP',
+            SCAN: 'Scan time',
+            PING: 'PING',
+            LOSS: 'Perda de pacotes',
+            UPLOAD: 'Upload',
+            DOWNLOAD: 'Download',
+            UPTIME: 'Uptime',
+            PROCESSOS: 'Processos'
+        };
+
+        let tempoTotalResolucao = 0;
+        let chamadosResolvidos = 0;
+
+        chamadosJira.forEach(chamado => {
+
+            const resumo = (chamado.resumo || '').toUpperCase();
+
+            const clp = extrairNomeCLP(chamado.resumo);
+
+            if (clp) {
+                contagemClps[clp] = (contagemClps[clp] || 0) + 1;
+            }
+
+            const recursoEncontrado = resumo.match(
+                /\b(CPU|RAM|SWAP|SCAN|PING|LOSS|UPLOAD|DOWNLOAD|UPTIME|PROCESSOS)\b/
+            );
+
+            if (recursoEncontrado) {
+                const recurso = recursosMapeados[recursoEncontrado[0]];
+
+                contagemRecursos[recurso] =
+                    (contagemRecursos[recurso] || 0) + 1;
+            }
+
+            if (chamado.criadoEm && chamado.resolvidoEm) {
+
+                const dataCriacao = new Date(chamado.criadoEm);
+                const dataResolucao = new Date(chamado.resolvidoEm);
+
+                if (
+                    !isNaN(dataCriacao.getTime()) &&
+                    !isNaN(dataResolucao.getTime()) &&
+                    dataResolucao >= dataCriacao
+                ) {
+
+                    const diferencaMinutos =
+                        (dataResolucao - dataCriacao) / (1000 * 60);
+
+                    tempoTotalResolucao += diferencaMinutos;
+                    chamadosResolvidos++;
+
+                }
+            }
+
+        });
+
+        const clpMaisOcorrencias = Object.entries(contagemClps)
+            .sort((a, b) => b[1] - a[1])[0];
+
+        document.getElementById('kpi-clp').textContent =
+            clpMaisOcorrencias ? clpMaisOcorrencias[0] : 'Sem dados';
+
+        document.getElementById('kpi-clp-detalhes').textContent =
+            clpMaisOcorrencias
+                ? `${clpMaisOcorrencias[1]} ocorrências registradas`
+                : 'Nenhuma ocorrência identificada';
+
+        const recursoMaisAfetado = Object.entries(contagemRecursos)
+            .sort((a, b) => b[1] - a[1])[0];
+
+        document.getElementById('kpi-recurso').textContent =
+            recursoMaisAfetado ? recursoMaisAfetado[0] : 'Sem dados';
+
+        document.getElementById('kpi-recurso-detalhes').textContent =
+            recursoMaisAfetado
+                ? `${recursoMaisAfetado[1]} chamados referentes a ${recursoMaisAfetado[0]}`
+                : 'Nenhum recurso identificado';
+
+        const elementoTempo = document.getElementById('kpi-tempo');
+        const elementoDetalhes = document.getElementById('kpi-tempo-detalhes');
+
+        if (chamadosResolvidos > 0) {
+
+            const mediaMinutos = Math.round(
+                tempoTotalResolucao / chamadosResolvidos
+            );
+
+            const horas = Math.floor(mediaMinutos / 60);
+            const minutos = mediaMinutos % 60;
+
+            let tempoFormatado = '';
+
+            if (horas > 0) {
+                tempoFormatado += `${horas}h `;
+            }
+
+            tempoFormatado += `${minutos}min`;
+            elementoTempo.textContent = tempoFormatado;
+
+            if (mediaMinutos <= 30) {
+
+                elementoDetalhes.textContent =
+                    'Bom: dentro do tempo ideal';
+
+                elementoDetalhes.style.color = '#22C55E';
+
+            } else if (mediaMinutos <= 60) {
+
+                elementoDetalhes.textContent =
+                    'Atenção: acima do tempo ideal';
+
+                elementoDetalhes.style.color = '#F59E0B';
+
+            } else {
+
+                elementoDetalhes.textContent =
+                    'Ruim: tempo de resolução elevado';
+
+                elementoDetalhes.style.color = '#EF4444';
+            }
+        } else {
+            elementoTempo.textContent = 'Sem dados';
+            elementoDetalhes.textContent =
+                'Nenhum chamado resolvido encontrado';
+
+            elementoDetalhes.style.color = '';
+        }
+    }
+
+
+    async function obterDados() {
+        try {
+            const resposta = await fetch("/jira");
+            if (!resposta.ok) {
+                throw new Error("Erro ao consultar os chamados do Jira.");
+            }
+            chamadosJira = await resposta.json();
+            console.log("Chamados recebidos do Jira:", chamadosJira);
+            AtualizarKPIs();
+            GraficoTempoResolucao();
+            GraficoHeatmap();
+            GraficoClpsMaisChamados();
+            await analisarDashboardIA();
+        } catch (erro) {
+            console.error("Erro ao carregar dashboard:", erro);
+        }
+
+    }
+
+    btnEtl.addEventListener('click', obterDados);
+
+    let graficoOcorrenciasPorRecurso = null;
+
+
+    function GraficoTempoResolucao() {
+
+        const canvas = document.getElementById('graficoTempoResolucao');
+        const recursosMapeados = {
+            CPU: 'CPU',
+            RAM: 'RAM',
+            SWAP: 'SWAP',
+            SCAN: 'Scan time',
+            PING: 'PING',
+            LOSS: 'Perda de pacotes',
+            UPLOAD: 'Upload',
+            DOWNLOAD: 'Download',
+            UPTIME: 'Uptime',
+            PROCESSOS: 'Processos'
+        };
+        const contagemRecursos = {};
+
+        chamadosJira.forEach(chamado => {
+
+            const resumo = (chamado.resumo || '').toUpperCase();
+            const correspondencia = resumo.match(
+                /\b(CPU|RAM|SWAP|SCAN|PING|LOSS|UPLOAD|DOWNLOAD|UPTIME|PROCESSOS)\b/
+            );
+
+            if (correspondencia) {
+                const recurso = recursosMapeados[correspondencia[0]];
+                contagemRecursos[recurso] =
+                    (contagemRecursos[recurso] || 0) + 1;
+            }
+
+        });
+
+        const recursos = Object.keys(contagemRecursos);
+        const qtdChamados = Object.values(contagemRecursos);
+
+        if (graficoOcorrenciasPorRecurso !== null) {
+            graficoOcorrenciasPorRecurso.destroy();
+        }
+        graficoOcorrenciasPorRecurso = new Chart(canvas, {
+
+            type: 'bar',
+
+            data: {
+                labels: recursos,
+
+                datasets: [{
+                    label: 'Ocorrências por recurso',
+                    data: qtdChamados,
+
+                    backgroundColor: qtdChamados.map(qtd => {
+                        if (qtd <= 3) return '#0E7490';
+                        if (qtd <= 7) return '#D97706';
+                        return '#DC2626';
+                    }),
+                    borderRadius: 5,
+                    borderSkipped: false
+                }]
+            },
+
+            options: {
+
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    },
+
+                    tooltip: {
+                        callbacks: {
+                            label: (context) =>
+                                `${context.raw} ocorrências`
+                        }
+                    }
+
+                },
+
+                scales: {
+
+                    x: {
+                        ticks: {
+                            color: '#FFFFFF'
+                        },
+
+                        grid: {
+                            display: false
+                        },
+
+                        border: {
+                            display: false
+                        }
+                    },
+
+                    y: {
+                        beginAtZero: true,
+
+                        title: {
+                            display: true,
+                            text: 'Quantidade',
+                            color: '#94A3B8'
+                        },
+
+                        ticks: {
+                            color: '#94A3B8',
+                            precision: 0
+                        },
+
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.08)'
+                        },
+
+                        border: {
+                            display: false
+                        }
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+
+    let graficoHeatmap = null;
+
+    const pluginValoresHeatmap = {
+        id: 'valoresHeatmap',
+
+        afterDatasetsDraw(chart) {
+            const { ctx } = chart;
+
+            chart.data.datasets.forEach((dataset, datasetIndex) => {
+                const meta = chart.getDatasetMeta(datasetIndex);
+
+                meta.data.forEach((element, index) => {
+                    const valor = dataset.data[index].v;
+                    const { x, y } = element.getCenterPoint();
+
+                    ctx.save();
+
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.font = 'bold 12px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+
+                    ctx.fillText(valor, x, y);
+
+                    ctx.restore();
+                });
+            });
+        }
+    };
+
+    function GraficoHeatmap() {
+        const canvas = document.getElementById('graficoHeatmap');
+        const recursosMapeados = {
+            CPU: 'CPU',
+            RAM: 'RAM',
+            SWAP: 'SWAP',
+            SCAN: 'Scan time',
+            PING: 'PING',
+            LOSS: 'Perda de pacotes',
+            UPLOAD: 'Upload',
+            DOWNLOAD: 'Download',
+            UPTIME: 'Uptime',
+            PROCESSOS: 'Processos'
+        };
+
+        const contagem = {};
+        const clps = new Set();
+        const recursos = new Set();
+
+        // Identifica os equipamentos e recursos de todos os chamados
+        chamadosJira.forEach(chamado => {
+
+            const resumo = (chamado.resumo || '').toUpperCase();
+
+            const clp = extrairNomeCLP(chamado.resumo);
+
+            const recursoEncontrado = resumo.match(
+                /\b(CPU|RAM|SWAP|SCAN|PING|LOSS|UPLOAD|DOWNLOAD|UPTIME|PROCESSOS)\b/i
+            );
+
+            if (!clp || !recursoEncontrado) {
+                return;
+            }
+
+            const recurso =
+                recursosMapeados[recursoEncontrado[0].toUpperCase()];
+
+            clps.add(clp);
+            recursos.add(recurso);
+
+            const chave = `${clp}|${recurso}`;
+
+            contagem[chave] = (contagem[chave] || 0) + 1;
+
+        });
+
+        const clpsOrdenados = Array.from(clps).sort();
+        const recursosOrdenados = Array.from(recursos).sort();
+
+        const clpsEscala = clpsOrdenados.length > 0
+            ? clpsOrdenados
+            : ['Sem dados'];
+
+        const recursosEscala = recursosOrdenados.length > 0
+            ? recursosOrdenados
+            : ['Sem dados'];
+
+        const pontos = [];
+
+        clpsOrdenados.forEach(clp => {
+
+            recursosOrdenados.forEach(recurso => {
+
+                const chave = `${clp}|${recurso}`;
+
+                pontos.push({
+                    x: recurso,
+                    y: clp,
+                    v: contagem[chave] || 0
+                });
+
+            });
+
+        });
+
+        if (graficoHeatmap !== null) {
+            graficoHeatmap.destroy();
+        }
+
+        graficoHeatmap = new Chart(canvas, {
+
+            type: 'matrix',
+
+            data: {
+                datasets: [{
+
+                    label: 'Ocorrências',
+
+                    data: pontos,
+
+                    backgroundColor: (context) => {
+
+                        const ponto = context.dataset.data[context.dataIndex];
+
+                        if (!ponto || ponto.v === 0) {
+                            return '#1E293B';
+                        }
+
+                        if (ponto.v <= 3) {
+                            return '#0E7490';
+                        }
+
+                        if (ponto.v <= 7) {
+                            return '#D97706';
+                        }
+
+                        return '#DC2626';
+                    },
+
+                    borderColor: '#0F172A',
+                    borderWidth: 2,
+                    borderRadius: 5,
+
+                    width: (context) => {
+
+                        const area = context.chart.chartArea;
+
+                        if (!area) return 30;
+
+                        return Math.max(
+                            10,
+                            (area.width / recursosEscala.length) - 4
+                        );
+                    },
+
+                    height: (context) => {
+
+                        const area = context.chart.chartArea;
+
+                        if (!area) return 20;
+
+                        return Math.max(
+                            10,
+                            (area.height / clpsEscala.length) - 4
+                        );
+                    }
+
+                }]
+            },
+
+            options: {
+
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    },
+
+                    tooltip: {
+
+                        callbacks: {
+
+                            title: (items) => {
+                                return items[0].raw.y;
+                            },
+
+                            label: (context) => {
+
+                                const ponto = context.raw;
+
+                                return `${ponto.x}: ${ponto.v} ocorrências`;
+                            }
+
+                        }
+
+                    }
+
+                },
+
+                scales: {
+
+                    x: {
+
+                        type: 'category',
+                        labels: recursosEscala,
+                        offset: true,
+
+                        ticks: {
+                            color: '#FFFFFF',
+                            font: {
+                                size: 12
+                            }
+                        },
+
+                        grid: {
+                            display: false
+                        },
+
+                        border: {
+                            display: false
+                        }
+
+                    },
+
+                    y: {
+
+                        type: 'category',
+                        labels: clpsEscala,
+                        offset: true,
+                        reverse: true,
+
+                        ticks: {
+                            color: '#FFFFFF',
+                            font: {
+                                size: 12
+                            }
+                        },
+
+                        grid: {
+                            display: false
+                        },
+
+                        border: {
+                            display: false
+                        }
+
+                    }
+
+                }
+
+            },
+
+            plugins: [pluginValoresHeatmap]
+
+        });
+
+    }
+
+    // GRÁFICO DE OCORRÊNCIAS POR CLP
+    let graficoClpsMaisChamados = null;
+
+
+    function GraficoClpsMaisChamados() {
+        const canvas = document.getElementById('graficoClpsMaisChamados');
+
+        const contagemClps = {};
+
+        chamadosJira.forEach(chamado => {
+
+            const clp = extrairNomeCLP(chamado.resumo);
+
+            if (clp) {
+                contagemClps[clp] =
+                    (contagemClps[clp] || 0) + 1;
+            }
+        });
+
+        const clpsOrdenados = Object.entries(contagemClps)
+            .sort((a, b) => b[1] - a[1]);
+
+        const nomesClps = clpsOrdenados.map(item => item[0]);
+        const qtdChamados = clpsOrdenados.map(item => item[1]);
+
+        if (graficoClpsMaisChamados !== null) {
+            graficoClpsMaisChamados.destroy();
+        }
+
+        graficoClpsMaisChamados = new Chart(canvas, {
+            type: 'bar',
+            data: {
+                labels: nomesClps,
+                datasets: [{
+                    label: 'Ocorrências por CLP',
+                    data: qtdChamados,
+                    backgroundColor: qtdChamados.map(qtd => {
+                        if (qtd <= 3) return '#0E7490';
+                        if (qtd <= 7) return '#D97706';
+                        return '#DC2626';
+                    }),
+                    borderRadius: 5,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) =>
+                                `${context.raw} ocorrências`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#94A3B8',
+                            precision: 0
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.08)'
+                        },
+                        border: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#FFFFFF'
+                        },
+                        grid: {
+                            display: false
+                        },
+                        border: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+
+
+    async function analisarDashboardIA() {
+
+        const status = document.querySelector('.ia-status');
+
+        const diagnostico = document.getElementById('ia-diagnostico');
+        const acao = document.getElementById('ia-acao');
+        const justificativa = document.getElementById('ia-justificativa');
+
+        try {
+            status.textContent = 'Analisando dados...';
+            const resposta = await fetch('/ia/jira', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    nomeUsuario: document.getElementById('nomeUsuario').textContent.trim(),
+                    dados: chamadosJira
+                })
+            });
+
+            if (!resposta.ok) {
+                throw new Error('Erro ao solicitar análise da IA.');
+            }
+
+            const resultado = await resposta.json();
+
+            diagnostico.textContent = resultado.diagnostico;
+            acao.textContent = resultado.acao;
+            justificativa.textContent = resultado.justificativa;
+
+            status.textContent = 'Análise concluída';
+
+        } catch (erro) {
+
+            console.error('Erro na análise da IA:', erro);
+
+            status.textContent = 'Erro na análise';
+
+            diagnostico.textContent = 'Não foi possível analisar os dados.';
+            acao.textContent = 'Tente atualizar a dashboard.';
+            justificativa.textContent = '';
+
+        }
+    }
+
+</script>

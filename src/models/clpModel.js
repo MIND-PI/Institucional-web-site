@@ -1,7 +1,7 @@
 var database = require("../database/config");
 
 function listarClps(idEmpresa) {
-  var instrucaoSql = `
+    var instrucaoSql = `
     SELECT
     c.idClp, c.nome, c.status, c.modeloId, c.localizacaoId,
     l.nome AS localizacao,
@@ -16,7 +16,7 @@ function listarClps(idEmpresa) {
     return database.executar(instrucaoSql);
 }
 
-function listarModelosDisponiveis(idEmpresa){
+function listarModelosDisponiveis(idEmpresa) {
     var instrucaoSql = `
     SELECT
     m.idmodelo AS idModelo,
@@ -109,7 +109,7 @@ function salvarMedicao(idClp, tipoMedicaoId, status, parametro) {
     return database.executar(instrucaoSql);
 }
 
-function listarTiposMedicao(){
+function listarTiposMedicao() {
     var instrucaoSql = `
     SELECT idTipoMedicao, nome, apelido, unidade_medida
     FROM tipo_medicao
@@ -135,7 +135,7 @@ function deletarClp(idClp, empresaId) {
     });
 }
 
-function listarLocalizacoes(idEmpresa){
+function listarLocalizacoes(idEmpresa) {
     var instrucaoSql = `
     SELECT idLocalizacao, nome
     FROM localizacao
@@ -146,7 +146,7 @@ function listarLocalizacoes(idEmpresa){
     return database.executar(instrucaoSql);
 }
 
-function adicionarLocalizacao(nome, idEmpresa){
+function adicionarLocalizacao(nome, idEmpresa) {
     var instrucaoSql = `
     INSERT INTO localizacao (nome, empresaId)
     VALUES ('${nome}', ${idEmpresa})
@@ -155,8 +155,26 @@ function adicionarLocalizacao(nome, idEmpresa){
     return database.executar(instrucaoSql);
 }
 
+function listarClpPorId(idClp) {
+    var instrucaoSql = `
+    SELECT
+        c.nome nome_clp,
+        m.nome nome_modelo,
+        c.mac_address,
+        c.status,
+        l.nome localizacao
+    FROM clp c
+    JOIN modelo m ON m.idModelo = c.modeloId
+    JOIN localizacao l ON l.idLocalizacao = c.localizacaoId
+    WHERE c.idClp = ${idClp};
+        `;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     listarClps,
+    listarClpPorId,
     listarModelosDisponiveis,
     adicionarClp,
     atualizarClp,

@@ -21,6 +21,8 @@ var emailRouter = require("./src/routes/email");
 var equipeRouter = require("./src/routes/equipe");
 var modeloRouter = require("./src/routes/modelo");
 var clpRouter = require("./src/routes/clp");
+var jiraRouter = require("./src/routes/jira");
+var iaRouter = require("./src/routes/ia");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -34,6 +36,9 @@ app.use("/email", emailRouter);
 app.use("/equipe", equipeRouter);
 app.use("/modelo", modeloRouter);
 app.use("/clp", clpRouter);
+app.use("/jira", jiraRouter);
+app.use("/ia", iaRouter);
+
 
 app.listen(PORTA_APP, function () {
     console.log(`

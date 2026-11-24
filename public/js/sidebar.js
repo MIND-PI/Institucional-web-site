@@ -12,8 +12,9 @@ function renderAside() {
         },
         "cliente": {
             "pages": [
-                { nome: "Dashboard", icone: "bi-bar-chart-fill", link: "./dashboard-cliente.html" },
-                { nome: "Gerenciamento clps", icone: "bi-cpu", link: "./gerenciamento-clp.html" }
+                { nome: "Dashboard", icone: "bi-bar-chart-fill", link: "./dashboard-micro-clp.html" },
+                { nome: "Gerenciamento clps", icone: "bi-cpu", link: "./gerenciamento-clp.html" },
+                { nome: "Chamados", icone: "bi-journal-text", link: "./dashboard-chamados-jira.html" }
             ]
         }
     }

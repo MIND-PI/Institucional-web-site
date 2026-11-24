@@ -6,6 +6,15 @@ router.get("/listarClps/:idEmpresa", function (req, res){
     clpController.listarClps(req, res);
 });
 
+//listar clp individualmente pelo id
+router.get("/:idClp", function (req, res) {
+    clpController.listarClpPorId(req, res)    
+})
+
+router.get("/micro-analise/:idClp/:idEmpresa/:period", function (req, res) {
+    clpController.microAnalise(req, res)
+})
+
 router.get("/listarModelosDisponiveis/:idEmpresa", function (req,res){
     clpController.listarModelosDisponiveis(req, res);
 });
@@ -41,5 +50,18 @@ router.get("/listarLocalizacoes/:idEmpresa", function (req, res){
 router.post("/adicionarLocalizacao/:idEmpresa", function (req, res){
     clpController.adicionarLocalizacao(req, res);
 });
+
+router.get("/performance-analise/:idClp/:idEmpresa/:period", function (req, res) {
+    clpController.performanceAnalise(req, res)
+})
+
+router.get("/predicao-analise/:idClp/:idEmpresa", function (req, res) {
+    clpController.predicaoAnalise(req, res)
+})
+
+router.get("/predicao-metrica/:idClp/:idEmpresa", function (req, res) {
+    clpController.predicaoMetrica(req, res)
+})
+
 
 module.exports = router;
