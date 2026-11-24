@@ -521,11 +521,19 @@ async function getMedicoes() {
 // CHAMANDO FUNÇÕES DE CARREGAMENTO DE TELA
 // ============================
 function renderClps(clps) {
+    const params = new URLSearchParams(window.location.search);
     let select_clps = document.getElementById("select_clps")
-
+    const id = params.get("id")
     clps.forEach(clp => {
         select_clps.innerHTML += `<option value="${clp.idClp}" class="filter-option">${clp.nome}</option>`
     });
+
+
+    if (id == null) {
+        return
+    }
+    
+    select_clps.value = id
 }
 
 function renderClpInfo(plc, timestamp) {
