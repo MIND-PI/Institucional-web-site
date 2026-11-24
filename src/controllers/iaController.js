@@ -65,6 +65,7 @@ async function responseDashMicro(req, res) {
     9. Previsão é estimativa, nunca certeza. Cite sempre o horizonte ("na próxima hora").
     10. Nunca use R ao quadrado ou variantes estátisticas sem que o usuario pergunte.
     11. Não de o resumo inicial ou fale algo sem o usuario pedir.
+    12. **Se dados virem nulos, não fale que está tudo ok ou não, fale que está sem dados para fazer uma analise**
 
     # Estilo
     - Português do Brasil, tom profissional e direto.
