@@ -24,6 +24,7 @@ var clpRouter = require("./src/routes/clp");
 var jiraRouter = require("./src/routes/jira");
 var iaRouter = require("./src/routes/ia");
 var microModeloRouter = require("./src/routes/microModelo");
+var comparativoModelosRouter = require("./src/routes/comparativoModelos");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -41,6 +42,7 @@ app.use("/jira", jiraRouter);
 app.use("/ia", iaRouter);
 
 app.use("/microModelo", microModeloRouter);
+app.use("/comparativo-modelos", comparativoModelosRouter);
 
 app.listen(PORTA_APP, function () {
     console.log(`
