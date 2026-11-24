@@ -21,7 +21,7 @@ var emailRouter = require("./src/routes/email");
 var equipeRouter = require("./src/routes/equipe");
 var modeloRouter = require("./src/routes/modelo");
 var clienteRouter = require("./src/routes/cliente");
-var macroClp = require("./routes/macroClp");
+var macroClp = require("./src/routes/macroClp");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
