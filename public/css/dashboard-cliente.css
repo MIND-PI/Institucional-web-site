@@ -54,6 +54,14 @@ html {
     background-color: var(--color-positive);
 }
 
+.bold {
+    font-weight: bold;
+}
+
+.italico {
+    font-style: italic;
+}
+
 /* CONTEÚDO PRINCIPAL */
 main {
     padding: 2rem 1rem;
@@ -187,10 +195,11 @@ main {
 .kpi-box {
     background-color: var(--color-bg-secondary);
     border-radius: 1rem;
-    width: 20rem;
+    width: 100%;
     height: 9rem;
     padding: 1rem;
     justify-content: center;
+    align-items: center;
     gap: 0.7rem;
     display: flex;
     flex-direction: column;
@@ -201,24 +210,19 @@ main {
 .kpi-title {
     font-weight: bold;
     color: var(--color-text-primary);
-    font-size: 1.1rem;
+    font-size: 1.8rem;
 }
 
 /* Estilização do conteúdo das kpi sem gráfico */
 .kpi-result-big {
-    font-size: 1.8rem;
+    font-size: 2.3rem;
     font-weight: bold;
-}
-
-/* Reultado das kpi se estão subindo ou descendo */
-.kpi-details {
-    font-size: 0.75rem;
 }
 
 /*  */
 .kpi-time {
     color: var(--color-text-primary);
-    font-size: 0.9rem;
+    font-size: 1rem;
 }
 
 
@@ -250,7 +254,7 @@ main {
 
 /* Estilização da box do gráfico de desempenho do clp */
 .graph-box-lines {
-    max-width: 60rem;
+    max-width: 100%;
 }
 
 /* Estilização do header do gráfico de desempenho do clp */
@@ -385,6 +389,7 @@ main {
 
 .standard-container {
     height: 10rem;
+    width: 100%;
     min-height: 0;
 }
 
@@ -435,7 +440,7 @@ main {
 
 .container-previous-bot {
     flex-direction: row;
-    max-width: 50rem;
+    max-width: 100%;
     min-width: 0;
 }
 
@@ -443,6 +448,7 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    width: 100%;
     height: 100%;
 }
 
@@ -566,10 +572,17 @@ main {
 
 .ia-message p,
 .user-message p {
-    background-color: var(--color-bg-secondary);
-    width: 40%;
     padding: 1rem;
     border-radius: 1rem;
+    max-width: 85%;
+}
+
+.ia-message p{
+    border: 1px solid var(--color-border);
+}
+
+.user-message p {
+    background-color: var(--color-bg-secondary);
 }
 
 .ia-message,
@@ -607,12 +620,12 @@ main {
 .chat-input {
     width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 }
 
 .chat-input input {
-    width: 90%;
+    width: 85%;
     padding: 1rem;
     background-color: var(--color-bg-secondary);
     border: none;
@@ -622,6 +635,35 @@ main {
 
 .chat-input input::placeholder {
     color: var(--color-text-primary);
+}
+
+/* Estilização do botão de envio do chat */
+.chat-input .btn-send-chat {
+    padding: 0.7rem 1rem;
+    background: var(--color-accent);
+    color: #000;
+    border: none;
+    border-radius: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(6, 182, 212, 0.15);
+    transition: ease 0.3s;
+    min-width: 4.5rem;
+    max-width: 6.5rem;
+}
+
+.chat-input .btn-send-chat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(6, 182, 212, 0.18);
+}
+
+.chat-input .btn-send-chat:active {
+    transform: translateY(0);
+}
+
+.chat-input .btn-send-chat:disabled {
+    opacity: 0.6;
+    box-shadow: none;
 }
 
 
