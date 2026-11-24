@@ -63,5 +63,8 @@ router.get("/predicao-metrica/:idClp/:idEmpresa", function (req, res) {
     clpController.predicaoMetrica(req, res)
 })
 
+router.get("/baixarScript/:idClp/:idEmpresa", function (req, res) {
+    clpController.baixarScript(req, res);
+});
 
 module.exports = router;

@@ -1,0 +1,441 @@
+/* ---------- Cabeçalho ---------- */
+.title-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+/* Legenda dos status (mesmo estilo do comparativo de modelos) */
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem 1rem;
+    font-family: "Montserrat", sans-serif;
+    color: var(--color-text-primary);
+}
+
+.legend-text {
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: var(--color-text-secondary);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    color: var(--color-text-primary);
+    white-space: nowrap;
+}
+
+.legend-dot {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+}
+
+.bg-positive {
+    background-color: var(--color-positive);
+}
+
+.bg-warning {
+    background-color: var(--color-warning);
+}
+
+.bg-danger {
+    background-color: var(--color-danger);
+}
+
+.header-main .filter-container {
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.filter-input {
+    color-scheme: dark;
+}
+
+.btn-atualizar {
+    background-color: var(--color-accent);
+    color: var(--color-bg-primary);
+    border: none;
+    border-radius: 0.3rem;
+    padding: 0.5rem 1.2rem;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.btn-atualizar:hover {
+    opacity: 0.8;
+}
+
+/* ---------- KPIs  ---------- */
+.kpi-micro {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    width: 100%;
+}
+
+.kpi-micro .kpi-box {
+    width: auto;
+    height: auto;
+    min-height: 11rem;
+    min-width: 0;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem;
+}
+
+.kpi-micro .kpi-result-big {
+    margin: 0;
+    font-size: 2.3rem;
+}
+
+.kpi-micro .kpi-details {
+    text-align: left;
+    font-weight: 500;
+}
+
+.kpi-details.alerta {
+    color: var(--color-warning);
+    font-weight: 500;
+}
+
+.kpi-detalhe {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Linha do valor: número à esquerda e, quando existir, a etiqueta de status à direita */
+.kpi-valor-linha {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+/* Cor do valor conforme o status (mesmas cores das pills) */
+.kpi-micro .kpi-result-big.critico {
+    color: var(--color-danger);
+}
+
+.kpi-micro .kpi-result-big.atencao {
+    color: var(--color-warning);
+}
+
+.kpi-micro .kpi-result-big.estavel {
+    color: var(--color-positive);
+}
+
+/* Sufixo menor ao lado do valor (ex.: /100) */
+.kpi-unidade {
+    margin-left: 0.15rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+/* ---------- Linhas e cards ---------- */
+.linha {
+    display: grid;
+    gap: 1.25rem;
+    width: 100%;
+}
+
+.linha-ranking {
+    grid-template-columns: 2fr 1fr;
+}
+
+.linha-graficos {
+    grid-template-columns: 1.2fr 1fr;
+}
+
+.card {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.25rem;
+    background-color: var(--color-bg-secondary);
+    border: 2px solid var(--color-border);
+    border-top: 3px solid var(--color-accent);
+    border-radius: 1rem;
+}
+
+.card-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.card-titulo {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.card-sub {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* ---------- Tabela do ranking ---------- */
+.tabela-scroll {
+    overflow-x: auto;
+}
+
+.tabela {
+    width: 100%;
+    min-width: 38rem;
+    border-collapse: collapse;
+    text-align: center;
+    font-family: "Montserrat", sans-serif;
+    color: var(--color-text-primary);
+}
+
+.tabela th,
+.tabela td {
+    padding: 1rem 0.6rem;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.8rem;
+}
+
+.tabela th {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+}
+
+.tabela td {
+    font-weight: 600;
+}
+
+/* Etiqueta de status: preenchida e com texto branco (mesmo visual do comparativo de modelos) */
+.pill {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Montserrat", sans-serif;
+    padding: 0.2rem 0.8rem;
+    border-radius: 0.8rem;
+    color: var(--color-text-primary);
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.pill.critico {
+    background-color: var(--color-danger);
+}
+
+.pill.atencao {
+    background-color: var(--color-warning);
+}
+
+.pill.estavel {
+    background-color: var(--color-positive);
+}
+
+/* Número do health score ao lado da etiqueta na tabela */
+.health-valor {
+    margin-right: 0.5rem;
+    font-weight: 700;
+}
+
+/* ---------- Donut de status ---------- */
+.donut {
+    position: relative;
+    width: 15rem;
+    max-width: 100%;
+    height: 15rem;
+    margin: auto;
+}
+
+.donut-total {
+    position: absolute;
+    inset: 0; /* atalho de top/right/bottom/left: 0 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Montserrat", sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    pointer-events: none;
+}
+
+.legenda {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.legenda li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.legenda span {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+}
+
+/* ---------- Gráficos de linha e barras ---------- */
+.grafico {
+    position: relative;
+    width: 100%;
+    height: 15rem;
+}
+
+.evolucao-resumo {
+    display: flex;
+    gap: 1.5rem;
+    text-align: center;
+}
+
+.resumo-valor {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.hs-intervalo {
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.7rem;
+    color: var(--color-text-secondary);
+}
+
+
+@media (max-width: 1200px) {
+    .kpi-micro {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .linha-ranking,
+    .linha-graficos {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .kpi-micro {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        padding: 1rem;
+    }
+
+    .card-titulo {
+        font-size: 1rem;
+    }
+}
+
+
+/* =====================================================================
+   MODO "TELA CHEIA" (sem scroll)
+   Só vale em telas largas e altas o bastante. Abaixo disso a página
+   volta ao comportamento normal (empilha e rola), mantendo a responsividade.
+   - min-width 1400px: largura mínima para os 4 KPIs, a tabela e o donut
+     caberem lado a lado ao lado da sidebar (23rem) sem apertar demais
+   - min-height 850px: altura mínima para a sidebar e os cards caberem sem apertar
+   ===================================================================== */
+@media (min-width: 1400px) and (min-height: 850px) {
+    main {
+        height: 100vh;
+        height: 100dvh;
+        padding: 1.25rem 1rem;
+        gap: 1.25rem;
+        overflow: hidden;
+    }
+
+    .header-main {
+        flex-shrink: 0;
+        padding-bottom: 0.75rem;
+    }
+
+    /* KPIs ocupam só o que precisam */
+    .kpi-micro {
+        flex-shrink: 0;
+    }
+
+    .kpi-micro .kpi-box {
+        min-height: 0;
+        gap: 0.35rem;
+        padding: 0.9rem 1.25rem;
+    }
+
+    .kpi-micro .kpi-result-big {
+        font-size: clamp(2rem, 4.5vh, 2.5rem);
+    }
+
+    /* As duas linhas de cards dividem o espaço que sobra */
+    .linha {
+        flex: 1 1 0;
+        min-height: 0;
+        grid-template-rows: minmax(0, 1fr);
+    }
+
+    .linha-ranking {
+        flex-grow: 1.35;
+    }
+
+    .card {
+        min-height: 0;
+        gap: 0.75rem;
+        padding: 1rem 1.25rem;
+    }
+
+    .card-topo {
+        flex-shrink: 0;
+    }
+
+    /* Tabela: a altura das linhas acompanha a altura da tela */
+    .tabela-scroll {
+        flex: 1;
+        min-height: 0;
+        overflow: auto;
+    }
+
+    .tabela th,
+    .tabela td {
+        padding: clamp(0.4rem, 1.4vh, 1rem) 0.4rem;
+    }
+
+    .tabela td:first-child {
+        white-space: nowrap;
+    }
+
+    /* Donut e gráficos esticam para preencher o card */
+    .donut {
+        flex: 1 1 0;
+        min-height: 0;
+        width: 100%;
+        max-width: 15rem;
+        height: auto;
+    }
+
+    .legenda {
+        flex-shrink: 0;
+        gap: 0.4rem;
+    }
+
+    .grafico {
+        flex: 1 1 0;
+        min-height: 0;
+        height: auto;
+    }
+}
