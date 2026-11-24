@@ -1,6 +1,6 @@
 var usuarioModel = require("../models/usuarioModel");
 var uploadS3 = require("../services/uploadS3")
-const getUrlS3 = require("../services/getS3");
+const getS3 = require("../services/getS3");
 
 function mensagemErro(erro) {
     if (!erro) return "Erro ao processar a requisição.";
@@ -34,7 +34,7 @@ async function autenticar(req, res) {
             let url_img = null;
             // Verificando se url_img existe, se exister chama função para pegar url do bucket
             if (resultado[0].url_img) {
-                url_img = await getUrlS3(resultado[0].url_img);
+                url_img = await getS3.getUrlS3(resultado[0].url_img);
             }
 
             return res.json({
@@ -132,7 +132,7 @@ async function buscarUsuarioPeloId(req, res) {
 
         // Verifica se a imagem existe, se existe chama função getUrlS3 do arquivo /services/getS3
         if (usuario.url_img) {
-            imgUrl = await getUrlS3(usuario.url_img)
+            imgUrl = await getS3.getUrlS3(usuario.url_img)
         }
 
         res.json([{
