@@ -21,7 +21,7 @@ var emailRouter = require("./src/routes/email");
 var equipeRouter = require("./src/routes/equipe");
 var modeloRouter = require("./src/routes/modelo");
 var clpRouter = require("./src/routes/clp");
-var microModeloRouter = requite("./src/routes/microModelo");
+var microModeloRouter = require("./src/routes/microModelo");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
