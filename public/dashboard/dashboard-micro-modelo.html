@@ -114,7 +114,16 @@
     </aside>
     <main>
         <header class="header-main">
-            <h1 class="clp-h1">SIEMENS-S7-1500</h1>
+            <div class="title-box">
+                <h1 class="clp-h1">SIEMENS-S7-1500</h1>
+
+                <div class="legend">
+                    <span class="legend-text">Legenda:</span>
+                    <span class="legend-item"><span class="legend-dot bg-positive"></span><span>Estável (bom) · health ≥ <span id="lim-estavel">75</span></span></span>
+                    <span class="legend-item"><span class="legend-dot bg-warning"></span><span>Atenção (alerta) · <span id="lim-atencao-faixa">50 a 74</span></span></span>
+                    <span class="legend-item"><span class="legend-dot bg-danger"></span><span>Crítico (ruim) · &lt; <span id="lim-critico">50</span></span></span>
+                </div>
+            </div>
 
             <div class="filter-container">
                 <div class="filter-box">

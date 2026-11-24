@@ -1,4 +1,55 @@
 /* ---------- Cabeçalho ---------- */
+.title-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+/* Legenda dos status (mesmo estilo do comparativo de modelos) */
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem 1rem;
+    font-family: "Montserrat", sans-serif;
+    color: var(--color-text-primary);
+}
+
+.legend-text {
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: var(--color-text-secondary);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    color: var(--color-text-primary);
+    white-space: nowrap;
+}
+
+.legend-dot {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+}
+
+.bg-positive {
+    background-color: var(--color-positive);
+}
+
+.bg-warning {
+    background-color: var(--color-warning);
+}
+
+.bg-danger {
+    background-color: var(--color-danger);
+}
+
 .header-main .filter-container {
     align-items: center;
     gap: 1.5rem;
@@ -168,29 +219,36 @@
     font-weight: 600;
 }
 
+/* Etiqueta de status: preenchida e com texto branco (mesmo visual do comparativo de modelos) */
 .pill {
-    display: inline-block;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
     font-family: "Montserrat", sans-serif;
-    padding: 0.25rem 0.9rem;
-    border-radius: 1rem;
-    font-size: 0.75rem;
+    padding: 0.2rem 0.8rem;
+    border-radius: 0.8rem;
+    color: var(--color-text-primary);
+    font-size: 0.7rem;
     font-weight: 700;
     white-space: nowrap;
 }
 
 .pill.critico {
-    color: var(--color-danger);
-    background-color: rgba(239, 68, 68, 0.15);
+    background-color: var(--color-danger);
 }
 
 .pill.atencao {
-    color: var(--color-warning);
-    background-color: rgba(245, 158, 11, 0.15);
+    background-color: var(--color-warning);
 }
 
 .pill.estavel {
-    color: var(--color-positive);
-    background-color: rgba(34, 197, 94, 0.15);
+    background-color: var(--color-positive);
+}
+
+/* Número do health score ao lado da etiqueta na tabela */
+.health-valor {
+    margin-right: 0.5rem;
+    font-weight: 700;
 }
 
 /* ---------- Donut de status ---------- */

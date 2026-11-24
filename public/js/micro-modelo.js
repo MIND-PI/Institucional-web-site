@@ -32,6 +32,16 @@ function textoVariacao(atual, anterior, unidade, sufixo) {
 }
 
 // ===== RENDERIZAÇÃO =====
+// Atualiza os números da legenda com os limites que vieram da API (padrão: 75 e 50)
+function atualizarLegenda(limites) {
+    const estavel = limites && limites.estavel !== undefined ? limites.estavel : 75;
+    const atencao = limites && limites.atencao !== undefined ? limites.atencao : 50;
+
+    document.getElementById('lim-estavel').textContent = estavel;
+    document.getElementById('lim-atencao-faixa').textContent = `${atencao} a ${estavel - 1}`;
+    document.getElementById('lim-critico').textContent = atencao;
+}
+
 function montarKpis(dados) {
     const k = dados.kpis;
     const status = statusDoHealth(k.health_mediano, dados.limites_status);
@@ -61,7 +71,7 @@ function montarKpis(dados) {
             status: status,
             variacao: textoVariacao(k.health_mediano, k.health_mediano_anterior, 'pts', 'vs período anterior'),
             cor: '',
-            detalhe: `Meta de qualidade: ${metaHealthScore}`
+            detalhe: `Health ideal: ${metaHealthScore}`
         },
         {
             titulo: 'Mediana Alertas por CLP',
@@ -106,7 +116,7 @@ function renderizarRanking(ranking) {
             <td>${clp.apelido}</td>
             <td>${clp.cliente}</td>
             <td>${clp.setor}</td>
-            <td><span class="pill ${status}">${arredondar(clp.health)} - ${rotulos[status]}</span></td>
+            <td><span class="health-valor">${arredondar(clp.health)}</span><span class="pill ${status}">${rotulos[status]}</span></td>
             <td>${clp.alertas}</td>
             <td>${clp.pior_componente || '—'}</td>
         </tr>`;
@@ -148,7 +158,7 @@ function atualizarEvolucao(evolucao, nomeModelo) {
     graficoEvolucao.data.labels = labels;
     graficoEvolucao.data.datasets[0].label = nomeModelo || 'Modelo';
     graficoEvolucao.data.datasets[0].data = evolucao.mediana;
-    graficoEvolucao.data.datasets[1].label = `Meta (${metaHealthScore})`;
+    graficoEvolucao.data.datasets[1].label = `Ideal (${metaHealthScore})`;
     graficoEvolucao.data.datasets[1].data = labels.map(() => metaHealthScore);
     graficoEvolucao.update();
 }
@@ -305,6 +315,7 @@ async function carregarMicroModelo() {
         metaHealthScore = dados.meta_health_score;
 
         document.querySelector('.clp-h1').textContent = dados.modeloNome || 'Modelo';
+        atualizarLegenda(dados.limites_status);
         renderizarKpis(montarKpis(dados));
         renderizarRanking(dados.ranking);
         atualizarStatus(dados.status);
