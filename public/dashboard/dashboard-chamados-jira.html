@@ -273,6 +273,15 @@
     let chamadosJira = [];
     const btnEtl = document.getElementById('btn-etl');
 
+    // Extrai o nome do CLP antes do primeiro |
+    function extrairNomeCLP(resumo) {
+        if (!resumo) return null;
+
+        const clp = resumo.split('|')[0].trim();
+
+        return clp && !clp.includes(' ') ? clp : null;
+    }
+
     function AtualizarKPIs() {
 
         const contagemClps = {};
@@ -298,13 +307,9 @@
 
             const resumo = (chamado.resumo || '').toUpperCase();
 
-            const clpEncontrado = resumo.match(
-                /\b(?:CLP-[A-Z0-9]+(?:-[A-Z0-9]+)*|COMPACT-LOGIC)\b/
-            );
+            const clp = extrairNomeCLP(chamado.resumo);
 
-            if (clpEncontrado) {
-                const clp = clpEncontrado[0];
-
+            if (clp) {
                 contagemClps[clp] = (contagemClps[clp] || 0) + 1;
             }
 
@@ -620,19 +625,15 @@
 
             const resumo = (chamado.resumo || '').toUpperCase();
 
-            const clpEncontrado = resumo.match(
-                /\b(?:CLP-[A-Z0-9]+(?:-[A-Z0-9]+)*|COMPACT-LOGIC)\b/i
-            );
+            const clp = extrairNomeCLP(chamado.resumo);
 
             const recursoEncontrado = resumo.match(
                 /\b(CPU|RAM|SWAP|SCAN|PING|LOSS|UPLOAD|DOWNLOAD|UPTIME|PROCESSOS)\b/i
             );
 
-            if (!clpEncontrado || !recursoEncontrado) {
+            if (!clp || !recursoEncontrado) {
                 return;
             }
-
-            const clp = clpEncontrado[0].toUpperCase();
 
             const recurso =
                 recursosMapeados[recursoEncontrado[0].toUpperCase()];
@@ -841,15 +842,10 @@
         const contagemClps = {};
 
         chamadosJira.forEach(chamado => {
-            const resumo = (chamado.resumo || '').toUpperCase();
 
-            const correspondencia = resumo.match(
-                /\b(?:CLP-[A-Z0-9]+(?:-[A-Z0-9]+)*|COMPACT-LOGIC)\b/i
-            );
+            const clp = extrairNomeCLP(chamado.resumo);
 
-            if (correspondencia) {
-                const clp = correspondencia[0].toUpperCase();
-
+            if (clp) {
                 contagemClps[clp] =
                     (contagemClps[clp] || 0) + 1;
             }
