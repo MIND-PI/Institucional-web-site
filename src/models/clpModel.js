@@ -171,6 +171,8 @@ function listarClpPorId(idClp) {
     WHERE c.idClp = ${idClp};
         `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
+
+    return database.executar(instrucaoSql);
 }
 
 function buscarDadosScript(idClp, idEmpresa) {

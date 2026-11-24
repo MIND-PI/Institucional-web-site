@@ -25,7 +25,6 @@ function listarClpPorId(req, res) {
     } else {
         clpModel.listarClpPorId(idClp)
             .then(function (resultado) {
-
                 if (resultado.length == 0) {
                     return res.status(404).json("O id não é valido para um clp");
                 }

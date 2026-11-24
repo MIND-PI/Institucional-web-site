@@ -43,7 +43,7 @@ async function getObject(key) {
             );
         } else if (caught instanceof S3ServiceException) {
             console.error(
-                `Error from S3 while getting object from ${bucketName}.  ${caught.name}: ${caught.message}`,
+                `Error from S3 while getting object from ${process.env.BUCKET_NAME_ETL}.  ${caught.name}: ${caught.message}`,
             );
         } else {
             throw caught;
