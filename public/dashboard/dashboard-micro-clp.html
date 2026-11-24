@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIND | Dashboard</title>
+    <link rel="stylesheet" href="./../css/reset.css">
+    <link rel="stylesheet" href="./../css/aside.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="./../css/dashboard-cliente.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <button class="menu-mobile" id="menuMobile" data-open="false" data-close="bi-list" data-icon-open="bi-x-lg">
+        <i class="bi bi-list"></i>
+    </button>
+    <aside class="sidebar" id="sidebar">
+        <!-- HEADER / LOGO DO HEADER -->
+        <header class="sidebar-header">
+            <div class="logo-img">
+                <img src="./../assets/icon/logoMind/mind_logo_branca.png" alt="logo MIND">
+            </div>
+            <div class="logo-text">
+                <h2 class="logo-title">MIND</h2>
+                <h5 class="logo-subtitle">OBSERVABILIDADE</h5>
+            </div>
+        </header>
+        <!-- INICIO DA NAV BAR -->
+        <nav class="sidebar-nav">
+            <section class="nav-section">
+                <!-- TODO: FAZER DIFERENÇA ENTRE FORNECEDOR E CLIENTE QUANDO SE CONECTA NO SISTEMA -->
+                <h4 class="nav-section-title" id="nav_title">FLUXO DO CLIENTE</h4>
+                <ul class="nav-list" id="nav_flow">
+                </ul>
+            </section>
+            <section class="nav-section">
+                <h4 class="nav-section-title">CONFIGURAÇÕES</h4>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a class="nav-link" id="btn_config">
+                            <i class="bi bi-gear"></i>
+                            Configuração de usuario
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://equipe-mind.atlassian.net/servicedesk/customer/portal/2" class="nav-link"
+                            target="_blank">
+                            <i class="bi bi-question-circle"></i>
+                            Ajuda
+                        </a>
+                    </li>
+                </ul>
+            </section>
+            <section class="nav-section">
+                <h4 class="nav-section-title">SAIR</h4>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a class="nav-link" id="btn_logout" href="./../login.html">
+                            <i class="bi bi-box-arrow-right"></i>
+                            LOGOUT
+                        </a>
+                    </li>
+                </ul>
+            </section>
+        </nav>
+        <!-- CARD DO USUARIO -->
+        <footer class="user-card">
+            <div class="img-card">
+                <img src="../assets/imgs/fotosUsuarios/foto_padrao.png" alt="Foto do usuário" id="imgUser"
+                    onerror="this.onerror=null; this.src='../assets/imgs/fotosUsuarios/foto_padrao.png'">
+            </div>
+            <div class="text-card">
+                <p id="nomeUsuario" class="text-user-name">Rogerio Andrade</p>
+                <p id="tipoUsuario" class="text-user-type">CLIENTE</p>
+            </div>
+        </footer>
+        <!-- MODAL DAS CONFIGURAÇÕES DO USUARIO -->
+        <div class="overlay_config" id="overlay_config">
+            <div class="modal_config">
+                <div class="modal_header">
+                    <h2>Configurações</h2>
+                    <button type="button" class="btn_fechar" id="btn_fechar_config">✖</button>
+                </div>
+
+                <form id="form_config" class="form-config">
+
+                    <div class="input_group file_group">
+                        <img src="./assets/imgs/fotosUsuarios/foto_padrao.png" alt="Preview da Foto"
+                            id="preview_foto_modal" class="preview-foto-modal">
+                        <div class="file_upload_wrapper">
+                            <label for="input_foto" class="btn_upload">Escolher nova foto</label>
+                            <input type="file" id="input_foto" name="foto_perfil" accept="image/*">
+                        </div>
+                    </div>
+
+                    <div class="input_group">
+                        <label for="input_nome">Nome de usuário</label>
+                        <input type="text" id="input_nome" name="nome" placeholder="Digite seu novo nome">
+                    </div>
+
+                    <div class="input_group">
+                        <label for="input_senha">Nova senha</label>
+                        <input type="password" id="input_senha" name="senha" placeholder="Deixe em branco para manter">
+                    </div>
+
+                    <button onclick="salvarConfiguracoes()" type="button" class="btn_salvar">Salvar Alterações</button>
+                </form>
+            </div>
+        </div>
+    </aside>
+    <main>
+        <!-- COLOCAR CONTEÚDO PRINCIPAL -->
+        <header class="header-main">
+
+            <div class="box-title">
+                <h1 class="clp-h1" id="name_clp">CLP-MAQ-03</h1>
+
+                <div class="status-box" id="status_box">
+                    <p class="status-text" id="status_clp">Ativo</p>
+                </div>
+            </div>
+
+            <div class="filter-container">
+
+                <div class="filter-box">
+                    <button id="btn-etl" class="btn-etl">
+                        Atualizar
+                    </button>
+                </div>
+
+
+                <div class="filter-box">
+                    <p class="filter-text">Periodo</p>
+                    <select id="period_filter" class="filter-input">
+                        <option value="24" class="filter-option">Últimas 24h</option>
+                        <option value="7" class="filter-option">Últimos 7 dias</option>
+                        <option value="30" class="filter-option">Últimos 30 dias</option>
+                    </select>
+                </div>
+
+                <div class="filter-box">
+                    <p class="filter-text">CLP</p>
+                    <select name="" id="select_clps" class="filter-input">
+                    </select>
+                </div>
+                <div class="filter-box">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </div>
+            </div>
+
+
+        </header>
+
+        <section class="kpi-container">
+
+            <div class="kpi-box">
+                <p class="kpi-title">Alertas do CLP</p>
+                <p class="kpi-result-big" id="kpi_alert">30</p>
+                <p class="kpi-time" id="kpi_alert_time">Ocorrências reais</p>
+            </div>
+
+            <div class="kpi-box">
+                <p class="kpi-title">Fora do limite</p>
+                <p class="kpi-result-big" id="anomalies_detected">CPU e RAM</p>
+                <p class="kpi-time">Registros acima do limite previsto</p>
+            </div>
+
+            <div class="kpi-box">
+                <p class="kpi-title">Previsão de risco</p>
+                <p class="kpi-result-big" id="prevision_risk">Sem risco</p>
+                <p class="kpi-time">Previsão para a próxima 1 hora</p>
+            </div>
+
+        </section>
+
+        <section class="graph-container">
+
+            <div class="graph-box-lines standard-graph">
+
+                <div class="lines-header">
+                    <h2 class="title-graph">Desempenho do CLP</h2>
+
+
+                    <select id="graph_type" class="chart-select">
+                        <option value="scanTime">Scan Time</option>
+                        <option value="cpu">Consumo da CPU</option>
+                        <option value="ram">Consumo da RAM</option>
+                    </select>
+
+                </div>
+                <div class="lines-kpi">
+
+                    <div class="lines-text-box">
+                        <p id="title_peak" class="title_kpi_performanc">Pico Scan time</p>
+                        <p class="lines-metrics" id="peak_label">38 ms</p>
+                    </div>
+
+                    <div class="lines-text-box">
+                        <p id="title_current" class="title_kpi_performanc">Atual Scan time</p>
+                        <p id="current_label">28 ms</p>
+                    </div>
+
+                    <div class="lines-text-box">
+                        <p id="title_minimum" class="title_kpi_performanc">Mínimo Scan time</p>
+                        <p id="minimun_label">30 ms</p>
+                    </div>
+
+
+                </div>
+                <div class="line-chart-wrapper">
+                    <canvas id="line-chart"></canvas>
+                </div>
+
+            </div>
+
+            <div class="graph-box-pizza standard-graph">
+
+                <div class="pizza-header">
+                    <h2 class="title-graph">Status do CLP</h2>
+                </div>
+
+                <div class="pizza-chart-container">
+                    <div class="pizza-chart">
+                        <canvas id="pizza" class="pizza-canvas"></canvas>
+                    </div>
+
+                    <p class="warning pizza-kpi" id="pizza_kpi">Atenção</p>
+                </div>
+
+                <div class="pizza-datas">
+
+                    <div class="pizza-row">
+                        <p class="pizza-text">Última atualização</p>
+                        <p class="pizza-text" id="last_update"></p>
+                    </div>
+
+                    <div class="pizza-row">
+                        <p class="pizza-text">Modelo</p>
+                        <p class="pizza-text" id="name_model">SIEMENS-S7-1500</p>
+                    </div>
+
+                    <div class="pizza-row">
+                        <p class="pizza-text">Endereço MAC</p>
+                        <p class="pizza-text" id="addres_mac">00:19:B9:FB:E2:58</p>
+                    </div>
+
+                    <div class="pizza-row">
+                        <p class="pizza-text">Setor</p>
+                        <p class="pizza-text" id="department">Produção</p>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <section class="graph-container">
+            <div class="standard-graph standard-container container-prevision-error">
+                <div class="header-prevision-error">
+                    <h2>Indicadores do modelo</h2>
+                </div>
+                <div class="content-value-indicator">
+                    <div class="indicator-text">
+                        <h4>Erro médio (MAE)</h4>
+                        <p id="metric_mae">1.1ms</p>
+                    </div>
+                    <div class="indicator-text">
+                        <h4>Erro quadrático (RMSE)</h4>
+                        <p id="metric_rmse">1.21ms</p>
+                    </div>
+                    <div class="indicator-text">
+                        <h4>O quanto o modelo explica</h4>
+                        <p id="metric_r2">90%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="standard-graph standard-container container-previous-bot">
+                <div class="content-info-chat-bot">
+                    <div class="title-chat-bot">
+                        <h2>Suporte da IA</h2>
+                        <p id="text_suport_ia">A CPU representa tendência de alta nos próximos 10 minutos, possibilidade de atingir 75%</p>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn-ia" id="btn_ia"><i class="bi bi-chat-dots"></i></i><span>Abrir Assistente</span>
+                        <i class="bi bi-chevron-right arrow"></i></i></button>
+                </div>
+            </div>
+        </section>
+
+        <section class="container-chat-bot" id="container_chat_bot">
+            <div class="box-chat-bot">
+                <div class="header-chat-bot">
+                    <button class="btn-close-chat" id="btn_close_chat"><i class="bi bi-x"></i>Fechar chat</button>
+                </div>
+                <div class="content-chat">
+                </div>
+
+            </div>
+            </div>
+            <div class="footer-chat-bot">
+                <div class="chat-alert">
+                    <p>O mind ai pode cometer erros. Confira informações importantes</p>
+                    <div></div>
+                </div>
+                <div class="chat-input">
+                    <input id="chat_input" type="text" placeholder="Pergunte algo a ia">
+                    <button id="btn_send_chat" class="btn-send-chat" type="button">Enviar</button>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
+<script src="./../js/sessao.js"></script>
+<script src="./../js/configuracoes.js"></script>
+<script src="./../js/sidebar.js"></script>
+<script src="./../js/dashboard-micro.js"></script>
+<script src="./../js/chat-bot.js"></script>
+
+<script>
+
+</script>

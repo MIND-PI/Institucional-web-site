@@ -205,10 +205,14 @@
                         );
 
                     }
+                    
+                    if (usuario.cargo == "funcionario") {
+                        window.location.href = "./dashboard/dashboard-fornecedor.html";
+                    } else {
+                        window.location.href = "./dashboard/dashboard-macro-CLP.html";
+                    }
 
-
-                    window.location.href =
-                        "./dashboard/dashboard-cliente.html";
+                    
 
                 })
 
