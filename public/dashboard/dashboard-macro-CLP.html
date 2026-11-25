@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIND | Dashboard</title>
+    <link rel="stylesheet" href="./../css/reset.css">
+    <link rel="stylesheet" href="./../css/aside.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="./../css/dashboard-macro-CLP.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <button class="menu-mobile" id="menuMobile" data-open="false" data-close="bi-list" data-icon-open="bi-x-lg">
+        <i class="bi bi-list"></i>
+    </button>
+     <aside class="sidebar" id="sidebar">
+        <!-- HEADER / LOGO DO HEADER -->
+        <header class="sidebar-header">
+            <div class="logo-img">
+                <img src="./../assets/icon/logoMind/mind_logo_branca.png" alt="logo MIND">
+            </div>
+            <div class="logo-text">
+                <h2 class="logo-title">MIND</h2>
+                <h5 class="logo-subtitle">OBSERVABILIDADE</h5>
+            </div>
+        </header>
+        <!-- INICIO DA NAV BAR -->
+        <nav class="sidebar-nav">
+            <section class="nav-section">
+                <!-- TODO: FAZER DIFERENÇA ENTRE FORNECEDOR E CLIENTE QUANDO SE CONECTA NO SISTEMA -->
+                <h4 class="nav-section-title" id="nav_title">FLUXO DO CLIENTE</h4>
+                <ul class="nav-list" id="nav_flow">
+                </ul>
+            </section>
+            <section class="nav-section">
+                <h4 class="nav-section-title">CONFIGURAÇÕES</h4>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a class="nav-link" id="btn_config">
+                            <i class="bi bi-gear"></i>
+                            Configuração de usuario
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://equipe-mind.atlassian.net/servicedesk/customer/portal/2" class="nav-link"
+                            target="_blank">
+                            <i class="bi bi-question-circle"></i>
+                            Ajuda
+                        </a>
+                    </li>
+                </ul>
+            </section>
+            <section class="nav-section">
+                <h4 class="nav-section-title">SAIR</h4>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a class="nav-link" id="btn_logout" href="./../login.html">
+                            <i class="bi bi-box-arrow-right"></i>
+                            LOGOUT
+                        </a>
+                    </li>
+                </ul>
+            </section>
+        </nav>
+        <!-- CARD DO USUARIO -->
+        <footer class="user-card">
+            <div class="img-card">
+                <img src="../assets/imgs/fotosUsuarios/foto_padrao.png" alt="Foto do usuário" id="imgUser"
+                    onerror="this.onerror=null; this.src='../assets/imgs/fotosUsuarios/foto_padrao.png'">
+            </div>
+            <div class="text-card">
+                <p id="nomeUsuario" class="text-user-name">Rogerio Andrade</p>
+                <p id="tipoUsuario" class="text-user-type">CLIENTE</p>
+            </div>
+        </footer>
+        <!-- MODAL DAS CONFIGURAÇÕES DO USUARIO -->
+        <div class="overlay_config" id="overlay_config">
+            <div class="modal_config">
+                <div class="modal_header">
+                    <h2>Configurações</h2>
+                    <button type="button" class="btn_fechar" id="btn_fechar_config">✖</button>
+                </div>
+
+                <form id="form_config" class="form-config">
+
+                    <div class="input_group file_group">
+                        <img src="../assets/imgs/fotosUsuarios/foto_padrao.png" alt="Preview da Foto"
+                            id="preview_foto_modal" class="preview-foto-modal">
+                        <div class="file_upload_wrapper">
+                            <label for="input_foto" class="btn_upload">Escolher nova foto</label>
+                            <input type="file" id="input_foto" name="foto_perfil" accept="image/*">
+                        </div>
+                    </div>
+
+                    <div class="input_group">
+                        <label for="input_nome">Nome de usuário</label>
+                        <input type="text" id="input_nome" name="nome" placeholder="Digite seu novo nome">
+                    </div>
+
+                    <div class="input_group">
+                        <label for="input_senha">Nova senha</label>
+                        <input type="password" id="input_senha" name="senha" placeholder="Deixe em branco para manter">
+                    </div>
+
+                    <button onclick="salvarConfiguracoes()" type="button" class="btn_salvar">Salvar Alterações</button>
+                </form>
+            </div>
+        </div>
+    </aside>
+    <main>
+        <header class="header-main">
+            <div class="box-title">
+                <h1 class="clp-h1" id="page-title">Visão macro da planta</h1>
+                <p class="header-update" id="last-update">Última atualização às --:--</p>
+            </div>
+
+            <div class="filter-container">
+                <div class="filter-box">
+                    <button id="btn-etl" class="btn-etl">Atualizar</button>
+                </div>
+
+                <div class="filter-box">
+                    <label class="filter-text" for="sector-filter">Setor</label>
+                    <select id="sector-filter" class="filter-input"></select>
+                </div>
+
+                <div class="filter-box">
+                    <label class="filter-text" for="period-filter">Período</label>
+                    <select id="period-filter" class="filter-input">
+                        <option value="agora">Agora</option>
+                        <option value="7-dias">Últimos 7 dias</option>
+                        <option value="30-dias">Últimos 30 dias</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <section class="kpi-conteiner" id="kpi-container"></section>
+
+        <section class="graph-conteiner">
+            <div class="graph-box-lines">
+                <div class="lines-content">
+                    <p class="title-graph" id="sectors-title"></p>
+                    <p class="lines-little" id="setores-total"></p>
+                </div>
+
+                <div class="lines-datas">
+                    <p class="lines-title" id="sectors-subtitle"></p>
+                </div>
+
+                <div class="line-chart-wrapper">
+                    <canvas id="bar-chart" role="img" aria-label="Health médio dos setores"></canvas>
+                </div>
+
+                <div class="zone-legend" id="zone-legend"></div>
+                <p class="outlier-info" id="outlier-info"></p>
+
+                <div class="box-footer">
+                    <p id="setores-footer"></p>
+                    <a href="#" class="link-more" id="setores-link"></a>
+                </div>
+            </div>
+
+            <div class="graph-box-pizza">
+                <div class="pizza-content">
+                    <p class="title-graph" id="frota-title"></p>
+                </div>
+                <p class="pizza-status" id="frota-resumo"></p>
+
+                <div class="pizza-chart-container">
+                    <div class="pizza-chart">
+                        <canvas id="pizza" class="pizza-canvas" role="img" aria-label="Situação da frota"></canvas>
+                        <div class="pizza-center">
+                            <span class="pizza-center-number" id="frota-total">0</span>
+                            <span class="pizza-center-label">CLPs</span>
+                        </div>
+                    </div>
+
+                    <div class="pizza-datas" id="fleet-legend"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="table-conteiner">
+            <div class="metrics-box">
+                <div class="metrics-top">
+                    <div class="metrics-content">
+                        <p class="title-graph" id="ranking-title"></p>
+                    </div>
+                    <p class="ranking-hint" id="ranking-hint"></p>
+                </div>
+
+                <div class="table-scroll">
+                    <table class="ranking-table">
+                        <thead id="ranking-head"></thead>
+                        <tbody id="ranking-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="../js/sessao.js"></script>
+    <script src="../js/sidebar.js"></script>
+    <script src="../js/configuracoes.js"></script>
+    <script src="../js/mockDashboardData.js"></script>
+    <script src="../js/macroClpAdapter.js"></script>
+    <script src="../js/dashboard-macro-CLP.js"></script>
+</body>
+
+</html>

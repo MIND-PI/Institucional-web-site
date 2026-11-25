@@ -341,6 +341,11 @@
     color: var(--color-text-primary);
 }
 
+.management-btn-monitor i,
+.management-btn-download i {
+    color: var(--color-text-primary);
+}
+
 /* Linha de medição do modal de monitorar */
 .linha-monitorar label {
     display: flex;

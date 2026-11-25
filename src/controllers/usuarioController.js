@@ -1,6 +1,6 @@
 var usuarioModel = require("../models/usuarioModel");
 var uploadS3 = require("../services/uploadS3")
-const getUrlS3 = require("../services/getS3");
+const getS3 = require("../services/getS3");
 
 function mensagemErro(erro) {
     if (!erro) return "Erro ao processar a requisição.";
@@ -34,7 +34,7 @@ async function autenticar(req, res) {
             let url_img = null;
             // Verificando se url_img existe, se exister chama função para pegar url do bucket
             if (resultado[0].url_img) {
-                url_img = await getUrlS3(resultado[0].url_img);
+                url_img = await getS3.getUrlS3(resultado[0].url_img);
             }
 
             return res.json({
@@ -70,7 +70,6 @@ async function autenticar(req, res) {
 }
 
 
-// src/controllers/usuarioController.js
 
 function cadastrar(req, res) {
 
@@ -78,25 +77,29 @@ function cadastrar(req, res) {
     var email = req.body.emailServer;
     var senha = req.body.senhaServer;
     var codigoAtivacao = req.body.codigoServer;
+    var idFornecedor = req.body.idFornecedorServer;
 
     if (codigoAtivacao == undefined) {
         res.status(400).send("O código de ativação está indefinido!");
-    } else {
-
-        usuarioModel.cadastrar(nome, email, senha, codigoAtivacao)
-            .then(function (resultado) {
-                // affectedRows = 0 quando o código não existe ou a empresa ainda não tem responsável
-                if (resultado.affectedRows == 0) {
-                    return res.status(404).json("Código de ativação inválido ou empresa sem responsável cadastrado!");
-                }
-
-                res.json(resultado);
-            })
-            .catch(function (erro) {
-                console.log(erro);
-                res.status(500).json(erro.sqlMessage);
-            });
+    } 
+    
+    if (idFornecedor !== undefined && !Number.isInteger(idFornecedor)) {
+        return res.status(400).send("O id do fornecedor é inválido!");
     }
+
+          usuarioModel.cadastrar(nome, email, senha, codigoAtivacao, idFornecedor)
+        .then(function (resultado) {
+            if (resultado.affectedRows == 0) {
+                return res.status(404).json("Código de ativação inválido!");
+            }
+
+            res.json(resultado);
+        })
+        .catch(function (erro) {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+    
 }
 
 async function atualizarPerfil(req, res) {
@@ -132,7 +135,7 @@ async function buscarUsuarioPeloId(req, res) {
 
         // Verifica se a imagem existe, se existe chama função getUrlS3 do arquivo /services/getS3
         if (usuario.url_img) {
-            imgUrl = await getUrlS3(usuario.url_img)
+            imgUrl = await getS3.getUrlS3(usuario.url_img)
         }
 
         res.json([{
@@ -151,12 +154,46 @@ async function buscarUsuarioPeloId(req, res) {
         res.status(500).send(err);
 
     }
+
+    
 }
 
+function cadastrarEmpresa(req, res) {
+
+    var nomeFantasia = req.body.nomeFantasiaServer;
+    var razaoSocial = req.body.razaoSocialServer;
+    var cnpj = req.body.cnpjServer;
+    var nome = req.body.nomeServer;
+    var email = req.body.emailServer;
+    var senha = req.body.senhaServer;
+
+    if (!nomeFantasia || !razaoSocial || !nome || !email || !senha) {
+        return res.status(400).send("Preencha todos os campos!");
+    }
+
+    if (typeof cnpj !== "string" || cnpj !== 14) {
+        return res.status(400).send("O CNPJ precisa ter 14 números!");
+    }
+
+    usuarioModel.cadastrarEmpresa(nomeFantasia, razaoSocial, cnpj, nome, email, senha)
+        .then(function (resultado) {
+            res.json(resultado);
+        })
+        .catch(function (erro) {
+            console.log(erro);
+
+            if (erro.code == "ER_DUP_ENTRY") {
+                return res.status(409).json("CNPJ ou email já cadastrado");
+            }
+
+            res.status(500).json(erro.sqlMessage);
+        });
+}
 
 module.exports = {
     autenticar,
     cadastrar,
     atualizarPerfil,
-    buscarUsuarioPeloId
+    buscarUsuarioPeloId,
+    cadastrarEmpresa
 };

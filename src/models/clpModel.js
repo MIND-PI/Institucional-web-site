@@ -51,7 +51,9 @@ function adicionarClp(nome, localizacaoId, status, modeloId, empresaId, medicoes
         INSERT INTO clp_medicao (clpId, tipoMedicaoId, status, parametro)
         VALUES ${valores};
         `;
-        return database.executar(instrucaoMedicoes);
+        return database.executar(instrucaoMedicoes).then(function (){
+            return { idClp: idNovo};
+        });
     });
 }
 
@@ -169,6 +171,16 @@ function listarClpPorId(idClp) {
     WHERE c.idClp = ${idClp};
         `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
+}
+
+function buscarDadosScript(idClp, idEmpresa) {
+    var instrucaoSql = `
+    SELECT c.idClp, c.empresaId, c.modeloId,
+           m.nome AS modeloNome, m.empresaId AS fornecedorId
+    FROM clp c
+    JOIN modelo m ON m.idmodelo = c.modeloId
+    WHERE c.idClp = ${idClp} AND c.empresaId = ${idEmpresa};
+    `;
     return database.executar(instrucaoSql);
 }
 
@@ -184,5 +196,6 @@ module.exports = {
     listarTiposMedicao,
     deletarClp,
     listarLocalizacoes,
-    adicionarLocalizacao
+    adicionarLocalizacao,
+    buscarDadosScript
 }

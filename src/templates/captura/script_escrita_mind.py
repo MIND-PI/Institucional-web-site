@@ -1,0 +1,331 @@
+import csv, psutil, time, random, json, os, sys, boto3, socket, math, uuid
+from datetime import datetime
+from dotenv import load_dotenv
+from botocore.exceptions import ClientError
+import mysql.connector
+
+#EDITAR A LINHA nome_modelo_cpl (logo abaixo de modelo_clp)
+b_to_gb = 1073741824
+
+enviar_bucket = True
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ENV_PATH = os.path.join(BASE_DIR, '.env')
+
+if not os.path.isfile(ENV_PATH):
+    print(f"Arquivo '{ENV_PATH}' não encontrado. Encerrando o script.")
+    sys.exit(1)
+
+load_dotenv(ENV_PATH)
+
+id_clp = os.getenv('ID_CLP')
+id_empresa = os.getenv('ID_EMPRESA')
+modelo_clp = os.getenv('MODELO_CLP_MONITORADO')  # aqui é o modeloId da tabela modelo
+nome_modelo_cpl = os.getenv('NOME_MODELO_CLP', '')
+id_fornecedor = os.getenv('ID_FORNECEDOR')
+localizacao = os.getenv('LOCALIZACAO_CLP', '')
+IP_DESTINO_LATENCIA = '8.8.8.8'
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_SESSION_TOKEN = os.getenv('AWS_SESSION_TOKEN')
+AWS_BUCKET_NAME = os.getenv('AWS_BUCKET_NAME')
+
+DB_CONFIG = {
+    'host': os.getenv('DB_HOST'),
+    'port': int(os.getenv('DB_PORT', 3306)),
+    'user': os.getenv('DB_USER'),
+    'password': os.getenv('DB_PASSWORD'),
+    'database': os.getenv('DB_NAME'),
+}
+
+session = boto3.Session(
+ aws_access_key_id=AWS_ACCESS_KEY_ID,
+ aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+ aws_session_token=AWS_SESSION_TOKEN,
+ region_name="us-east-1",
+)
+
+if not id_empresa or not modelo_clp:
+    print("O arquivo .env precisa conter 'ID_EMPRESA' e 'MODELO_CLP_MONITORADO'. Encerrando o script.")
+    sys.exit(1)
+
+try:
+    id_empresa = int(id_empresa)
+    modelo_clp = int(modelo_clp)
+except ValueError:
+    print("'ID_EMPRESA' e 'MODELO_CLP_MONITORADO' precisam ser números inteiros (empresaId e modeloId). Encerrando o script.")
+    sys.exit(1)
+
+
+def salvar_id_clp_no_env(novo_id):
+    #Acrescenta ID_CLP no arquivo .env para que as próximas execuções
+    #usem esse id em vez de inserir um novo registro no banco.
+    with open(ENV_PATH, 'a') as f:
+        f.write(f"\nID_CLP={novo_id}\n")
+
+
+def obter_mac_address():
+    #uuid.getnode() devolve o MAC da máquina como um inteiro de 48 bits.
+    #Formatamos em 12 dígitos hexadecimais maiúsculos (zeros à esquerda)
+    #e separamos de 2 em 2 com ':' -> AA:BB:CC:DD:EE:FF (17 caracteres)
+    mac = f"{uuid.getnode():012X}"
+    return ':'.join(mac[i:i + 2] for i in range(0, 12, 2))
+
+
+def obter_id_clp():
+    #Se já existe ID_CLP no .env, usa ele, senao, insere um novo
+    # registro na tabela clp do banco e retorna o idClp gerado.
+    if id_clp:
+        return int(id_clp)
+
+    if not all([DB_CONFIG['host'], DB_CONFIG['user'], DB_CONFIG['password'], DB_CONFIG['database']]):
+        print("ID_CLP não está no .env e faltam dados de conexão com o banco (DB_HOST, DB_USER, DB_PASSWORD, DB_NAME). Encerrando o script.")
+        sys.exit(1)
+
+    agora = datetime.now()
+    mac_address = obter_mac_address()
+    conexao = mysql.connector.connect(**DB_CONFIG)
+    try:
+        cursor = conexao.cursor()
+        cursor.execute(
+            """INSERT INTO clp (mac_address, empresaId, data_criacao, data_atualizacao, status, localizacao, modeloId)
+               VALUES (%s, %s, %s, %s, %s, %s, %s)""",
+            (mac_address, id_empresa, agora, agora, 1, localizacao, modelo_clp),
+        )
+        conexao.commit()
+        novo_id = cursor.lastrowid
+        salvar_id_clp_no_env(novo_id)
+        print(f"Novo CLP cadastrado no banco com idClp {novo_id} (MAC {mac_address}). ID_CLP={novo_id} foi salvo no .env automaticamente.")
+        return novo_id
+    finally:
+        conexao.close()
+
+
+id_clp = obter_id_clp()
+
+# Nome do CSV = 
+CSV_PATH = os.path.join(BASE_DIR,'csvDados.csv')
+# nome do arquivo ano-mes-dia_hora-minuto_idEmpresa-idClp.csv
+
+def medir_latencia(destino, porta=53, timeout_s=1):
+    #Mede a latência abrindo uma conexão TCP simples até o destino.
+    #Funciona igual em Windows e Linux, sem precisar de comandos externos
+    #nem permissão de root/admin. Porta 53 (DNS) funciona bem com 8.8.8.8.
+    try:
+        inicio = time.time()
+        with socket.create_connection((destino, porta), timeout=timeout_s):
+            pass
+        return (time.time() - inicio) * 1000
+    except Exception:
+        return None
+
+def get_top_processos(n=3):
+    n_cpus = psutil.cpu_count() or 1
+    ram_total = psutil.virtual_memory().total
+    agrupado = {}  # nome -> [cpu_total, bytes_ram_total]
+
+    for p in psutil.process_iter(['pid', 'name', 'cpu_percent']):
+        try:
+            if p.info['pid'] == 0:  # ignora o "System Idle Process"
+                continue
+            nome = p.info['name']
+            cpu = (p.info['cpu_percent'] or 0) / n_cpus
+
+            try:
+                # USS = memória privada do processo (equivale ao Gerenciador de Tarefas)
+                mem = p.memory_full_info().uss
+            except (psutil.AccessDenied, OSError):
+                mem = p.memory_info().rss  # fallback p/ processos protegidos
+
+            if nome not in agrupado:
+                agrupado[nome] = [0, 0]
+            agrupado[nome][0] += cpu
+            agrupado[nome][1] += mem
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue
+
+    procs = [
+        (nome, round(cpu, 2), round(mem / ram_total * 100, 2))
+        for nome, (cpu, mem) in agrupado.items()
+    ]
+    procs.sort(key=lambda x: x[1], reverse=True)  # ordena por CPU
+    top = procs[:n]
+    while len(top) < n:
+        top.append((None, None, None))
+    return top
+
+
+def write_header():
+    with open(CSV_PATH, 'w') as csvfile:
+        csv.writer(csvfile, lineterminator='\n').writerow([
+            'nome_modelo_cpl',
+            'id_fornecedor',
+            'modelo_clp',
+            'id_clp',
+            'id_empresa',
+            'timestamp',
+            'porcentagem_uso_cpu',
+            'ram_total_gb',
+            'ram_disponivel_gb',
+            'ram_usada_gb',
+            'porcentagem_uso_ram',
+            'porcentagem_uso_swap',
+            'uptime_segundos',
+            'scan_time_ms',
+            'latencia_ms',
+            'perda_pacotes',
+            'vel_upload',
+            'vel_download',
+            'top1_processo', 'top1_cpu', 'top1_ram',
+            'top2_processo', 'top2_cpu', 'top2_ram',
+            'top3_processo', 'top3_cpu', 'top3_ram',
+        ])
+
+
+def write_content():
+    with open(CSV_PATH, 'a') as csvfile:
+        csv.writer(csvfile, lineterminator='\n').writerow([
+            nome_modelo_cpl,
+            id_fornecedor,
+            modelo_clp,
+            id_clp,
+            id_empresa,
+            timestamp,
+            pct_cpu,
+            ram_total_gb,
+            ram_disponivel_gb,
+            ram_usada_gb,
+            ramPercent,
+            swapPercent,
+            uptime_segundos,
+            scan_time_ms,
+            latencia_ms,
+            perdaPacotes,
+            velUpload,
+            velDownload,
+            *top_procs[0],
+            *top_procs[1],
+            *top_procs[2],
+        ])
+
+def upload_csv(file, bucket, path):
+    try:
+        s3 = session.client('s3')
+        s3.upload_file(file, bucket, path)
+        os.remove(file)
+        print("Arquivo local 'csvDados.csv' deletado com sucesso.")
+    except ClientError as e:
+        print(f"Erro ao tentar enviar o arquivo ao bucket: {e}")
+        sys.exit(1)
+    except OSError as e:
+        print(f"Erro ao tentar apagar o arquivo local: {e}")
+
+
+write_header()
+
+for p in psutil.process_iter(['cpu_percent']):
+    pass
+
+contador = 0
+while(contador < 10):
+
+    # Timestamp
+    timestamp = datetime.now()
+
+    # CPU
+    pct_cpu = psutil.cpu_percent(interval=0)
+
+    # RAM
+    mem = psutil.virtual_memory()
+    ram_total_gb = mem.total / b_to_gb
+    ram_disponivel_gb = mem.available / b_to_gb
+    ram_usada_gb = mem.used / b_to_gb
+    ramPercent = mem.percent
+
+    # Memoria Swap
+    swap = psutil.swap_memory()
+    swapPercent = swap.percent
+
+    # Uptime do sistema (segundos desde o boot)
+    uptime_segundos = int(time.time() - psutil.boot_time())
+
+    # Fator CPU: crescimento exponencial
+    # 0% -> 1.0 | 50% -> ~4.80 | 95% -> ~19.09 | 100% -> 23.0
+    fator_cpu = 23 ** (pct_cpu / 100)
+
+    # Fator RAM: impacto moderado até 85%, depois aumenta mais rapidamente
+    LIMIAR_RAM = 85
+    FATOR_RAM_NO_LIMIAR = 1 + (LIMIAR_RAM / 100) * 1.5
+    FATOR_RAM_MAX = 4.0
+
+    if ramPercent <= LIMIAR_RAM:
+        fator_mem = 1 + (ramPercent / 100) * 1.5
+    else:
+        extra_ram = (ramPercent - LIMIAR_RAM) / (100 - LIMIAR_RAM)
+
+        fator_mem = FATOR_RAM_NO_LIMIAR + extra_ram * (
+            FATOR_RAM_MAX - FATOR_RAM_NO_LIMIAR
+        )
+
+    # Tempo-base fixo, sem variação aleatória
+    base_scan_time = 4.5
+
+    # Cálculo do scan time
+    scan_time_ms = base_scan_time * fator_cpu * fator_mem
+
+    # Limite máximo
+    scan_time_ms = min(scan_time_ms, 150)
+    # Latencia (tempo de resposta, em ms) - igual em Windows e Linux
+    latencia_ms = medir_latencia(IP_DESTINO_LATENCIA)
+
+    # Rede
+    net = psutil.net_io_counters()
+    pacNaoRecebido = net.errin
+    pacNaoEnviado = net.errout
+    perdaPacotes = pacNaoEnviado + pacNaoRecebido
+
+    velUpload = net.bytes_sent / b_to_gb
+    velDownload = net.bytes_recv / b_to_gb
+
+    contador += 1
+    top_procs = get_top_processos(3)
+    write_content()
+
+if enviar_bucket:
+    timestamp = datetime.now()
+    path_name = f'bronze/{timestamp.year}-{timestamp.month}-{timestamp.day}_{timestamp.hour}-{timestamp.minute}_{id_empresa}-{id_clp}.csv'
+
+    upload_csv(CSV_PATH, AWS_BUCKET_NAME, path_name)
+
+
+# O SCRIPT ESPERA UM ARQUIVO .env COM:
+# ID_EMPRESA=empresaId (número inteiro, FK pra tabela empresa)
+# MODELO_CLP_MONITORADO=modeloId (número inteiro, FK pra tabela modelo)
+# ID_FORNECEDOR=id da empresa fornecedora do modelo
+# LOCALIZACAO_CLP=localização do CLP (opcional)
+# ID_CLP=idClp (opcional - se não existir, o script cria o registro na tabela 'clp'
+#   com o MAC address da máquina e grava o idClp gerado aqui no .env automaticamente)
+# DB_HOST=host do MySQL
+# DB_PORT=porta do MySQL (opcional, padrão 3306)
+# DB_USER=usuário do MySQL
+# DB_PASSWORD=senha do MySQL
+# DB_NAME=nome do banco
+# AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN, AWS_BUCKET_NAME
+#
+# Usa a tabela 'clp'
+# CREATE TABLE clp(
+#     idClp INT AUTO_INCREMENT PRIMARY KEY,
+#     nome VARCHAR(100),
+#     mac_address VARCHAR(17) UNIQUE,
+#     empresaId INT,
+#     data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+#     data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+#     status TINYINT,
+#     localizacao VARCHAR(255),
+#     modeloId INT,
+#     CONSTRAINT fk_clp_empresa FOREIGN KEY (empresaId) REFERENCES empresa(idEmpresa),
+#     CONSTRAINT fk_clp_modelo FOREIGN KEY (modeloId) REFERENCES modelo(idmodelo)
+# );
+
+# PROCESSOS /
+# nome do arquivo ano-mes-dia_hora-minuto_idEmpresa-idClp.csv

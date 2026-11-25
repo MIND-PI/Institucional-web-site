@@ -4,5 +4,6 @@ package-lock.json
 *.env
 .github
 .env.dev
+agents.md
 .idea
 AGENTS.md
