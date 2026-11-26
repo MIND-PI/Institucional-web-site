@@ -38,6 +38,8 @@
                         <span class="passo-bolinha ativo" id="bolinha1">1</span>
                         <span class="passo-linha"></span>
                         <span class="passo-bolinha" id="bolinha2">2</span>
+                        <span class="passo-linha"></span>
+                        <span class="passo-bolinha" id="bolinha3">3</span>
                     </div>
                 </div>
 
@@ -92,6 +94,34 @@
 
                         <div id="mensagem"></div>
 
+                        <button class="botao-formulario" type="button" id="btnContinuar2">
+                            Continuar
+                        </button>
+                    </div>
+
+
+                    <div class="etapa" id="etapa3">
+
+                        <div class="campo">
+                            <label for="url_jira">URL do Jira</label>
+                            <input type="url" id="url_jira" maxlength="255" placeholder="https://suaempresa.atlassian.net" required>
+                        </div>
+
+                        <div class="campo">
+                            <label for="email_api">E-mail da API</label>
+                            <input type="email" id="email_api" maxlength="200" placeholder="E-mail usado na autenticação do Jira" required>
+                        </div>
+
+                        <div class="campo">
+                            <label for="token_api">Token de API</label>
+                            <input type="password" id="token_api" maxlength="512" placeholder="Token gerado no seu Jira" required>
+                        </div>
+
+                        <div class="campo">
+                            <label for="chave_projeto">Chave do projeto</label>
+                            <input type="text" id="chave_projeto" maxlength="20" placeholder="Ex.: KAN" required>
+                        </div>
+
                         <button class="botao-formulario" type="submit">
                             Concluir
                         </button>
@@ -132,16 +162,19 @@
 
     var form = document.getElementById("cadastroForm");
     var etapaAtual = 1;
+    var empresaCadastrada = false;
 
     function mostrarEtapa(numero) {
         etapaAtual = numero;
 
         document.getElementById("etapa1").classList.toggle("ativa", numero == 1);
         document.getElementById("etapa2").classList.toggle("ativa", numero == 2);
+        document.getElementById("etapa3").classList.toggle("ativa", numero == 3);
 
-        document.getElementById("bolinha2").classList.toggle("ativo", numero == 2);
+        document.getElementById("bolinha2").classList.toggle("ativo", numero >= 2);
+        document.getElementById("bolinha3").classList.toggle("ativo", numero >= 3);
 
-        document.getElementById("btnVoltar").style.display = numero == 2 ? "block" : "none";
+        document.getElementById("btnVoltar").style.display = numero > 1 ? "block" : "none";
     }
 
     function validarEtapa1() {
@@ -162,25 +195,112 @@
         return true;
     }
 
+    function validarEtapa2() {
+        var nome = document.getElementById("nome").value;
+        var email = document.getElementById("email").value;
+        var senha = document.getElementById("senha").value;
+        var confirmacao_senha = document.getElementById("confirmacao_senha").value;
+
+        if (nome == "" || email == "" || senha == "" || confirmacao_senha == "") {
+            alert("Preencha todos os campos.");
+            return false;
+        }
+
+        if (senha.length < 8) {
+            alert("A senha precisa ter pelo menos 8 caracteres.");
+            return false;
+        }
+
+        if (senha != confirmacao_senha) {
+            alert("A senha e a confirmação de senha tem que ser iguais.");
+            return false;
+        }
+
+        return true;
+    }
+
+    // Todos os campos da integração Jira são obrigatórios.
+    // Retorna os dados validados ou null quando houver erro.
+    function validarEtapa3() {
+        var urlJira = document.getElementById("url_jira").value.trim();
+        var emailApi = document.getElementById("email_api").value.trim();
+        var tokenApi = document.getElementById("token_api").value;
+        var chaveProjeto = document.getElementById("chave_projeto").value.trim();
+
+        if (urlJira == "" || emailApi == "" || tokenApi == "" || chaveProjeto == "") {
+            alert("Preencha todos os campos da integração Jira.");
+            return null;
+        }
+
+        if (!/^https?:\/\/.+/.test(urlJira) || urlJira.length > 255) {
+            alert("A URL do Jira deve começar com http:// ou https://.");
+            return null;
+        }
+
+        var arroba = emailApi.indexOf("@");
+        var ponto = emailApi.lastIndexOf(".");
+        if (arroba <= 0 || ponto <= arroba + 1 || ponto === emailApi.length - 1) {
+            alert("O e-mail da API do Jira é inválido.");
+            return null;
+        }
+
+        if (/\s/.test(tokenApi)) {
+            alert("O token de API não pode conter espaços.");
+            return null;
+        }
+
+        if (!/^[A-Za-z0-9]{1,20}$/.test(chaveProjeto)) {
+            alert("A chave do projeto deve ter até 20 caracteres, apenas letras e números.");
+            return null;
+        }
+
+        return {
+            urlJira: urlJira,
+            emailApi: emailApi,
+            tokenApi: tokenApi,
+            chaveProjeto: chaveProjeto.toUpperCase()
+        };
+    }
+
     document.getElementById("btnContinuar").addEventListener("click", function () {
         if (validarEtapa1()) {
             mostrarEtapa(2);
         }
     });
 
+    document.getElementById("btnContinuar2").addEventListener("click", function () {
+        if (validarEtapa2()) {
+            mostrarEtapa(3);
+        }
+    });
+
     document.getElementById("btnVoltar").addEventListener("click", function () {
-        mostrarEtapa(1);
+        if (etapaAtual > 1) {
+            mostrarEtapa(etapaAtual - 1);
+        }
     });
 
     form.addEventListener("submit", function (evento) {
 
         evento.preventDefault();
 
-        // Enter no passo 1 avança em vez de enviar
+        // Enter nos passos 1 e 2 avança em vez de enviar
         if (etapaAtual == 1) {
             if (validarEtapa1()) {
                 mostrarEtapa(2);
             }
+            return;
+        }
+
+        if (etapaAtual == 2) {
+            if (validarEtapa2()) {
+                mostrarEtapa(3);
+            }
+            return;
+        }
+
+        var dadosJira = validarEtapa3();
+        if (!dadosJira) {
             return;
         }
 
@@ -191,22 +311,6 @@
         var nome = document.getElementById("nome").value;
         var email = document.getElementById("email").value;
         var senha = document.getElementById("senha").value;
-        var confirmacao_senha = document.getElementById("confirmacao_senha").value;
-
-        if (nome == "" || email == "" || senha == "" || confirmacao_senha == "") {
-            alert("Preencha todos os campos.");
-            return;
-        }
-
-        if (senha.length < 8) {
-            alert("A senha precisa ter pelo menos 8 caracteres.");
-            return;
-        }
-
-        if (senha != confirmacao_senha) {
-            alert("A senha e a confirmação de senha tem que ser iguais.");
-            return;
-        }
 
         fetch("/usuarios/cadastrarEmpresa", {
 
@@ -240,6 +344,42 @@
 
             })
 
+            .then(function (resultado) {
+
+                empresaCadastrada = true;
+
+                // Etapa final: cadastra a integração Jira da empresa.
+                // O token nunca retorna nesta resposta.
+                return fetch("/jira/configuracao/cadastrar/" + resultado.idEmpresa, {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        urlJiraServer: dadosJira.urlJira,
+                        emailApiServer: dadosJira.emailApi,
+                        tokenApiServer: dadosJira.tokenApi,
+                        chaveProjetoServer: dadosJira.chaveProjeto
+                    })
+
+                })
+                    .then(function (respostaJira) {
+
+                        if (!respostaJira.ok) {
+                            return respostaJira.text().then(function (texto) {
+                                var mensagem = texto;
+                                try { mensagem = JSON.parse(texto); } catch (e) { }
+                                throw new Error("Empresa cadastrada, mas houve um problema ao salvar a integração Jira: " + mensagem);
+                            });
+                        }
+
+                    });
+
+            })
+
             .then(function () {
 
                 alert("Cadastro realizado com sucesso!");
@@ -251,6 +391,13 @@
             .catch(function (erro) {
 
                 console.log(erro);
+
+                if (empresaCadastrada) {
+                    // A empresa e o usuário já existem: avisa e segue para o login.
+                    alert(erro.message + "\nVocê já pode fazer login.");
+                    window.location.href = "./login.html";
+                    return;
+                }
 
                 alert(erro.message);
 

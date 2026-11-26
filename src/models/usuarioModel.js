@@ -66,10 +66,14 @@ async function cadastrarEmpresa(nomeFantasia, razaoSocial, cnpj, nome, email, se
         // Só chega aqui depois que a consulta anterior retorna seu resultado.
 
         // Primeiro usuário da empresa: administrador e responsável (responsavel NULL)
-        return await database.executar(`
+        var usuario = await database.executar(`
             INSERT INTO usuario (nome, email, senha, empresaId, cargo, responsavel)
             VALUES ('${nome}', '${email}', '${senha}', ${empresa.insertId}, 'administrador', NULL);
         `);
+
+        // Retorna os IDs gerados para que etapas seguintes do cadastro
+        // (como a integração Jira) consigam referenciar a empresa.
+        return { idEmpresa: empresa.insertId, idUsuario: usuario.insertId };
     } catch (erro) {
         // Se o usuário falhar (email repetido, por exemplo), não deixa a empresa órfã
         await database.executar(`DELETE FROM empresa WHERE idEmpresa = ${empresa.insertId};`);
