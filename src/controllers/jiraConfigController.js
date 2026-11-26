@@ -74,7 +74,6 @@ async function cadastrar(req, res) {
     }
 
     try {
-
         // A chave do projeto é padronizada em maiúsculas, como no Jira.
         await jiraConfigModel.cadastrar(Number(idEmpresa), urlJira, emailApi, tokenApi, chaveProjeto.toUpperCase());
 
@@ -88,21 +87,7 @@ async function cadastrar(req, res) {
         });
 
     } catch (erro) {
-
         console.log(erro.message || erro);
-
-        if (erro.code == "ER_DUP_ENTRY") {
-            return res.status(409).json("Esta empresa já possui uma integração Jira cadastrada.");
-        }
-
-        if (erro.code == "ER_NO_REFERENCED_ROW_2") {
-            return res.status(404).json("Empresa não encontrada.");
-        }
-
-        if (erro.message && erro.message.includes("JIRA_TOKEN_SECRET")) {
-            return res.status(500).json("Variável de ambiente JIRA_TOKEN_SECRET não configurada.");
-        }
-
         return res.status(500).json(erro.sqlMessage || "Erro ao cadastrar a integração Jira.");
     }
 }
