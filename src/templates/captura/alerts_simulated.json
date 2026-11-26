@@ -1,0 +1,9 @@
+[
+  {
+    "timestamp": "2026-11-24 13:45:20.470108",
+    "metric": "perda_pacotes",
+    "value": 42,
+    "threshold": 10,
+    "message": "perda_pacotes acima do limiar (42 > 10)"
+  }
+]

@@ -17,6 +17,8 @@ import csv
 import json
 import time
 import random
+import math
+import numpy as np
 import argparse
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
@@ -83,81 +85,149 @@ def random_top_proc():
     ram_pct = round(random.uniform(0.0, 30.0), 2)
     return [name, cpu, ram_pct]
 
-def generate_sample(now):
-    # Gera valores realistas com possibilidade de extremos para criar alertas
-    cpu_base = random.gauss(30, 20)  # média 30%, desvio 20
-    # ocasionalmente força picos
-    if random.random() < 0.07:
-        cpu_base = random.uniform(92, 99)
-    pct_cpu = max(0.0, min(100.0, round(cpu_base, 2)))
+def _compute_r2(y_true, y_pred):
+    # r2 = 1 - SS_res / SS_tot
+    ss_res = float(np.sum((y_true - y_pred) ** 2))
+    ss_tot = float(np.sum((y_true - np.mean(y_true)) ** 2))
+    if ss_tot == 0:
+        return 0.0
+    return 1.0 - (ss_res / ss_tot)
 
+
+def _adjust_noise_for_r2(x_min, base_y, noise_arr, min_r2=0.80, max_r2=0.95, max_iter=30):
+    """
+    Ajusta escala do ruído para que o R2 (pela mesma lógica usada na ETL) fique entre min_r2 e max_r2.
+    Retorna y = base_y + noise_scaled
+    """
+    n = len(x_min)
+    n_test = math.ceil(n * 0.2)
+    if n_test < 1 or n < 3:
+        return base_y + noise_arr  # sem ajuste possível
+
+    scale = 1.0
+    noise_scaled = noise_arr * scale
+    y = base_y + noise_scaled
+
+    for _ in range(max_iter):
+        x = x_min.astype(float)
+        x_train, x_test = x[:-n_test], x[-n_test:]
+        y_train, y_test = y[:-n_test], y[-n_test:]
+        if len(x_train) < 2:
+            break
+        a, b = np.polyfit(x_train, y_train, 1)
+        y_test_pred = a * x_test + b
+        r2 = _compute_r2(y_test, y_test_pred)
+        if r2 < min_r2:
+            # reduzir ruído para aumentar R2
+            scale *= 0.7
+        elif r2 > max_r2:
+            # aumentar ruído para diminuir R2
+            scale *= 1.3
+        else:
+            break
+        noise_scaled = noise_arr * scale
+        y = base_y + noise_scaled
+    return y
+
+
+def generate_time_series(count, start_time, step_minutes=1):
+    """
+    Gera séries temporais com comportamento linear (CPU %, RAM %, scan time ms)
+    e ruído ajustado para produzir R2 entre 0.80 e 0.95 na validação.
+    Retorna lista de rows (para CSV) e lista de metrics (para alerts).
+    """
+    # timestamps: por minuto
+    timestamps = [start_time + timedelta(minutes=i * step_minutes) for i in range(count)]
+    x_min = np.arange(0, count * step_minutes, step_minutes)  # 0, 1, 2, ... em minutos
+
+    # CPU: intercept entre 10-40, slope entre -0.15 e 0.25 %/min
+    cpu_intercept = random.uniform(10, 40)
+    cpu_slope = random.uniform(-0.15, 0.25)
+    base_cpu = cpu_intercept + cpu_slope * x_min
+    cpu_noise = np.random.normal(0, 3.5, size=len(x_min))  # sd inicial ~3.5
+    cpu_y = _adjust_noise_for_r2(x_min, base_cpu, cpu_noise)
+    cpu_y = np.clip(cpu_y, 0.0, 100.0)
+
+    # RAM %: intercept 20-60, small slope
+    ram_intercept = random.uniform(20, 60)
+    ram_slope = random.uniform(-0.05, 0.12)
+    base_ram_pct = ram_intercept + ram_slope * x_min
+    ram_noise = np.random.normal(0, 3.0, size=len(x_min))
+    ram_pct = _adjust_noise_for_r2(x_min, base_ram_pct, ram_noise)
+    ram_pct = np.clip(ram_pct, 0.0, 99.9)
+
+    # Scan time (ms): intercept 5-40 ms, slope small positive/negative
+    scan_intercept = random.uniform(5, 40)
+    scan_slope = random.uniform(-0.05, 0.8)  # can grow faster if needed
+    base_scan = scan_intercept + scan_slope * x_min
+    scan_noise = np.random.normal(0, max(1.0, scan_intercept * 0.05), size=len(x_min))
+    scan_y = _adjust_noise_for_r2(x_min, base_scan, scan_noise)
+    scan_y = np.clip(scan_y, 0.0, None)
+
+    # RAM total fixed per run
     ram_total_gb = round(random.uniform(2.0, 32.0), 3)
-    ram_used_pct = random.gauss(45, 20)
-    if random.random() < 0.06:
-        ram_used_pct = random.uniform(91, 99)
-    ram_used_pct = max(0.0, min(99.9, ram_used_pct))
-    ram_usada_gb = round(ram_total_gb * (ram_used_pct / 100.0), 3)
-    ram_disponivel_gb = round(ram_total_gb - ram_usada_gb, 3)
-    ramPercent = round(ram_used_pct, 2)
 
-    swapPercent = round(max(0.0, min(100.0, random.gauss(5, 5))), 2)
+    rows = []
+    metrics_list = []
+    for i, ts in enumerate(timestamps):
+        pct_cpu = round(float(cpu_y[i]), 2)
+        ramPercent = round(float(ram_pct[i]), 2)
+        ram_usada_gb = round(ram_total_gb * (ramPercent / 100.0), 3)
+        ram_disponivel_gb = round(max(0.0, ram_total_gb - ram_usada_gb), 3)
+        scan_time_ms = round(float(scan_y[i]), 2)
 
-    uptime_segundos = int(random.uniform(60 * 60, 60 * 60 * 24 * 30))  # 1h .. 30d
+        # outros valores com variabilidade leve
+        swapPercent = round(max(0.0, min(100.0, random.gauss(5, 5))), 2)
+        uptime_segundos = int(random.uniform(60 * 60, 60 * 60 * 24 * 30))  # 1h .. 30d
+        latencia = round(max(1.0, random.gauss(30, 25)), 2)
+        if random.random() < 0.05:
+            latencia = round(random.uniform(220, 1200), 2)
+        perdaPacotes = int(max(0, round(random.gauss(0.2, 1.0))))
+        if random.random() < 0.03:
+            perdaPacotes = random.randint(11, 50)
+        velUpload = round(random.uniform(0.0, 0.5), 6)
+        velDownload = round(random.uniform(0.0, 0.8), 6)
 
-    # scan time simulado (ms) com dependência de cpu/ram
-    fator_cpu = 23 ** (pct_cpu / 100.0)
-    fator_mem = 1 + (ramPercent / 100.0) * 1.5
-    scan_time_ms = min(round(4.5 * fator_cpu * fator_mem, 2), 300.0)
+        top1 = random_top_proc()
+        top2 = random_top_proc()
+        top3 = random_top_proc()
 
-    # latência com possíveis picos
-    latencia = round(max(1.0, random.gauss(30, 25)), 2)
-    if random.random() < 0.05:
-        latencia = round(random.uniform(220, 1200), 2)
+        row = [
+            NOME_MODELO_CPL,
+            ID_FORNECEDOR,
+            MODELO_CLP,
+            ID_CLP,
+            ID_EMPRESA,
+            ts.isoformat(sep=' '),
+            pct_cpu,
+            ram_total_gb,
+            ram_disponivel_gb,
+            ram_usada_gb,
+            ramPercent,
+            swapPercent,
+            uptime_segundos,
+            scan_time_ms,
+            latencia,
+            perdaPacotes,
+            velUpload,
+            velDownload,
+            top1[0], top1[1], top1[2],
+            top2[0], top2[1], top2[2],
+            top3[0], top3[1], top3[2],
+        ]
 
-    perdaPacotes = int(max(0, round(random.gauss(0.2, 1.0))))
-    if random.random() < 0.03:
-        perdaPacotes = random.randint(11, 50)
+        metrics = {
+            "porcentagem_uso_cpu": pct_cpu,
+            "porcentagem_uso_ram": ramPercent,
+            "latencia_ms": latencia,
+            "perda_pacotes": perdaPacotes,
+            "scan_time_ms": scan_time_ms,
+        }
 
-    velUpload = round(random.uniform(0.0, 0.5), 6)   # GB (pequenos valores, como no script original)
-    velDownload = round(random.uniform(0.0, 0.8), 6)
+        rows.append((row, metrics))
+        metrics_list.append(metrics)
 
-    top1 = random_top_proc()
-    top2 = random_top_proc()
-    top3 = random_top_proc()
-
-    row = [
-        NOME_MODELO_CPL,
-        ID_FORNECEDOR,
-        MODELO_CLP,
-        ID_CLP,
-        ID_EMPRESA,
-        now.isoformat(sep=' '),
-        pct_cpu,
-        ram_total_gb,
-        ram_disponivel_gb,
-        ram_usada_gb,
-        ramPercent,
-        swapPercent,
-        uptime_segundos,
-        scan_time_ms,
-        latencia,
-        perdaPacotes,
-        velUpload,
-        velDownload,
-        top1[0], top1[1], top1[2],
-        top2[0], top2[1], top2[2],
-        top3[0], top3[1], top3[2],
-    ]
-
-    metrics = {
-        "porcentagem_uso_cpu": pct_cpu,
-        "porcentagem_uso_ram": ramPercent,
-        "latencia_ms": latencia,
-        "perda_pacotes": perdaPacotes,
-        "scan_time_ms": scan_time_ms,
-    }
-
-    return row, metrics
+    return rows, metrics_list
 
 def check_alerts(metrics, timestamp):
     alerts = []
@@ -195,10 +265,12 @@ def main():
     parser.add_argument("--count", "-c", type=int, default=10, help="Número de amostras a gerar")
     parser.add_argument("--seed", type=int, help="Seed para RNG (reprodutível)")
     parser.add_argument("--upload", action="store_true", help="Tenta enviar CSV ao bucket AWS se variáveis presentes")
+    parser.add_argument("--step-minutes", type=int, default=1, help="Intervalo em minutos entre amostras (padrão 1)")
     args = parser.parse_args()
 
     if args.seed is not None:
         random.seed(args.seed)
+        np.random.seed(args.seed)
 
     # Cria/abre CSV e escreve header
     with open(CSV_PATH, "w", newline='') as f:
@@ -207,13 +279,13 @@ def main():
 
     all_alerts = []
     now = datetime.now()
-    for i in range(args.count):
-        ts = now + timedelta(seconds=i * 5)  # intervalos curtos entre amostras
-        row, metrics = generate_sample(ts)
+    rows_metrics, metrics_list = generate_time_series(args.count, now, step_minutes=args.step_minutes)
+    for (row, metrics), metric in zip(rows_metrics, metrics_list):
         with open(CSV_PATH, "a", newline='') as f:
             writer = csv.writer(f, lineterminator="\n")
             writer.writerow(row)
-        alerts = check_alerts(metrics, ts)
+        ts = datetime.fromisoformat(row[5])
+        alerts = check_alerts(metric, ts)
         if alerts:
             all_alerts.extend(alerts)
             for a in alerts:
