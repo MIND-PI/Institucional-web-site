@@ -276,7 +276,6 @@ async function performanceAnalise(req, res) {
         return res.status(404).json({ erro: "Não foram encontrados dados para este CLP" })
     }
 
-    console.log(object)
     return res.status(200).json(object)
 }
 
@@ -300,7 +299,6 @@ async function predicaoAnalise(req, res) {
         return res.status(404).json({ erro: "Não foram encontradas métricas para este CLP" })
     }
 
-    console.log(object)
     return res.status(200).json(object)
 }
 
@@ -322,7 +320,6 @@ async function predicaoMetrica(req, res) {
         return res.status(404).json({ erro: "Não foram encontradas métricas para este CLP" })
     }
 
-    console.log(object)
     return res.status(200).json(object)
 }
 

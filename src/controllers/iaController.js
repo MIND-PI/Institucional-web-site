@@ -119,7 +119,6 @@ async function responseDashMicro(req, res) {
     pergunta do usuario = ${pergunta}
     `
 
-    console.log(input)
     try {
         let response = await client.responses.create({
             model: "openai/gpt-oss-20b",

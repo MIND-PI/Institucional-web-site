@@ -136,6 +136,10 @@ main {
     font-size: 0.7rem;
 }
 
+.filter-p {
+    line-height: 20px;
+}
+
 /* Estilização dos titulos dos input do filtro  */
 .filter-text {
     font-size: 0.7rem;

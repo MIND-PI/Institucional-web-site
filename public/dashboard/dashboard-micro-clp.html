@@ -134,11 +134,9 @@
 
                 <div class="filter-box">
                     <p class="filter-text">Periodo</p>
-                    <select id="period_filter" class="filter-input">
-                        <option value="24" class="filter-option">Últimas 24h</option>
-                        <option value="7" class="filter-option">Últimos 7 dias</option>
-                        <option value="30" class="filter-option">Últimos 30 dias</option>
-                    </select>
+                    <!-- Período fixo em 24 horas: remover seletor para impedir alterações -->
+                    <input type="hidden" id="period_filter" value="24">
+                    <p class="filter-input filter-p">Últimas 24h</p>
                 </div>
 
                 <div class="filter-box">
