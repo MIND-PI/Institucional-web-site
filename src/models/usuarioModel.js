@@ -18,6 +18,7 @@ function autenticar(email, senha) {
         AND senha = '${senha}';
     `;
 
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
 

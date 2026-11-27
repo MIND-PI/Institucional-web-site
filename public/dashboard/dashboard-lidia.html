@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body onload="obterDados()">
+<body onload="obterDadosJiraFornecedor()">
 
     <button class="menu-mobile" id="menuMobile" data-open="false" data-close="bi-list" data-icon-open="bi-x-lg">
         <i class="bi bi-list"></i>
@@ -177,9 +177,9 @@
                         <label class="toolbar-rotulo" for="ordenar-por">Ordenar por</label>
                         <select id="ordenar-por" class="select-tabela">
                             <option value="alertas-maior" selected>Alertas por CLP (maior)</option>
-                            <option value="empresa" selected>Empresa</option>
-                            <option value="resolve" selected>Resolve sozinho</option>
-                            <option value="tempo" selected>Tempo de resposta</option>
+                            <option value="empresa">Empresa</option>
+                            <option value="resolve">Resolve sozinho</option>
+                            <option value="tempo">Tempo de resposta</option>
                         </select>
 <!-- 
                         <label class="toolbar-rotulo" for="filtrar-clientes">Filtrar</label>

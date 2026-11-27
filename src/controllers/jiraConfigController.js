@@ -92,6 +92,33 @@ async function cadastrar(req, res) {
     }
 }
 
+async function buscarJiras(req, res) {
+    var idEmpresa = req.params.idEmpresa;
+
+    if (!idEmpresaValido(idEmpresa)) {
+        return res.status(400).send("O id da empresa está inválido!");
+    }
+
+    try {
+        var jiras = await jiraConfigModel.buscarJiras(Number(idEmpresa));
+
+        // A resposta NUNCA inclui os tokens de API: quem consulta o Jira
+        // de cada cliente é o back-end (jiraServiceFornecedor).
+        var jirasSemToken = jiras.map(function (jira) {
+            var semToken = { ...jira };
+            delete semToken.token_cliente;
+            delete semToken.token_fornecedor;
+            return semToken;
+        });
+
+        return res.status(200).json(jirasSemToken);
+    } catch (erro) {
+        console.log(erro.message || erro);
+        return res.status(500).json(erro.sqlMessage || "Erro ao buscar as integrações Jira.");
+    }
+}
+
 module.exports = {
-    cadastrar
+    cadastrar,
+    buscarJiras
 };

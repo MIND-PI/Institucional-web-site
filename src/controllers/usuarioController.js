@@ -171,7 +171,7 @@ function cadastrarEmpresa(req, res) {
         return res.status(400).send("Preencha todos os campos!");
     }
 
-    if (typeof cnpj !== "string" || cnpj !== 14) {
+    if (typeof cnpj !== "string" || cnpj.length !== 14) {
         return res.status(400).send("O CNPJ precisa ter 14 números!");
     }
 

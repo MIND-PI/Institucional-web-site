@@ -46,6 +46,7 @@ app.use("/dashboard", macroClp);
 app.use("/clp", clpRouter);
 app.use("/jira/configuracao", jiraConfigRouter);
 app.use("/jira", jiraRouter);
+app.use("/jira/fornecedor", jiraFornecedorRouter);
 app.use("/ia", iaRouter);
 
 

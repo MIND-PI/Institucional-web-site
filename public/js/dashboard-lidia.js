@@ -1,104 +1,195 @@
 // ===== DASHBOARD LÍDIA — PAINEL DE PÓS-VENDA =====
-// Página 100% front-end: todos os dados abaixo são de demonstração.
-// Quando o back-end estiver pronto, trocar os mocks por fetch.
+// Os dados vêm do back-end: /jira/fornecedor/chamados/:idEmpresa devolve
+// os chamados do Jira de cada cliente ativo, a quantidade de CLPs ativos
+// de cada cliente (jiraConfigModel.contarClpsPorEmpresa) e os chamados do
+// Jira do próprio fornecedor (escalonamentos da equipe).
 
 // ======================================
-// DADOS DE DEMONSTRAÇÃO (MOCKS)
+// CARREGAMENTO
 // ======================================
 
-// tagAlta = tag "ALTA" exibida ao lado do nome (no futuro vem do banco de dados)
-// comAlertas = se o cliente tem alertas no período (usado pelo filtro)
-// variacaoAlertas: positivo = mais alertas que o período anterior (piora)
-// variacaoResolve: positivo = resolve mais sozinho (melhora)
-const clientesMock = [
-    { idCliente: 1, empresa: "Mitsubishi Electric", comAlertas: true, alertasPorClp: 3.0, variacaoAlertas: 25, resolveSozinho: 31, variacaoResolve: -8, tempoResposta: "1h40", problemaRecorrente: "CPU ×4" },
-    { idCliente: 2, empresa: "Schneider Electric", comAlertas: true, alertasPorClp: 2.6, variacaoAlertas: 12, resolveSozinho: 38, variacaoResolve: 4, tempoResposta: "1h10", problemaRecorrente: "RAM ×3" },
-    { idCliente: 3, empresa: "Volkswagen do Brasil", comAlertas: false, alertasPorClp: 2.4, variacaoAlertas: 10, resolveSozinho: 45, variacaoResolve: 12, tempoResposta: "1h25", problemaRecorrente: "—" },
-    { idCliente: 4, empresa: "Petrobras", comAlertas: true, alertasPorClp: 1.9, variacaoAlertas: -5, resolveSozinho: 52, variacaoResolve: 3, tempoResposta: "0h50", problemaRecorrente: "SWAP ×3" },
-    { idCliente: 5, empresa: "Braskem", comAlertas: false, alertasPorClp: 1.2, variacaoAlertas: -16, resolveSozinho: 61, variacaoResolve: 9, tempoResposta: "0h45", problemaRecorrente: "—" },
-    { idCliente: 6, empresa: "Ambev", comAlertas: true, alertasPorClp: 1.1, variacaoAlertas: -3, resolveSozinho: 58, variacaoResolve: 2, tempoResposta: "0h55", problemaRecorrente: "Rede ×2" },
-    { idCliente: 7, empresa: "Vale", comAlertas: true, alertasPorClp: 1.0, variacaoAlertas: 6, resolveSozinho: 47, variacaoResolve: -4, tempoResposta: "1h15", problemaRecorrente: "CPU ×2" },
-    { idCliente: 8, empresa: "Gerdau", comAlertas: false, alertasPorClp: 0.9, variacaoAlertas: -8, resolveSozinho: 64, variacaoResolve: 5, tempoResposta: "0h40", problemaRecorrente: "—" },
-    { idCliente: 9, empresa: "Suzano", comAlertas: true, alertasPorClp: 0.9, variacaoAlertas: 2, resolveSozinho: 55, variacaoResolve: 0, tempoResposta: "1h05", problemaRecorrente: "RAM ×1" },
-    { idCliente: 10, empresa: "Embraer", comAlertas: true, alertasPorClp: 0.8, variacaoAlertas: -12, resolveSozinho: 66, variacaoResolve: 6, tempoResposta: "0h35", problemaRecorrente: "Scan time ×2" },
-    { idCliente: 11, empresa: "Natura", comAlertas: false, alertasPorClp: 0.7, variacaoAlertas: -4, resolveSozinho: 70, variacaoResolve: 8, tempoResposta: "0h30", problemaRecorrente: "—" },
-    { idCliente: 12, empresa: "Randon", comAlertas: true, alertasPorClp: 0.7, variacaoAlertas: 3, resolveSozinho: 59, variacaoResolve: -2, tempoResposta: "0h58", problemaRecorrente: "Swap ×1" },
-    { idCliente: 13, empresa: "WEG", comAlertas: true, alertasPorClp: 0.6, variacaoAlertas: -6, resolveSozinho: 72, variacaoResolve: 4, tempoResposta: "0h28", problemaRecorrente: "Rede ×1" },
-    { idCliente: 14, empresa: "Cremer", comAlertas: false, alertasPorClp: 0.6, variacaoAlertas: 0, resolveSozinho: 63, variacaoResolve: 0, tempoResposta: "0h48", problemaRecorrente: "—" },
-    { idCliente: 15, empresa: "Dedini", comAlertas: true, alertasPorClp: 0.5, variacaoAlertas: 9, resolveSozinho: 51, variacaoResolve: -6, tempoResposta: "1h20", problemaRecorrente: "CPU ×1" },
-    { idCliente: 16, empresa: "Romagnole", comAlertas: false, alertasPorClp: 0.4, variacaoAlertas: -2, resolveSozinho: 68, variacaoResolve: 1, tempoResposta: "0h38", problemaRecorrente: "—" },
-    { idCliente: 17, empresa: "Tigre", comAlertas: true, alertasPorClp: 0.4, variacaoAlertas: 5, resolveSozinho: 74, variacaoResolve: 7, tempoResposta: "0h26", problemaRecorrente: "RAM ×1" },
-    { idCliente: 18, empresa: "Duratex", comAlertas: false, alertasPorClp: 0.3, variacaoAlertas: -9, resolveSozinho: 76, variacaoResolve: 10, tempoResposta: "0h22", problemaRecorrente: "—" }
-];
+// Resposta bruta do back-end
+let respostaJira = { clientes: [], fornecedor: null };
 
-// KPIs que não vêm da lista de clientes (também de demonstração)
-const kpisMock = {
-    resolvidoPercentual: 42,
-    resolvidoVariacao: 6, // pontos percentuais vs. período anterior
-    escalonadosAbertos: 8,
-    tempoMedioResposta: "1h25"
-};
+// Período selecionado no filtro da tela (7, 30 ou 90 dias)
+let periodoAtual = 30;
 
-// resumo dos alertas enviados (barra empilhada do card)
-const resumoMock = {
-    totalAlertas: 140,
-    partes: [
-        { cor: "positive", legenda: "Resolvidos pelo cliente", valor: 59 },
-        { cor: "info", legenda: "Em andamento com o cliente", valor: 57 },
-        { cor: "amarelo", legenda: "Escalonados", valor: 24, detalhe: "(16 resolvidos)" }
-    ]
-};
+// Busca no back-end os chamados do Jira de todos os clientes do fornecedor
+// e também os do Jira do próprio fornecedor. Os tokens ficam no back-end.
+async function obterDadosJiraFornecedor() {
+    let id_empresa = sessionStorage.getItem("ID_EMPRESA");
+
+    if (!id_empresa) {
+        console.error("ID_EMPRESA não encontrado na sessão.");
+        return;
+    }
+
+    try {
+        const resposta = await fetch(`/jira/fornecedor/chamados/${id_empresa}`);
+
+        if (!resposta.ok) {
+            throw new Error(`O servidor respondeu com status ${resposta.status}`);
+        }
+
+        respostaJira = await resposta.json();
+        console.log("Dados do Jira do fornecedor e clientes:", respostaJira);
+    } catch (erro) {
+        console.error("Erro ao obter dados do Jira:", erro);
+        respostaJira = { clientes: [], fornecedor: null };
+    }
+
+    plotarTudo();
+}
+
+// Reprocessa as métricas e repinta a tela (carregamento e troca de período)
+function plotarTudo() {
+    periodoAtual = Number(document.getElementById("period-filter").value);
+    processarClientes();
+    plotarKpis();
+    plotarResumo();
+    renderizarTabela();
+}
+
+
+// ======================================
+// PROCESSAMENTO POR PERÍODO
+// ======================================
+
+// clientes já processados com as métricas do período atual
+let clientes = [];
 
 // índice dos clientes por id (usado na expansão da linha)
 const clientesPorId = {};
-for (const cliente of clientesMock) {
-    clientesPorId[cliente.idCliente] = cliente;
+
+// Um chamado é considerado concluído quando o Jira registra a data de
+// conclusão (resolutiondate), definida ao entrar em status Done
+// ("Concluído" e correlatos).
+function estaConcluido(chamado) {
+    return chamado.resolvidoEm != null;
 }
 
-// estado da tabela
-const LIMITE_LISTA = 5; // "Mostrando 5 de 18 clientes"
-let verTodos = false;
-let buscaAtual = "";
-let filtroAtual = "";
+// O chamado foi criado dentro do período selecionado?
+function dentroDoPeriodo(dataIso, dias) {
+    if (!dataIso) {
+        return false;
+    }
 
-// gráficos abertos no momento (só um detalhe fica aberto por vez)
-let graficoLinha = null;
-let graficoRosca = null;
+    return new Date(dataIso).getTime() >= Date.now() - dias * 24 * 60 * 60 * 1000;
+}
+
+// Tempo médio de resposta (em minutos) dos chamados concluídos:
+// data de conclusão - data de criação, dividido pelo número de chamados
+function mediaTempoResposta(chamados) {
+    let somaMilissegundos = 0;
+    let concluidos = 0;
+
+    for (const chamado of chamados) {
+        if (!estaConcluido(chamado)) {
+            continue;
+        }
+
+        somaMilissegundos += new Date(chamado.resolvidoEm) - new Date(chamado.criadoEm);
+        concluidos++;
+    }
+
+    return concluidos > 0 ? somaMilissegundos / concluidos / 60000 : null;
+}
+
+// Tipo de chamado mais frequente, no formato do protótipo — "Incidente ×3"
+function tipoMaisFrequente(chamados) {
+    const contagem = {};
+
+    for (const chamado of chamados) {
+        if (!chamado.tipo) {
+            continue;
+        }
+
+        contagem[chamado.tipo] = (contagem[chamado.tipo] || 0) + 1;
+    }
+
+    let maisFrequente = null;
+    let maior = 0;
+
+    for (const tipo in contagem) {
+        if (contagem[tipo] > maior) {
+            maisFrequente = tipo;
+            maior = contagem[tipo];
+        }
+    }
+
+    return maisFrequente ? `${maisFrequente} ×${maior}` : "—";
+}
+
+// Transforma a resposta do back-end em clientes com as métricas do período
+function processarClientes() {
+    clientes = [];
+    for (const id in clientesPorId) {
+        delete clientesPorId[id];
+    }
+
+    for (const dados of respostaJira.clientes || []) {
+        const chamadosPeriodo = (dados.chamados || []).filter(chamado => dentroDoPeriodo(chamado.criadoEm, periodoAtual));
+        const alertas = chamadosPeriodo.length;
+        const concluidos = chamadosPeriodo.filter(estaConcluido).length;
+        const totalClps = Number(dados.totalClps) || 0;
+
+        const cliente = {
+            idCliente: dados.idCliente,
+            empresa: dados.cliente,
+            erro: !!dados.erro,
+            chamados: dados.chamados || [],
+            totalClps: totalClps,
+            alertas: alertas,
+            concluidos: concluidos,
+            // Alertas por CLP: alertas do período / CLPs ativos do cliente
+            alertasPorClp: totalClps > 0 ? alertas / totalClps : 0,
+            resolveSozinho: alertas > 0 ? Math.round(concluidos / alertas * 100) : null,
+            tempoResposta: mediaTempoResposta(chamadosPeriodo),
+            problemaRecorrente: tipoMaisFrequente(chamadosPeriodo)
+        };
+
+        clientes.push(cliente);
+        clientesPorId[cliente.idCliente] = cliente;
+    }
+}
+
+// Chamados do Jira do próprio fornecedor (equipe)
+function chamadosDoFornecedor() {
+    return (respostaJira.fornecedor && respostaJira.fornecedor.chamados) || [];
+}
 
 
 // ======================================
 // FUNÇÕES DE APOIO
 // ======================================
 
+// Evita que textos vindos do Jira quebrem a tela
+function escapar(texto) {
+    const div = document.createElement("div");
+    div.innerText = texto == null ? "" : texto;
+    return div.innerHTML;
+}
+
 // 3 -> "3,0"
 function formatarDecimal(valor) {
     return valor.toFixed(1).replace(".", ",");
 }
 
-// ▲/▼ da variação. bomQuandoSobe define a cor:
-// subir é bom (ex.: resolve sozinho) = verde; subir é ruim (ex.: alertas) = vermelho
-function montarVariacao(variacao, sufixo, bomQuandoSobe) {
-    if (variacao === 0) {
-        return `<span class="variacao text-secondary">estável</span>`;
-    }
-
-    const subiu = variacao > 0;
-    const bom = subiu === bomQuandoSobe;
-    const icone = subiu ? "bi-caret-up-fill" : "bi-caret-down-fill";
-
-    return `<span class="variacao ${bom ? "text-positive" : "text-danger"}"><i class="bi ${icone}"></i>${Math.abs(variacao)}${sufixo}</span>`;
+// minutos -> "1h40"
+function formatarTempo(minutos) {
+    const horas = Math.floor(minutos / 60);
+    const resto = Math.round(minutos % 60);
+    return `${horas}h${String(resto).padStart(2, "0")}`;
 }
 
-// série determinística de chamados por dia (dados de demonstração)
-function gerarSerieDias(dias, semente, base) {
-    const serie = [];
+// estado da tabela
+const LIMITE_LISTA = 5; // "Mostrando 5 de 18 clientes"
+let verTodos = false;
+let buscaAtual = "";
 
-    for (let dia = 1; dia <= dias; dia++) {
-        serie.push(Math.abs(Math.round(Math.sin(dia * 1.3 + semente * 2.7) * base)));
-    }
-
-    return serie;
-}
+// gráficos abertos no momento (só um detalhe fica aberto por vez)
+let graficoLinha = null;
+let graficoRosca = null;
 
 function destruirGraficos() {
     if (graficoLinha) {
@@ -114,68 +205,73 @@ function destruirGraficos() {
 
 
 // ======================================
-// CARREGAMENTO
-// ======================================
-
-function obterDados() {
-    plotarKpis();
-    plotarResumo();
-    renderizarTabela();
-}
-
-
-// ======================================
 // KPIS
 // ======================================
 
 function plotarKpis() {
-    // Quem ligar primeiro: cliente com mais alertas por CLP
-    let quemLigar = clientesMock[0];
+    // Cliente mais urgente: maior "alertas por CLP" do período
+    let quemLigar = null;
 
-    for (const cliente of clientesMock) {
-        if (cliente.alertasPorClp > quemLigar.alertasPorClp) {
+    for (const cliente of clientes) {
+        if (cliente.erro) {
+            continue;
+        }
+
+        if (!quemLigar || cliente.alertasPorClp > quemLigar.alertasPorClp) {
             quemLigar = cliente;
         }
     }
 
-    document.getElementById("kpi-empresa").textContent = quemLigar.empresa;
-
     const detalheEmpresa = document.getElementById("kpi-empresa-detalhe");
 
-    if (quemLigar.variacaoAlertas === 0) {
-        detalheEmpresa.textContent = `${formatarDecimal(quemLigar.alertasPorClp)} alertas por CLP · igual ao período anterior`;
+    if (!quemLigar || quemLigar.alertas === 0) {
+        document.getElementById("kpi-empresa").textContent = "—";
+        detalheEmpresa.textContent = "Nenhum alerta no período";
         detalheEmpresa.className = "kpi-details";
     } else {
-        // mais alertas = piora (vermelho); menos alertas = melhora (verde)
-        const piora = quemLigar.variacaoAlertas > 0;
-        const icone = piora ? "bi-caret-up-fill" : "bi-caret-down-fill";
-
-        detalheEmpresa.innerHTML =
-            `${formatarDecimal(quemLigar.alertasPorClp)} alertas por CLP · <i class="bi ${icone}"></i> ${Math.abs(quemLigar.variacaoAlertas)}% vs. período anterior`;
-        detalheEmpresa.className = `kpi-details ${piora ? "text-danger" : "text-positive"}`;
+        document.getElementById("kpi-empresa").textContent = quemLigar.empresa;
+        detalheEmpresa.textContent =
+            `${formatarDecimal(quemLigar.alertasPorClp)} alertas por CLP · ${quemLigar.alertas} alerta(s) em ${quemLigar.totalClps} CLP(s)`;
+        detalheEmpresa.className = "kpi-details";
     }
 
-    // Resolvido pelo próprio cliente
-    document.getElementById("kpi-resolvido").textContent = kpisMock.resolvidoPercentual + "%";
+    // Resolvido pelo próprio cliente: concluídos * 100 / total de alertas recebidos
+    let totalAlertas = 0;
+    let totalConcluidos = 0;
+
+    for (const cliente of clientes) {
+        totalAlertas += cliente.alertas;
+        totalConcluidos += cliente.concluidos;
+    }
+
+    document.getElementById("kpi-resolvido").textContent =
+        totalAlertas > 0 ? Math.round(totalConcluidos / totalAlertas * 100) + "%" : "0%";
 
     const detalheResolvido = document.getElementById("kpi-resolvido-detalhe");
 
-    if (kpisMock.resolvidoVariacao === 0) {
-        detalheResolvido.textContent = "igual ao período anterior";
-        detalheResolvido.className = "kpi-details";
+    detalheResolvido.textContent = totalAlertas > 0
+        ? `${totalConcluidos} de ${totalAlertas} alertas concluídos`
+        : "Nenhum alerta no período";
+    detalheResolvido.className = "kpi-details";
+
+    // Escalonados abertos para a equipe: chamados do Jira do próprio fornecedor
+    // que não estão concluídos (todos, independente do período selecionado)
+    const abertos = chamadosDoFornecedor().filter(chamado => !estaConcluido(chamado));
+    const tempoMedio = mediaTempoResposta(chamadosDoFornecedor());
+
+    document.getElementById("kpi-escalonados").textContent =
+        respostaJira.fornecedor ? abertos.length : "—";
+
+    const detalheEscalonados = document.getElementById("kpi-escalonados-detalhe");
+
+    if (!respostaJira.fornecedor) {
+        detalheEscalonados.textContent = "Não foi possível consultar o Jira da equipe";
+    } else if (tempoMedio != null) {
+        detalheEscalonados.textContent = `Tempo médio de resposta: ${formatarTempo(tempoMedio)}`;
     } else {
-        const melhorou = kpisMock.resolvidoVariacao > 0;
-        const icone = melhorou ? "bi-caret-up-fill" : "bi-caret-down-fill";
-
-        detalheResolvido.innerHTML =
-            `<i class="bi ${icone}"></i> ${Math.abs(kpisMock.resolvidoVariacao)} % vs. período anterior`;
-        detalheResolvido.className = `kpi-details ${melhorou ? "text-positive" : "text-danger"}`;
+        detalheEscalonados.textContent = "Sem chamados concluídos para calcular o tempo médio";
     }
-
-    // Escalonados abertos para a equipe
-    document.getElementById("kpi-escalonados").textContent = kpisMock.escalonadosAbertos;
-    document.getElementById("kpi-escalonados-detalhe").textContent =
-        `Tempo médio de resposta: ${kpisMock.tempoMedioResposta}`;
+    detalheEscalonados.className = "kpi-details";
 }
 
 
@@ -184,8 +280,22 @@ function plotarKpis() {
 // ======================================
 
 function plotarResumo() {
+    let alertasClientes = 0;
+    let resolvidosCliente = 0;
+
+    for (const cliente of clientes) {
+        alertasClientes += cliente.alertas;
+        resolvidosCliente += cliente.concluidos;
+    }
+
+    // Escalonamentos criados dentro do período selecionado
+    const escalonados = chamadosDoFornecedor().filter(chamado => dentroDoPeriodo(chamado.criadoEm, periodoAtual));
+    const escalonadosResolvidos = escalonados.filter(estaConcluido).length;
+
+    const totalAlertas = alertasClientes + escalonados.length;
+
     document.getElementById("resumo-titulo").textContent =
-        `O que aconteceu com os ${resumoMock.totalAlertas} alertas enviados`;
+        `O que aconteceu com os ${totalAlertas} alertas enviados`;
 
     const cores = {
         positive: "var(--color-positive)",
@@ -193,14 +303,20 @@ function plotarResumo() {
         amarelo: "var(--color-amarelo-claro)"
     };
 
+    const partes = [
+        { cor: "positive", legenda: "Resolvidos pelo cliente", valor: resolvidosCliente },
+        { cor: "info", legenda: "Em andamento com o cliente", valor: alertasClientes - resolvidosCliente },
+        { cor: "amarelo", legenda: "Escalonados", valor: escalonados.length, detalhe: `(${escalonadosResolvidos} resolvidos)` }
+    ];
+
     const barra = document.getElementById("resumo_barra");
     const legenda = document.getElementById("resumo_legenda");
 
     barra.innerHTML = "";
     legenda.innerHTML = "";
 
-    for (const parte of resumoMock.partes) {
-        const largura = (parte.valor / resumoMock.totalAlertas * 100).toFixed(1);
+    for (const parte of partes) {
+        const largura = totalAlertas > 0 ? (parte.valor / totalAlertas * 100).toFixed(1) : 0;
 
         barra.innerHTML += `<div class="resumo-segmento" style="width: ${largura}%; background-color: ${cores[parte.cor]}"></div>`;
 
@@ -212,18 +328,16 @@ function plotarResumo() {
 
 
 // ======================================
-// TABELA DE CLIENTES (busca, ordenar, filtrar, ver todos)
+// TABELA DE CLIENTES (busca, ordenar, ver todos)
 // ======================================
 
-function clientesFiltradas() {
-    let lista = clientesMock.slice();
+// clientes sem valor (erro ou sem chamados concluídos) vão para o fim da lista
+function valorOrdenacao(cliente, campo) {
+    return cliente[campo] == null ? -1 : cliente[campo];
+}
 
-    // filtro do select
-    if (filtroAtual === "com-alertas") {
-        lista = lista.filter(cliente => cliente.comAlertas);
-    } else if (filtroAtual === "tag-alta") {
-        lista = lista.filter(cliente => cliente.tagAlta);
-    }
+function clientesFiltradas() {
+    let lista = clientes.slice();
 
     // busca por nome da empresa
     if (buscaAtual !== "") {
@@ -231,24 +345,39 @@ function clientesFiltradas() {
         lista = lista.filter(cliente => cliente.empresa.toLowerCase().includes(termo));
     }
 
-    // ordenação: alertas por CLP, do maior para o menor
-    lista.sort((a, b) => b.alertasPorClp - a.alertasPorClp);
+    // ordenação escolhida no select
+    const ordenacao = document.getElementById("ordenar-por").value;
+
+    if (ordenacao === "empresa") {
+        lista.sort((a, b) => a.empresa.localeCompare(b.empresa, "pt-BR"));
+    } else if (ordenacao === "resolve") {
+        // mais resolvidos sozinhos primeiro
+        lista.sort((a, b) => valorOrdenacao(b, "resolveSozinho") - valorOrdenacao(a, "resolveSozinho"));
+    } else if (ordenacao === "tempo") {
+        // tempo de resposta mais demorado primeiro
+        lista.sort((a, b) => valorOrdenacao(b, "tempoResposta") - valorOrdenacao(a, "tempoResposta"));
+    } else {
+        // padrão: alertas por CLP, do maior para o menor
+        lista.sort((a, b) => b.alertasPorClp - a.alertasPorClp);
+    }
 
     return lista;
 }
 
 function montarLinhaCliente(cliente) {
-    const tag = cliente.tagAlta ? `<span class="tag-alta">ALTA</span>` : "";
+    const alertasTexto = cliente.erro ? "—" : formatarDecimal(cliente.alertasPorClp);
+    const resolveTexto = !cliente.erro && cliente.resolveSozinho != null ? `${cliente.resolveSozinho}%` : "—";
+    const tempoTexto = !cliente.erro && cliente.tempoResposta != null ? formatarTempo(cliente.tempoResposta) : "—";
 
     const problema = cliente.problemaRecorrente === "—"
         ? `<span class="sem-problema">—</span>`
-        : cliente.problemaRecorrente;
+        : escapar(cliente.problemaRecorrente);
 
     return `<tr class="linha-cliente" data-id="${cliente.idCliente}">
-        <td><span class="nome-empresa">${cliente.empresa}</span>${tag}</td>
-        <td><span class="valor-destaque">${formatarDecimal(cliente.alertasPorClp)}</span> ${montarVariacao(cliente.variacaoAlertas, "%", false)}</td>
-        <td>${cliente.resolveSozinho}% ${montarVariacao(cliente.variacaoResolve, " p.p.", true)}</td>
-        <td>${cliente.tempoResposta}</td>
+        <td><span class="nome-empresa">${escapar(cliente.empresa)}</span></td>
+        <td><span class="valor-destaque">${alertasTexto}</span></td>
+        <td>${resolveTexto}</td>
+        <td>${tempoTexto}</td>
         <td>${problema}</td>
         <td class="celula-acoes">
             <button type="button" class="btn-expandir" title="Ver detalhes" aria-label="Ver detalhes">
@@ -323,7 +452,7 @@ function renderizarDetalhe(cliente, dias) {
     detalhe.innerHTML = `<td colspan="6">
         <div class="detalhe-panel">
             <div class="detalhe-header">
-                <p class="detalhe-titulo">${cliente.empresa} · detalhe</p>
+                <p class="detalhe-titulo">${escapar(cliente.empresa)} · detalhe</p>
                <!-- <div class="detalhe-periodo">
                      <label class="filter-text" for="periodo-detalhe">Período</label> -->
                     <select id="periodo-detalhe" class="select-tabela select-periodo-detalhe">
@@ -357,7 +486,7 @@ function renderizarDetalhe(cliente, dias) {
     </td>`;
 
     graficoLinha = graficoChamadosPorEtapa(cliente, dias);
-    graficoRosca = graficoSituacaoChamados(cliente);
+    graficoRosca = graficoSituacaoChamados(cliente, dias);
 }
 
 
@@ -365,12 +494,80 @@ function renderizarDetalhe(cliente, dias) {
 // GRÁFICO DE LINHA — Chamados por etapa
 // ======================================
 
+// Em qual status o chamado estava no fim do dia informado,
+// reconstruindo pelo histórico de mudanças de status do Jira
+function statusDoChamadoNoDia(chamado, fimDoDia) {
+    const historico = chamado.historico || [];
+
+    let status = historico.length
+        ? (historico[0].de || historico[0].para)
+        : chamado.status;
+
+    for (const item of historico) {
+        if (new Date(item.data).getTime() <= fimDoDia) {
+            status = item.para;
+        }
+    }
+
+    return status || "Sem status";
+}
+
 function graficoChamadosPorEtapa(cliente, dias) {
     const rotulos = [];
+    const fimDosDias = [];
+    const hoje = new Date();
+    hoje.setHours(23, 59, 59, 999);
 
-    for (let dia = 1; dia <= dias; dia++) {
-        rotulos.push(dia);
+    for (let i = dias - 1; i >= 0; i--) {
+        const dia = new Date(hoje);
+        dia.setDate(dia.getDate() - i);
+        fimDosDias.push(dia.getTime());
+        rotulos.push(dia.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }));
     }
+
+    const chamadosPeriodo = cliente.chamados.filter(chamado => dentroDoPeriodo(chamado.criadoEm, dias));
+
+    // quantos chamados estavam em cada status em cada dia
+    const porStatus = {};
+
+    for (const chamado of chamadosPeriodo) {
+        for (let i = 0; i < fimDosDias.length; i++) {
+            // o chamado ainda não existia neste dia
+            if (new Date(chamado.criadoEm).getTime() > fimDosDias[i]) {
+                continue;
+            }
+
+            const status = statusDoChamadoNoDia(chamado, fimDosDias[i]);
+
+            if (!porStatus[status]) {
+                porStatus[status] = new Array(fimDosDias.length).fill(0);
+            }
+
+            porStatus[status][i]++;
+        }
+    }
+
+    // no máximo 4 status no gráfico: os que mais apareceram
+    const totalPorStatus = {};
+
+    for (const status in porStatus) {
+        totalPorStatus[status] = porStatus[status].reduce((soma, valor) => soma + valor, 0);
+    }
+
+    const principais = Object.keys(totalPorStatus)
+        .sort((a, b) => totalPorStatus[b] - totalPorStatus[a])
+        .slice(0, 4);
+
+    const cores = ["#60A5FA", "#22C55E", "#FBBF24", "#A78BFA"];
+
+    const datasets = principais.map((status, indice) => ({
+        label: status,
+        data: porStatus[status],
+        borderColor: cores[indice % cores.length],
+        tension: 0,
+        borderWidth: 2,
+        pointRadius: 0
+    }));
 
     const ctx = document.getElementById("chart-etapa");
 
@@ -379,33 +576,7 @@ function graficoChamadosPorEtapa(cliente, dias) {
 
         data: {
             labels: rotulos,
-            datasets: [
-                {
-                    label: "Alertas enviados",
-                    data: gerarSerieDias(dias, cliente.idCliente, 2),
-                    borderColor: "#60A5FA",
-                    tension: 0,
-                    borderWidth: 2,
-                    pointRadius: 0
-                },
-                {
-                    label: "Resolvidos pelo cliente",
-                    data: gerarSerieDias(dias, cliente.idCliente + 5, 1),
-                    borderColor: "#22C55E",
-                    tension: 0,
-                    borderWidth: 2,
-                    pointRadius: 0
-                },
-                {
-                    label: "Escalonados",
-                    data: gerarSerieDias(dias, cliente.idCliente + 9, 1),
-                    borderColor: "#FBBF24",
-                    borderDash: [6, 4],
-                    tension: 0,
-                    borderWidth: 2,
-                    pointRadius: 0
-                }
-            ]
+            datasets: datasets
         },
 
         options: {
@@ -433,7 +604,7 @@ function graficoChamadosPorEtapa(cliente, dias) {
                 },
                 y: {
                     beginAtZero: true,
-                    ticks: { color: "#94A3B8", stepSize: 1, font: { size: 10 } },
+                    ticks: { color: "#94A3B8", maxTicksLimit: 6, font: { size: 10 } },
                     grid: { color: "rgba(255, 255, 255, 0.08)" },
                     border: { display: false }
                 }
@@ -447,19 +618,14 @@ function graficoChamadosPorEtapa(cliente, dias) {
 // GRÁFICO DE ROSCA — Situação dos chamados
 // ======================================
 
-function graficoSituacaoChamados(cliente) {
-    // distribuição de demonstração derivada dos alertas por CLP
-    const total = Math.max(4, Math.round(cliente.alertasPorClp * 10));
-    const resolvidosCliente = Math.round(total * 0.4);
-    const emAbertoCliente = Math.round(total * 0.29);
-    const resolvidosFornecedor = Math.round(total * 0.23);
-    const emAbertoFornecedor = total - resolvidosCliente - emAbertoCliente - resolvidosFornecedor;
+function graficoSituacaoChamados(cliente, dias) {
+    const chamadosPeriodo = cliente.chamados.filter(chamado => dentroDoPeriodo(chamado.criadoEm, dias));
+    const total = chamadosPeriodo.length;
+    const resolvidos = chamadosPeriodo.filter(estaConcluido).length;
 
     const situacao = [
-        { legenda: "Resolvidos pelo cliente", valor: resolvidosCliente, cor: "#22C55E" },
-        { legenda: "Em aberto com o cliente", valor: emAbertoCliente, cor: "#60A5FA" },
-        { legenda: "Resolvidos pelo fornecedor", valor: resolvidosFornecedor, cor: "#A78BFA" },
-        { legenda: "Em aberto com o fornecedor", valor: emAbertoFornecedor, cor: "#FBBF24" }
+        { legenda: "Resolvidos pelo cliente", valor: resolvidos, cor: "#22C55E" },
+        { legenda: "Em aberto com o cliente", valor: total - resolvidos, cor: "#60A5FA" }
     ];
 
     // número de chamados no centro da rosca
@@ -506,6 +672,9 @@ function graficoSituacaoChamados(cliente) {
 // EVENTOS DA TELA
 // ======================================
 
+// troca o período do painel inteiro (KPIs, resumo e tabela)
+document.getElementById("period-filter").addEventListener("change", plotarTudo);
+
 // abre/fecha o detalhe ao clicar na linha
 document.getElementById("clientes_body").addEventListener("click", (evento) => {
     const linha = evento.target.closest(".linha-cliente");
@@ -533,12 +702,6 @@ document.getElementById("busca-empresa").addEventListener("input", (evento) => {
 
 // ordenação
 document.getElementById("ordenar-por").addEventListener("change", renderizarTabela);
-
-// filtro (todos / com alertas / tag ALTA)
-document.getElementById("filtrar-clientes").addEventListener("change", (evento) => {
-    filtroAtual = evento.target.value;
-    renderizarTabela();
-});
 
 // ver todos / mostrar menos
 document.getElementById("btn-ver-todos").addEventListener("click", () => {
