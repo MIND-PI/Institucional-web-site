@@ -5,15 +5,24 @@
     };
 
     const STALE_MINUTES = 60;
+    const HINT_RANKING = "Do menor para o maior health · role para ver todos · clique em uma linha para ver o detalhe";
+    const COLUNAS_RANKING = ["Apelido", "Setor", "Modelo", "Health médio", "Status", "Alertas", "Componente mais problemático"];
 
+    // null/undefined/"" NÃO viram 0
     function numero(value) {
+        if (value === null || value === undefined || value === "") return null;
         const n = Number(value);
         return Number.isFinite(n) ? n : null;
     }
 
     function inteiro(value, fallback) {
-        const n = Number(value);
-        return Number.isFinite(n) ? Math.round(n) : fallback;
+        const n = numero(value);
+        return n === null ? fallback : Math.round(n);
+    }
+
+    function arredondar1Casa(valor) {
+        if (valor === null || valor === undefined || !Number.isFinite(valor)) return null;
+        return Math.round(valor * 10) / 10;
     }
 
     function normalizarFaixas(goldJson) {
@@ -62,7 +71,7 @@
 
     function formatarHoraAtualizacao(geradoEm, options) {
         const data = new Date(geradoEm);
-        if (Number.isNaN(data.getTime())) {
+        if (!geradoEm || Number.isNaN(data.getTime())) {
             return "Última atualização indisponível";
         }
 
@@ -93,7 +102,6 @@
         const filtros = [{ value: "todos", label: "Setor: Todos" }];
         const vistos = { todos: true };
 
-        // Lê primeiro todos os setores válidos vindos do Gold
         const setoresGold = Array.isArray(goldJson && goldJson.setores) ? goldJson.setores : [];
         for (let i = 0; i < setoresGold.length; i++) {
             const nome = setoresGold[i] && setoresGold[i].nome;
@@ -104,10 +112,10 @@
             filtros.push({ value: value, label: "Setor: " + nome });
         }
 
-        // Garante que setores presentes no ranking (incluindo "Sem setor", se houver) estejam no select
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
             const setor = row.sectorLabel || "-";
+            if (!ehSetorValido(setor)) continue;
             const value = row.sector || slugify(setor);
             if (!value || vistos[value]) continue;
             vistos[value] = true;
@@ -117,46 +125,45 @@
         return filtros;
     }
 
-    function montarOutlier(setoresDoGrafico) {
+    function montarOutlier(setoresParaChecar) {
         const nomes = [];
+        const itens = [];
 
-        for (let i = 0; i < setoresDoGrafico.length; i++) {
-            const setor = setoresDoGrafico[i];
+        for (let i = 0; i < setoresParaChecar.length; i++) {
+            const setor = setoresParaChecar[i];
             const foraDaCurva = Array.isArray(setor.foraDaCurva) ? setor.foraDaCurva : [];
             if (foraDaCurva.length > 0) {
                 nomes.push(setor.nome || "setor sem nome");
+                for (let j = 0; j < foraDaCurva.length; j++) {
+                    const clp = foraDaCurva[j] || {};
+                    const nomeSetor = clp.setor || setor.nome || "-";
+                    itens.push({
+                        idClp: clp.idClp ?? clp.id_clp ?? clp.id ?? "",
+                        apelido: clp.apelido || clp.nickname || clp.nome || "CLP sem nome",
+                        setor: nomeSetor,
+                        setorSlug: slugify(nomeSetor),
+                        health: arredondar1Casa(numero(clp.health))
+                    });
+                }
             }
         }
 
+        const rotuloLink = "Ver detalhes dos fora da curva →";
+
         if (nomes.length === 0) {
-            return {
-                enabled: false,
-                message: "",
-                detailsLinkLabel: "Ver detalhes dos fora da curva →"
-            };
+            return { enabled: false, message: "", detailsLinkLabel: rotuloLink, items: [] };
         }
 
+        let mensagem;
         if (nomes.length === 1) {
-            return {
-                enabled: true,
-                message: "Há CLP fora da curva em " + nomes[0] + ".",
-                detailsLinkLabel: "Ver detalhes dos fora da curva →"
-            };
+            mensagem = "Há CLP fora da curva em " + nomes[0] + ".";
+        } else if (nomes.length === 2) {
+            mensagem = "Há CLP fora da curva em " + nomes[0] + " e " + nomes[1] + ".";
+        } else {
+            mensagem = "Há CLP fora da curva em " + nomes[0] + ", " + nomes[1] + " e mais " + (nomes.length - 2) + ".";
         }
 
-        if (nomes.length === 2) {
-            return {
-                enabled: true,
-                message: "Há CLP fora da curva em " + nomes[0] + " e " + nomes[1] + ".",
-                detailsLinkLabel: "Ver detalhes dos fora da curva →"
-            };
-        }
-
-        return {
-            enabled: true,
-            message: "Há CLP fora da curva em " + nomes[0] + ", " + nomes[1] + " e mais " + (nomes.length - 2) + ".",
-            detailsLinkLabel: "Ver detalhes dos fora da curva →"
-        };
+        return { enabled: true, message: mensagem, detailsLinkLabel: rotuloLink, items: itens };
     }
 
     function ordenarSetoresPorHealth(a, b) {
@@ -169,34 +176,55 @@
         return sa - sb;
     }
 
+    // Menor health primeiro. Só quem NÃO tem health vai ao final.
+    function ordenarRowsRanking(rows) {
+        return rows.slice().sort(function (a, b) {
+            const ha = numero(a.healthNum);
+            const hb = numero(b.healthNum);
+
+            if (ha === null && hb !== null) return 1;
+            if (ha !== null && hb === null) return -1;
+            if (ha !== null && ha !== hb) return ha - hb;
+            return inteiro(b.alerts, 0) - inteiro(a.alerts, 0);
+        });
+    }
+
     function montarRowsRanking(goldJson, faixas) {
         const ranking = Array.isArray(goldJson && goldJson.ranking) ? goldJson.ranking : [];
         const rows = [];
 
         for (let i = 0; i < ranking.length; i++) {
             const item = ranking[i] || {};
-            const health = numero(item.health);
+            const health = arredondar1Casa(numero(item.health));
+            const semHealth = health === null;
             const idClpRaw = numero(item.idClp ?? item.id_clp);
             const idClp = idClpRaw !== null && Number.isInteger(idClpRaw) && idClpRaw > 0 ? idClpRaw : null;
-            const tone = tonePorHealth(health, faixas);
-            const statusBase = item.status || statusPorHealth(health, faixas);
-            const offline = item.online === false;
+            const offline = item.online === false || String(item.status || "").toLowerCase() === "offline";
+            const toneHealth = semHealth ? null : tonePorHealth(health, faixas);
+            const tone = offline ? "offline" : (toneHealth || "warning");
+            const statusBase = item.status || (offline ? "Offline" : (semHealth ? "Sem health" : statusPorHealth(health, faixas)));
+            const statusTexto = offline && !/offline/i.test(statusBase)
+                ? (statusBase + " · offline")
+                : statusBase;
 
             rows.push({
                 idClp: idClp,
-                nickname: item.apelido || ("CLP-" + (item.idClp || "")),
+                nickname: item.apelido || (idClp ? "CLP-" + idClp : "CLP sem nome"),
                 sectorLabel: item.setor || "Sem setor",
                 model: item.modelo || "Sem modelo",
-                health: health === null ? "-" : health,
-                status: offline ? (statusBase + " · offline") : statusBase,
+                health: semHealth ? "-" : health,
+                healthNum: health,
+                healthTone: toneHealth,
+                status: statusTexto,
                 statusTone: tone,
+                offline: offline,
                 alerts: inteiro(item.alertas, 0),
                 component: item.componenteMaisProblematico || "-",
                 sector: slugify(item.setor || "sem-setor")
             });
         }
 
-        return rows;
+        return ordenarRowsRanking(rows);
     }
 
     function montarSetores(goldJson) {
@@ -212,33 +240,29 @@
 
         validos.sort(ordenarSetoresPorHealth);
 
-        const comHealth = [];
-        for (let i = 0; i < validos.length; i++) {
-            if (numero(validos[i].health) !== null) {
-                comHealth.push(validos[i]);
-            }
-        }
+        const comHealth = validos.filter(function (s) { return numero(s.health) !== null; });
 
-        const piores = comHealth.slice(0, 5);
+        // Top 5 piores setores gerais da planta (nunca depende do filtro)
+        const pioresGerais = comHealth.slice(0, 5);
 
-        const items = [];
-        for (let i = 0; i < piores.length; i++) {
-            const item = piores[i];
-            items.push({
+        function paraItem(item) {
+            return {
                 name: item.nome,
-                health: numero(item.health),
+                slug: slugify(item.nome),
+                health: arredondar1Casa(numero(item.health)),
                 online: inteiro(item.online, 0),
-                total: inteiro(item.total, 0)
-            });
+                total: inteiro(item.total, 0),
+                foraDaCurva: Array.isArray(item.foraDaCurva) ? item.foraDaCurva : []
+            };
         }
 
-        const outrosSetores = validos.slice(piores.length);
+        const items = pioresGerais.map(paraItem);
+
+        const outrosSetores = validos.filter(function (s) { return pioresGerais.indexOf(s) === -1; });
         const outrosComHealth = [];
         for (let i = 0; i < outrosSetores.length; i++) {
-            const health = numero(outrosSetores[i].health);
-            if (health !== null) {
-                outrosComHealth.push(health);
-            }
+            const health = arredondar1Casa(numero(outrosSetores[i].health));
+            if (health !== null) outrosComHealth.push(health);
         }
 
         let footerVisible = true;
@@ -258,11 +282,9 @@
             minOtherHealth: minOtherHealth,
             otherSectorsCount: outrosSetores.length,
             items: items,
-            footer: {
-                visible: footerVisible,
-                text: footerText
-            },
-            outlier: montarOutlier(piores)
+            allSectors: validos.map(paraItem),
+            footer: { visible: footerVisible, text: footerText },
+            outlier: montarOutlier(validos)
         };
     }
 
@@ -273,235 +295,235 @@
         const naMedia = inteiro(kpis.clpsNaMedia, online);
         const disponibilidade = numero(kpis.disponibilidadePct);
         const disponibilidadeInt = disponibilidade === null ? 0 : Math.round(disponibilidade);
-        const healthGeral = numero(kpis.healthGeral);
+        const healthGeral = arredondar1Casa(numero(kpis.healthGeral));
         const healthGeralStatus = kpis.healthGeralStatus || statusPorHealth(healthGeral, faixas);
         const criticosOnline = inteiro(kpis.clpsCriticos, 0);
 
-        let setorMaisPreocupante = null;
-        if (setoresChart.items.length > 0) {
-            setorMaisPreocupante = setoresChart.items[0];
-        }
+        // Setor mais preocupante: sempre o pior da planta, independente do filtro
+        const setorMaisPreocupante = setoresChart.items.length > 0 ? setoresChart.items[0] : null;
+        const toneSetor = setorMaisPreocupante ? tonePorHealth(setorMaisPreocupante.health, faixas) : "warning";
 
         return [
             {
                 type: "sector",
-                tone: setorMaisPreocupante ? tonePorHealth(setorMaisPreocupante.health, faixas) : "warning",
-title: "Setor mais preocupante",
-sector: setorMaisPreocupante ? setorMaisPreocupante.name : "Sem dados",
-status: {
-label: setorMaisPreocupante ? statusPorHealth(setorMaisPreocupante.health, faixas) : "Sem dados",
-tone: setorMaisPreocupante ? tonePorHealth(setorMaisPreocupante.health, faixas) : "warning"
-},
-details: setorMaisPreocupante
-? ("Setor com menor health médio (" + setorMaisPreocupante.health + " de 100).")
-: "Sem dados de setor para o período selecionado."
-},
-{
-type: "health",
-tone: tonePorHealth(healthGeral, faixas),
-title: "Health geral da planta",
-value: healthGeral === null ? "-" : healthGeral,
-unit: "/100",
-status: {
-label: healthGeralStatus,
-tone: tonePorHealth(healthGeral, faixas)
-},
-details: "Média de " + naMedia + " CLPs com dados no período.",
-scale: {
-marker: healthGeral === null ? 0 : Math.max(0, Math.min(100, healthGeral)),
-breakpoints: [faixas.criticoAbaixoDe, faixas.estavelAPartirDe],
-labels: [
-"0",
-String(faixas.criticoAbaixoDe),
-String(faixas.estavelAPartirDe),
-"100"
-]
-}
-},
-{
-type: "availability",
-tone: tonePorHealth(disponibilidadeInt, {
-criticoAbaixoDe: 40,
-estavelAPartirDe: 80
-}),
-title: "Disponibilidade",
-value: disponibilidadeInt + "%",
-details: online + " de " + total + " CLPs estão online agora."
-},
-{
-type: "criticalUnits",
-tone: criticosOnline > 0 ? "danger" : "positive",
-title: "CLPs críticos",
-value: criticosOnline,
-status: criticosOnline > 0
-? { label: "Requer ação", tone: "danger" }
-: { label: "Sob controle", tone: "positive" },
-details: "CLPs online com health abaixo de " + faixas.criticoAbaixoDe + ". Risco de parada."
-}
-];
-}
-function adaptGoldToDashboardData(goldJson, options) {
-const faixas = normalizarFaixas(goldJson || {});
-const rankingRows = montarRowsRanking(goldJson || {}, faixas);
-const setoresChartBase = montarSetores(goldJson || {});
-const kpis = montarKpis(goldJson || {}, setoresChartBase, faixas);
-const frota = (goldJson && goldJson.frota) || {};
-const totalClps = inteiro(goldJson && goldJson.kpis ? goldJson.kpis.clpsTotal : null, 0);
-const semHealth = inteiro(frota.semHealth, 0);
-const legendaFaixas = [
-{ label: "Crítico (abaixo de " + faixas.criticoAbaixoDe + ")", tone: "danger" },
-{ label: "Atenção (" + faixas.criticoAbaixoDe + " a " + (faixas.estavelAPartirDe - 1) + ")", tone: "warning" },
-{ label: "Estável (" + faixas.estavelAPartirDe + " ou mais)", tone: "positive" }
-];
-return {
-header: {
-title: "Visão macro da planta",
-lastUpdatePrefix: "Última atualização às",
-lastUpdateText: formatarHoraAtualizacao(goldJson && goldJson.geradoEm, options || {})
-},
-filters: {
-sectors: criarFiltrosSetor(goldJson || {}, rankingRows),
-periods: [
-{ value: "agora", label: "Agora" },
-{ value: "7-dias", label: "Últimos 7 dias" },
-{ value: "30-dias", label: "Últimos 30 dias" }
-]
-},
-kpis: kpis,
-sectorsChart: {
-title: "5 setores com pior health médio",
-subtitle: "Média de health dos CLPs de cada setor, de 0 a 100",
-totalSectors: setoresChartBase.totalSectors,
-minOtherHealth: setoresChartBase.minOtherHealth,
-linkLabel: "Ver todos os setores e valores →",
-items: setoresChartBase.items,
-footer: setoresChartBase.footer,
-otherSectorsCount: setoresChartBase.otherSectorsCount,
-outlier: setoresChartBase.outlier,
-legend: legendaFaixas
-},
-fleet: {
-title: "Situação da frota",
-summaryPrefix: "Apenas",
-totalLabel: "CLPs",
-totalClps: totalClps,
-semHealth: semHealth,
-values: {
-estavel: inteiro(frota.estavel, 0),
-atencao: inteiro(frota.atencao, 0),
-critico: inteiro(frota.critico, 0),
-offline: inteiro(frota.offline, 0)
-},
-legend: [
-{ key: "estavel", label: "Estável", detail: "health de " + faixas.estavelAPartirDe + " ou mais", tone: "positive" },
-{ key: "atencao", label: "Atenção", detail: "health de " + faixas.criticoAbaixoDe + " a " + (faixas.estavelAPartirDe - 1), tone: "warning" },
-{ key: "critico", label: "Crítico", detail: "health abaixo de " + faixas.criticoAbaixoDe, tone: "danger" },
-{ key: "offline", label: "Offline", detail: "sem comunicação", tone: "offline" }
-]
-},
-ranking: {
-title: "Ranking de CLPs",
-hint: "Do menor para o maior health score · clique em uma linha para ver o detalhe",
-columns: ["Apelido", "Setor", "Modelo", "Health médio", "Status", "Alertas", "Componente mais problemático"],
-rows: rankingRows
-},
-meta: {
-faixas: faixas
-}
-};
-}
-function buildSemDadosDashboardData() {
-return {
-header: {
-title: "Visão macro da planta",
-lastUpdatePrefix: "Última atualização às",
-lastUpdateText: "Sem dados para este período."
-},
-filters: {
-sectors: [{ value: "todos", label: "Setor: Todos" }],
-periods: [
-{ value: "agora", label: "Agora" },
-{ value: "7-dias", label: "Últimos 7 dias" },
-{ value: "30-dias", label: "Últimos 30 dias" }
-]
-},
-kpis: [
-{
-type: "sector",
-tone: "warning",
-title: "Setor mais preocupante",
-sector: "Sem dados",
-status: { label: "Sem dados", tone: "warning" },
-details: "Sem dados de setor para o período selecionado."
-},
-{
-type: "health",
-tone: "warning",
-title: "Health geral da planta",
-value: "-",
-unit: "/100",
-status: { label: "Sem dados", tone: "warning" },
-details: "Sem dados de health para o período selecionado."
-},
-{
-type: "availability",
-tone: "warning",
-title: "Disponibilidade",
-value: "-",
-details: "Sem dados de disponibilidade para o período selecionado."
-},
-{
-type: "criticalUnits",
-tone: "warning",
-title: "CLPs críticos",
-value: 0,
-status: { label: "Sem dados", tone: "warning" },
-details: "Sem dados de alertas para o período selecionado."
-}
-],
-sectorsChart: {
-title: "5 setores com pior health médio",
-subtitle: "Média de health dos CLPs de cada setor, de 0 a 100",
-totalSectors: 0,
-minOtherHealth: null,
-linkLabel: "Ver todos os setores e valores →",
-items: [],
-footer: { visible: false, text: "" },
-otherSectorsCount: 0,
-outlier: { enabled: false, message: "", detailsLinkLabel: "Ver detalhes dos fora da curva →" },
-legend: [
-{ label: "Crítico (abaixo de 40)", tone: "danger" },
-{ label: "Atenção (40 a 59)", tone: "warning" },
-{ label: "Estável (60 ou mais)", tone: "positive" }
-]
-},
-fleet: {
-title: "Situação da frota",
-summaryPrefix: "Apenas",
-totalLabel: "CLPs",
-totalClps: 0,
-semHealth: 0,
-values: { estavel: 0, atencao: 0, critico: 0, offline: 0 },
-legend: [
-{ key: "estavel", label: "Estável", detail: "health de 60 ou mais", tone: "positive" },
-{ key: "atencao", label: "Atenção", detail: "health de 40 a 59", tone: "warning" },
-{ key: "critico", label: "Crítico", detail: "health abaixo de 40", tone: "danger" },
-{ key: "offline", label: "Offline", detail: "sem comunicação", tone: "offline" }
-]
-},
-ranking: {
-title: "Ranking de CLPs",
-hint: "Do menor para o maior health score · clique em uma linha para ver o detalhe",
-columns: ["Apelido", "Setor", "Modelo", "Health médio", "Status", "Alertas", "Componente mais problemático"],
-rows: []
-},
-meta: {
-faixas: FAIXAS_PADRAO
-}
-};
-}
-window.macroClpAdapter = {
-adaptGoldToDashboardData: adaptGoldToDashboardData,
-buildSemDadosDashboardData: buildSemDadosDashboardData
-};
+                tone: toneSetor,
+                title: "Setor mais preocupante",
+                sector: setorMaisPreocupante ? setorMaisPreocupante.name : "Sem dados",
+                status: {
+                    label: setorMaisPreocupante ? statusPorHealth(setorMaisPreocupante.health, faixas) : "Sem dados",
+                    tone: toneSetor
+                },
+                details: setorMaisPreocupante
+                    ? ("Setor com menor health médio (" + setorMaisPreocupante.health + " de 100).")
+                    : "Sem dados de setor para o período selecionado."
+            },
+            {
+                type: "health",
+                tone: healthGeral === null ? "warning" : tonePorHealth(healthGeral, faixas),
+                title: "Health geral da planta",
+                value: healthGeral === null ? "-" : healthGeral,
+                unit: "/100",
+                status: {
+                    label: healthGeral === null ? "Sem dados" : healthGeralStatus,
+                    tone: healthGeral === null ? "warning" : tonePorHealth(healthGeral, faixas)
+                },
+                details: "Média de " + naMedia + " CLPs com dados no período.",
+                scale: {
+                    marker: healthGeral === null ? 0 : Math.max(0, Math.min(100, healthGeral)),
+                    breakpoints: [faixas.criticoAbaixoDe, faixas.estavelAPartirDe],
+                    labels: ["0", String(faixas.criticoAbaixoDe), String(faixas.estavelAPartirDe), "100"]
+                }
+            },
+            {
+                type: "availability",
+                tone: tonePorHealth(disponibilidadeInt, { criticoAbaixoDe: 40, estavelAPartirDe: 80 }),
+                title: "Disponibilidade",
+                value: disponibilidadeInt + "%",
+                details: online + " de " + total + " CLPs estão online agora."
+            },
+            {
+                type: "criticalUnits",
+                tone: criticosOnline > 0 ? "danger" : "positive",
+                title: "CLPs críticos",
+                value: criticosOnline,
+                status: criticosOnline > 0
+                    ? { label: "Requer ação", tone: "danger" }
+                    : { label: "Sob controle", tone: "positive" },
+                details: "CLPs online com health abaixo de " + faixas.criticoAbaixoDe + ". Risco de parada."
+            }
+        ];
+    }
+
+    function periodosPadrao() {
+        return [
+            { value: "agora", label: "Agora" },
+            { value: "7-dias", label: "Últimos 7 dias" },
+            { value: "30-dias", label: "Últimos 30 dias" }
+        ];
+    }
+
+    function adaptGoldToDashboardData(goldJson, options) {
+        const faixas = normalizarFaixas(goldJson || {});
+        const rankingRows = montarRowsRanking(goldJson || {}, faixas);
+        const setoresChartBase = montarSetores(goldJson || {});
+        const kpis = montarKpis(goldJson || {}, setoresChartBase, faixas);
+        const frota = (goldJson && goldJson.frota) || {};
+        const totalClps = inteiro(goldJson && goldJson.kpis ? goldJson.kpis.clpsTotal : null, 0);
+        const semHealth = inteiro(frota.semHealth, 0);
+        const legendaFaixas = [
+            { label: "Crítico (abaixo de " + faixas.criticoAbaixoDe + ")", tone: "danger" },
+            { label: "Atenção (" + faixas.criticoAbaixoDe + " a " + (faixas.estavelAPartirDe - 1) + ")", tone: "warning" },
+            { label: "Estável (" + faixas.estavelAPartirDe + " ou mais)", tone: "positive" }
+        ];
+
+        return {
+            header: {
+                title: "Visão macro da planta",
+                lastUpdatePrefix: "Última atualização às",
+                lastUpdateText: formatarHoraAtualizacao(goldJson && goldJson.geradoEm, options || {})
+            },
+            filters: {
+                sectors: criarFiltrosSetor(goldJson || {}, rankingRows),
+                periods: periodosPadrao()
+            },
+            kpis: kpis,
+            sectorsChart: {
+                title: "5 setores com pior health médio",
+                subtitle: "Média de health dos CLPs de cada setor, de 0 a 100",
+                totalSectors: setoresChartBase.totalSectors,
+                minOtherHealth: setoresChartBase.minOtherHealth,
+                linkLabel: "Ver todos os setores e valores →",
+                items: setoresChartBase.items,
+                allSectors: setoresChartBase.allSectors,
+                footer: setoresChartBase.footer,
+                otherSectorsCount: setoresChartBase.otherSectorsCount,
+                outlier: setoresChartBase.outlier,
+                legend: legendaFaixas
+            },
+            fleet: {
+                title: "Situação da frota",
+                summaryPrefix: "Apenas",
+                totalLabel: "CLPs",
+                totalClps: totalClps,
+                semHealth: semHealth,
+                values: {
+                    estavel: inteiro(frota.estavel, 0),
+                    atencao: inteiro(frota.atencao, 0),
+                    critico: inteiro(frota.critico, 0),
+                    offline: inteiro(frota.offline, 0)
+                },
+                legend: [
+                    { key: "estavel", label: "Estável", detail: "health de " + faixas.estavelAPartirDe + " ou mais", tone: "positive" },
+                    { key: "atencao", label: "Atenção", detail: "health de " + faixas.criticoAbaixoDe + " a " + (faixas.estavelAPartirDe - 1), tone: "warning" },
+                    { key: "critico", label: "Crítico", detail: "health abaixo de " + faixas.criticoAbaixoDe, tone: "danger" },
+                    { key: "offline", label: "Offline", detail: "sem comunicação", tone: "offline" }
+                ]
+            },
+            ranking: {
+                title: "Ranking de CLPs",
+                hint: HINT_RANKING,
+                columns: COLUNAS_RANKING,
+                // Todos os CLPs, do pior para o melhor. A tela decide quantos mostrar (scroll).
+                rows: rankingRows,
+                allRows: rankingRows
+            },
+            meta: {
+                faixas: faixas
+            }
+        };
+    }
+
+    function buildSemDadosDashboardData() {
+        return {
+            header: {
+                title: "Visão macro da planta",
+                lastUpdatePrefix: "Última atualização às",
+                lastUpdateText: "Sem dados para este período."
+            },
+            filters: {
+                sectors: [{ value: "todos", label: "Setor: Todos" }],
+                periods: periodosPadrao()
+            },
+            kpis: [
+                {
+                    type: "sector",
+                    tone: "warning",
+                    title: "Setor mais preocupante",
+                    sector: "Sem dados",
+                    status: { label: "Sem dados", tone: "warning" },
+                    details: "Sem dados de setor para o período selecionado."
+                },
+                {
+                    type: "health",
+                    tone: "warning",
+                    title: "Health geral da planta",
+                    value: "-",
+                    unit: "/100",
+                    status: { label: "Sem dados", tone: "warning" },
+                    details: "Sem dados de health para o período selecionado."
+                },
+                {
+                    type: "availability",
+                    tone: "warning",
+                    title: "Disponibilidade",
+                    value: "-",
+                    details: "Sem dados de disponibilidade para o período selecionado."
+                },
+                {
+                    type: "criticalUnits",
+                    tone: "warning",
+                    title: "CLPs críticos",
+                    value: 0,
+                    status: { label: "Sem dados", tone: "warning" },
+                    details: "Sem dados de alertas para o período selecionado."
+                }
+            ],
+            sectorsChart: {
+                title: "5 setores com pior health médio",
+                subtitle: "Média de health dos CLPs de cada setor, de 0 a 100",
+                totalSectors: 0,
+                minOtherHealth: null,
+                linkLabel: "Ver todos os setores e valores →",
+                items: [],
+                allSectors: [],
+                footer: { visible: false, text: "" },
+                otherSectorsCount: 0,
+                outlier: { enabled: false, message: "", detailsLinkLabel: "Ver detalhes dos fora da curva →", items: [] },
+                legend: [
+                    { label: "Crítico (abaixo de 40)", tone: "danger" },
+                    { label: "Atenção (40 a 59)", tone: "warning" },
+                    { label: "Estável (60 ou mais)", tone: "positive" }
+                ]
+            },
+            fleet: {
+                title: "Situação da frota",
+                summaryPrefix: "Apenas",
+                totalLabel: "CLPs",
+                totalClps: 0,
+                semHealth: 0,
+                values: { estavel: 0, atencao: 0, critico: 0, offline: 0 },
+                legend: [
+                    { key: "estavel", label: "Estável", detail: "health de 60 ou mais", tone: "positive" },
+                    { key: "atencao", label: "Atenção", detail: "health de 40 a 59", tone: "warning" },
+                    { key: "critico", label: "Crítico", detail: "health abaixo de 40", tone: "danger" },
+                    { key: "offline", label: "Offline", detail: "sem comunicação", tone: "offline" }
+                ]
+            },
+            ranking: {
+                title: "Ranking de CLPs",
+                hint: HINT_RANKING,
+                columns: COLUNAS_RANKING,
+                rows: [],
+                allRows: []
+            },
+            meta: {
+                faixas: FAIXAS_PADRAO
+            }
+        };
+    }
+
+    window.macroClpAdapter = {
+        adaptGoldToDashboardData: adaptGoldToDashboardData,
+        buildSemDadosDashboardData: buildSemDadosDashboardData
+    };
 })();
