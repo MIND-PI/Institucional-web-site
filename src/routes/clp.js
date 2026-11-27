@@ -6,11 +6,6 @@ router.get("/listarClps/:idEmpresa", function (req, res){
     clpController.listarClps(req, res);
 });
 
-//listar clp individualmente pelo id
-router.get("/:idClp", function (req, res) {
-    clpController.listarClpPorId(req, res)    
-})
-
 router.get("/micro-analise/:idClp/:idEmpresa/:period", function (req, res) {
     clpController.microAnalise(req, res)
 })
@@ -66,5 +61,10 @@ router.get("/predicao-metrica/:idClp/:idEmpresa", function (req, res) {
 router.get("/baixarScript/:idClp/:idEmpresa", function (req, res) {
     clpController.baixarScript(req, res);
 });
+
+
+router.get("/:idClp", function (req, res) {
+    clpController.listarClpPorId(req, res)
+})
 
 module.exports = router;
