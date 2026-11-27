@@ -197,6 +197,7 @@ function desenharGraficoLinha(serie, config) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: { padding: { right: 20 } },
 
             plugins: {
                 legend: {
@@ -221,7 +222,8 @@ function desenharGraficoLinha(serie, config) {
                         color: '#94A3B8',
                         autoSkip: serie.autoSkip,
                         maxTicksLimit: 10,
-                        maxRotation: 0
+                        maxRotation: 0,
+                        padding: 6
                     },
                     grid: { display: false }
                 },
