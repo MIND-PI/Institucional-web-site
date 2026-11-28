@@ -141,6 +141,7 @@ async function responseDashMicro(req, res) {
     }
 }
 
+
 async function responseDashJira(req, res) {
     const nome_usuario = req.body.nomeUsuario;
     const dados = req.body.dados;
@@ -184,12 +185,28 @@ ${dadosFormatados}
 2. Identifique os principais problemas observados.
 3. Identifique CLPs e recursos com maior recorrência de chamados.
 4. Procure padrões relevantes nos chamados.
-5. Sugira ações práticas para os responsáveis pela operação.
-6. Utilize uma linguagem profissional, clara e objetiva.
+5. Sugira ações práticas e objetivas para os responsáveis pela operação.
+6. Utilize uma linguagem profissional, clara e direta.
 7. Não invente informações, métricas ou causas.
 8. Não afirme que existe uma falha física em um CLP
    sem evidências suficientes nos dados.
-9. Caso os dados sejam insuficientes, informe essa limitação.
+9. Caso os dados sejam insuficientes, informe essa limitação
+   de maneira breve.
+10. Evite introduções, conclusões genéricas e repetições.
+11. Priorize somente as informações mais importantes.
+12. Seja extremamente conciso.
+
+
+## Limite de tamanho
+
+- diagnostico: entre 2 e 3 frases, com até 50 palavras.
+- acao: entre 2 e 3 frases, com até 50 palavras.
+- justificativa: entre 2 e 3 frases, com até 50 palavras.
+- Explique os problemas com clareza, incluindo os CLPs e recursos envolvidos quando relevante.
+- Apresente recomendações práticas, indicando o que deve ser verificado ou realizado.
+- Utilize informações concretas da dashboard para fundamentar a análise.
+- Evite introduções, conclusões genéricas e repetições.
+- Não utilize listas ou tópicos dentro dos campos.
 
 ## Formato da resposta
 
@@ -197,10 +214,11 @@ Retorne exclusivamente um JSON válido, sem Markdown,
 seguindo exatamente esta estrutura:
 
 {
-    "diagnostico": "Descrição dos principais pontos identificados.",
-    "acao": "Ação recomendada ao responsável pela operação.",
-    "justificativa": "Informações da dashboard que justificam a recomendação."
+    "diagnostico": "Descrição dos principais problemas identificados na dashboard.",
+    "acao": "Recomendação prática e detalhada para o responsável pela operação.",
+    "justificativa": "Explicação dos dados que sustentam o diagnóstico e a recomendação."
 }
+
 `;
 
     try {
